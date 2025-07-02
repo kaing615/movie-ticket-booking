@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MovieBookingTicket</string>
+    <string name="title_activity_main">MovieBookingTicket</string>
+    <string name="package_name">MovieBookingTicket.app</string>
+    <string name="custom_url_scheme">MovieBookingTicket.app</string>
+</resources>
