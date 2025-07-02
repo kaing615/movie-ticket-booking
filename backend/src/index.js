@@ -23,7 +23,7 @@ app.use("/api/v1", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the MentorMe backend!");
+  res.send("Welcome to the Movie-Ticket-Booking-App backend!");
 });
 
 const server = http.createServer(app);

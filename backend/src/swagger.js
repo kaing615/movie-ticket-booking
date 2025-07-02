@@ -6,9 +6,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "MentorMe API Docs",
+      title: "Movie Ticket Booking App API Docs",
       version: "1.0.0",
-      description: "API documentation for MentorMe backend",
+      description: "API documentation for Movie Ticket Booking App backend",
     },
     servers: [
       {

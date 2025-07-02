@@ -15,7 +15,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - MONGO_URL=mongodb://mongo:27017/mentorme-local
+      - MONGO_URL=mongodb://mongo:27017/movie_ticket_booking
     depends_on:
       - mongo
     volumes:
