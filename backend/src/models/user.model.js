@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['customer', 'admin', 'theater-manager'],
-        default: ['customer'],
+        default: 'customer',
         required: true,
     },
     isDeleted: {

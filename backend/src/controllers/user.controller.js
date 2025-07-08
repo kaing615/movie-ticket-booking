@@ -1,31 +1,30 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import responseHandler from "../handlers/response.handler";
-import User from "../models/user.model";
-import formData from "form-data";
-import Mailgun from "mailgun.js";
+import responseHandler from "../handlers/response.handler.js";
+import User from "../models/user.model.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({
-    username: "api",
-    key: process.env.MAILGUN_API_KEY,
+var transport = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  }
 });
 
 const generateToken = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
 
 export const sendVerificationEmail = async (email, verifyKey, userName) => {
-    const verifyLink = `${process.env.CLIENT_URL}/verify?email=${encodeURIComponent(
-        email
-    )}&verifyKey=${verifyKey}`;
-
+    const verifyLink = `http://localhost:4000/api/v1/user/verify?email=${encodeURIComponent(email)}&verifyKey=${verifyKey}`;
     const data = {
-        from: "Cinema Gate <no-reply@yourdomain.com>",
+        from: 'Cinema Gate <test@cinemagate.com>',
         to: email,
-        subject: "Xác thực tài khoản Cinema Gate",
+        subject: 'Xác thực tài khoản Cinema Gate',
         html: `
             <h3>Xin chào ${userName || ""}!</h3>
             <p>Bạn vừa đăng ký tài khoản Cinema Gate. Vui lòng bấm vào liên kết dưới đây để xác thực email:</p>
@@ -34,8 +33,13 @@ export const sendVerificationEmail = async (email, verifyKey, userName) => {
             <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
         `,
     };
-
-    return mg.messages.create(process.env.MAILGUN_DOMAIN, data);
+    try {
+        let info = await transport.sendMail(data);
+        console.log("Email sent: ", info.messageId);
+    } catch (err) {
+        console.error("Lỗi gửi email xác thực: ", err);
+        throw new Error("Không gửi được email xác thực!");
+    }
 };
 
 export const verifyEmail = async (req, res) => {
@@ -72,6 +76,7 @@ export const verifyEmail = async (req, res) => {
             id: user._id,
         });
     } catch (err) {
+        console.error("Verify email error:", err);
         responseHandler.error(res);
     }
 };
@@ -107,24 +112,19 @@ export const signUp = async (req, res) => {
             userName,
             email,
             password,
-            role,
         } = req.body;
 
         const checkUser = await User.findOne({ email });
         if (checkUser)
             return responseHandler.badRequest(res, "Email đã được sử dụng.");
 
-        let hashedPassword = "";
-        let salt = "";
-        let verifyKey = "";
-
         if (!password) {
-                return responseHandler.badRequest(res, "Mật khẩu không được để trống.");
+            return responseHandler.badRequest(res, "Mật khẩu không được để trống.");
         }
 
-        salt = await bcrypt.genSalt(10);
-        hashedPassword = await bcrypt.hash(password, salt);
-        verifyKey = generateToken();
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const verifyKey = generateToken();
         const verifyKeyExpires = Date.now() + 24 * 60 * 60 * 1000;
 
         const user = new User({
@@ -160,8 +160,7 @@ export const signUp = async (req, res) => {
         }
 
         return responseHandler.created(res, {
-            message:
-                "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+            message: "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
             id: user._id,
         });
     } catch (err) {
@@ -235,13 +234,12 @@ export const forgotPassword = async (req, res) => {
 
         await user.save();
 
-        const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&email=${encodeURIComponent(
-            email
-        )}`;
-        await mg.messages.create(process.env.MAILGUN_DOMAIN, {
-            from: "Cinema Gate <no-reply@yourdomain.com>",
+        const resetLink = `http://localhost:4000/api/v1/user/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+
+        await transport.sendMail({
+            from: 'Cinema Gate <test@cinemagate.com>',
             to: email,
-            subject: "Đặt lại mật khẩu Cinema Gate",
+            subject: 'Đặt lại mật khẩu Cinema Gate',
             html: `
                 <p>Nhấn vào liên kết bên dưới để đặt lại mật khẩu. Liên kết sẽ hết hạn sau 15 phút:</p>
                 <a href="${resetLink}">${resetLink}</a>
@@ -287,4 +285,4 @@ export default {
     resendVerificationEmail,
     forgotPassword,
     resetPassword,
-}
+};
