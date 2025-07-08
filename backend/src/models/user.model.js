@@ -28,19 +28,19 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },  
-    verificationToken: {
+    verifyKey: {
         type: String,
         default: null,
     },
-    verificationExpires: {
+    verifyKeyExpires: {
         type: Date,
         default: null,
     },
-    resetPasswordToken: {
+    resetToken: {
         type: String,
         default: null,
     },
-    resetPasswordExpires: {
+    resetTokenExpires: {
         type: Date,
         default: null,
     },
