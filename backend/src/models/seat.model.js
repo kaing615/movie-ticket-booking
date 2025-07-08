@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const seatSchema = new mongoose.Schema({
     roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
-    seat_number: {
+    seatNumber: {
         type: String,
         required: true,
     },
-    seat_type: { 
+    seatType: { 
         type: String, 
         required: true 
     },  
