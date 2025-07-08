@@ -1,4 +1,4 @@
-import responseHandler from "../handlers/response.handler";
+import responseHandler from "../handlers/response.handler.js";
 /**
  * Middleware to authorize user roles.
  *

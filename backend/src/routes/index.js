@@ -9,6 +9,6 @@ const router = express.Router();
 router.use("/user", userRoute);
 
 //Every route after this middleware will require authentication
-router.use(token);
+router.use(token.auth);
 
 export default router;
