@@ -11,6 +11,7 @@ const theaterSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    theaterSystemId: { type: mongoose.Schema.Types.ObjectId, ref: 'TheaterSystem', required: true },
     isDeleted: {
         type: Boolean,
         default: false,
