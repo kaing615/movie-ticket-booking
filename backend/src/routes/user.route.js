@@ -27,7 +27,7 @@ router.post(
 );
 
 router.get(
-    '/verify-email',
+    '/verify',
     userController.verifyEmail
 );
 
