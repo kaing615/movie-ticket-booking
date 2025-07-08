@@ -50,6 +50,7 @@ export const verifyEmail = async (req, res) => {
 
         user.isVerified = true;
         user.verifyKey = "";
+        user.verifyKeyExpires = undefined;
 
         await user.save();
 
@@ -278,3 +279,12 @@ export const resetPassword = async (req, res) => {
         responseHandler.error(res);
     }
 };
+
+export default {
+    signUp,
+    signIn,
+    verifyEmail,
+    resendVerificationEmail,
+    forgotPassword,
+    resetPassword,
+}
