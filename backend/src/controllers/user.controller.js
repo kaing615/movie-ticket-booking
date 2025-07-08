@@ -22,7 +22,7 @@ const generateToken = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
 export const sendVerificationEmail = async (email, verifyKey, userName) => {
     const verifyLink = `http://localhost:4000/api/v1/user/verify?email=${encodeURIComponent(email)}&verifyKey=${verifyKey}`;
     const data = {
-        from: 'Cinema Gate <test@cinemagate.com>',
+        from: 'Cinema Gate <no-reply@cinemagate.com>',
         to: email,
         subject: 'Xác thực tài khoản Cinema Gate',
         html: `
@@ -237,7 +237,7 @@ export const forgotPassword = async (req, res) => {
         const resetLink = `http://localhost:4000/api/v1/user/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
         await transport.sendMail({
-            from: 'Cinema Gate <test@cinemagate.com>',
+            from: 'Cinema Gate <no-reply@cinemagate.com>',
             to: email,
             subject: 'Đặt lại mật khẩu Cinema Gate',
             html: `
