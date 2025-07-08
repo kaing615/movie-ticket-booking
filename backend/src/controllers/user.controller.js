@@ -25,13 +25,13 @@ export const sendVerificationEmail = async (email, verifyKey, userName) => {
   const data = {
     from: "Cinema Gate <no-reply@yourdomain.com>",
     to: email,
-    subject: "Cinema Gate Account Verification",
+    subject: "Xác thực tài khoản Cinema Gate",
     html: `
-      <h3>Hello ${userName || ""}!</h3>
-      <p>You have just registered a Cinema Gate account. Please click the link below to verify your email:</p>
+      <h3>Xin chào ${userName || ""}!</h3>
+      <p>Bạn vừa đăng ký tài khoản Cinema Gate. Vui lòng bấm vào liên kết dưới đây để xác thực email:</p>
       <a href="${verifyLink}">${verifyLink}</a>
       <br /><br />
-      <p>If you did not register this account, please ignore this email.</p>
+      <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
     `,
   };
 
@@ -45,7 +45,7 @@ export const verifyEmail = async (req, res) => {
     if (!user)
       return responseHandler.badRequest(
         res,
-        "The verification link is invalid or has already been used."
+        "Liên kết xác thực không hợp lệ hoặc đã được sử dụng."
       );
 
     user.isVerified = true;
@@ -65,7 +65,7 @@ export const verifyEmail = async (req, res) => {
     delete userData.verifyKey;
 
     return responseHandler.ok(res, {
-      message: "Email verification successful!",
+      message: "Xác thực email thành công!",
       token,
       ...userData,
       id: user._id,
@@ -82,7 +82,7 @@ export const resendVerificationEmail = async (req, res) => {
     if (!user)
       return responseHandler.badRequest(
         res,
-        "User has already been verified or does not exist."
+        "Người dùng đã xác thực hoặc không tồn tại."
       );
     
     user.verifyKey = generateToken();
@@ -93,7 +93,7 @@ export const resendVerificationEmail = async (req, res) => {
     await sendVerificationEmail(user.email, user.verifyKey, user.userName);
 
     return responseHandler.ok(res, {
-      message: "Resend verification email successful!",
+      message: "Đã gửi lại email xác thực thành công!",
     });
   } catch (err) {
     responseHandler.error(res);
@@ -111,14 +111,14 @@ export const signUp = async (req, res) => {
 
     const checkUser = await User.findOne({ email });
     if (checkUser)
-      return responseHandler.badRequest(res, "User already exists");
+      return responseHandler.badRequest(res, "Email đã được sử dụng.");
 
     let hashedPassword = "";
     let salt = "";
     let verifyKey = "";
 
     if (!password) {
-        return responseHandler.badRequest(res, "Password cannot be empty.");
+        return responseHandler.badRequest(res, "Mật khẩu không được để trống.");
     }
 
     salt = await bcrypt.genSalt(10);
@@ -160,11 +160,11 @@ export const signUp = async (req, res) => {
 
     return responseHandler.created(res, {
       message:
-        "Registration successful! Please check your email to verify your account.",
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
       id: user._id,
     });
   } catch (err) {
-    console.error("Sign up error:", err);
+    console.error("Lỗi đăng ký:", err);
     responseHandler.error(res);
   }
 };
