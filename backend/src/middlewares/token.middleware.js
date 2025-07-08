@@ -21,7 +21,7 @@ const auth = async (req, res, next) => {
 	if (!tokenDecoded) return responseHandler.unauthorized(res);
 
 	const user = await User.findById(tokenDecoded.id);
-	if (!user) return responseHandler.unauthorized(res);
+	if (!user || !user.isVerified) return responseHandler.unauthorized(res);
 
 	req.user = user;
 	next();
