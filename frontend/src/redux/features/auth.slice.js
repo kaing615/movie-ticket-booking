@@ -1,19 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import publicClient from "../../api/clients/public.client";
+import { userApi } from "../../api/modules/user.api";
 
 // Async Thunk for Login
 export const loginUser = createAsyncThunk(
 	"auth/loginUser",
 	async ({ email, password }, { rejectWithValue }) => {
 		try {
-			const response = await publicClient.post("/user/signin", {
-				email,
-				password,
-			});
+			const response = await userApi.signin({ email, password });
 			console.log(response);
-
+			console.log("Success: ", response.success);
 			if (response.success) {
-				const { user, token } = response;
+				const { user, token } = response.data;
 				localStorage.setItem("user", JSON.stringify(user));
 				localStorage.setItem("actkn", token);
 				return { user, token };
@@ -45,7 +42,7 @@ const authSlice = createSlice({
 			state.error = null;
 			localStorage.removeItem("user");
 			localStorage.removeItem("actkn");
-			localStorage.removeItem("lastVisitedAdminPath");
+			window.location.replace("/auth/signin");
 		},
 
 		initializeAuth: (state) => {

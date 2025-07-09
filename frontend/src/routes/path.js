@@ -10,3 +10,11 @@ export const PATH = {
 	ADMIN: "/admin",
 	MANAGER: "/manager",
 };
+
+export const ADMIN_PATH = {
+	DASHBOARD: "dashboard",
+};
+
+export const MANAGER_PATH = {
+	DASHBOARD: "dashboard",
+};

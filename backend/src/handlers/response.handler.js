@@ -1,11 +1,13 @@
 const responseSuccess = (res, statusCode, data) => {
 	res.status(statusCode).json({
+		success: true,
 		data: data,
 	});
 };
 
 const responseError = (res, statusCode, message, errorDetails = null) => {
 	const responseBody = {
+		success: false,
 		status: statusCode,
 		message: message,
 	};

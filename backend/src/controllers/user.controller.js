@@ -160,7 +160,7 @@ export const signUp = async (req, res) => {
 			delete userData.verifyKey;
 			return responseHandler.created(res, {
 				token,
-				...userData,
+				user: userData,
 				id: user._id,
 			});
 		}
@@ -224,7 +224,7 @@ export const signIn = async (req, res) => {
 
 		return responseHandler.ok(res, {
 			token,
-			...userData,
+			user: userData,
 			id: user._id,
 		});
 	} catch (err) {
