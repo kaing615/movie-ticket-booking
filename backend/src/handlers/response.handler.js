@@ -1,43 +1,45 @@
-const responseWithData = (res, statusCode, data) => {
-  res.status(statusCode).json({
-    data: data,
-  });
+const responseSuccess = (res, statusCode, data) => {
+	res.status(statusCode).json({
+		data: data,
+	});
 };
 
-const error = (res) =>
-  responseWithData(res, 500, {
-    status: 500,
-    message: "Oops! Something went wrong",
-    error: error,
-  });
+const responseError = (res, statusCode, message, errorDetails = null) => {
+	const responseBody = {
+		status: statusCode,
+		message: message,
+	};
+	// Only include 'error' key if details are provided
+	if (errorDetails) {
+		responseBody.error = errorDetails;
+	}
+	res.status(statusCode).json(responseBody);
+};
 
-const badRequest = (res, message) =>
-  responseWithData(res, 400, {
-    status: 400,
-    message: message,
-  });
+// --- Success Helpers ---
+const ok = (res, data) => responseSuccess(res, 200, data);
+const created = (res, data) => responseSuccess(res, 201, data);
 
-const ok = (res, data) => responseWithData(res, 200, data);
+// --- Error Helpers (Now using the new responseError helper) ---
+// Fixed: Renamed to serverError to avoid confusion, and accepts actual error details
+const serverError = (res, details = null) =>
+	responseError(res, 500, "Oops! Something went wrong", details);
 
-const created = (res, data) => responseWithData(res, 201, data);
+const badRequest = (res, message) => responseError(res, 400, message);
 
 const unauthorized = (res, message) =>
-  responseWithData(res, 401, {
-    status: 401,
-    message: "Unauthorized",
-  });
+	responseError(res, 401, message || "Unauthorized");
 
-const notFound = (res, message) =>
-  responseWithData(res, 404, {
-    status: 404,
-    message: "Resource not found",
-  });
+const notFound = (res, message) => {
+	// This is your specifically identified function, now correctly fixed.
+	responseError(res, 404, message || "Resource not found");
+};
 
 export default {
-  error,
-  badRequest,
-  ok,
-  created,
-  unauthorized,
-  notFound,
+	error: serverError, // Export the fixed server error function under 'error'
+	badRequest,
+	ok,
+	created,
+	unauthorized,
+	notFound,
 };

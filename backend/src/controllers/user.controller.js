@@ -5,6 +5,7 @@ import User from "../models/user.model.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { CONNREFUSED } from "dns";
 
 dotenv.config();
 
@@ -122,7 +123,10 @@ export const signUp = async (req, res) => {
 			return responseHandler.badRequest(res, "Email đã được sử dụng.");
 
 		if (!password) {
-			return responseHandler.badRequest(res, "Mật khẩu không được để trống.");
+			return responseHandler.badRequest(
+				res,
+				"Mật khẩu không được để trống."
+			);
 		}
 
 		const salt = await bcrypt.genSalt(10);
@@ -177,24 +181,30 @@ export const signIn = async (req, res) => {
 		const { email, password } = req.body;
 
 		if (!email || !password)
-			return responseHandler.badRequest(res, "Email và mật khẩu là bắt buộc.");
+			return responseHandler.badRequest(
+				res,
+				"Email và mật khẩu là bắt buộc."
+			);
 
 		const user = await User.findOne({ email });
-		if (!user)
-			return responseHandler.notFound(res, "Không tìm thấy người dùng.");
 
-		if (!user.isVerified)
-			return responseHandler.forbidden(
-				res,
-				"Vui lòng xác thực email trước khi đăng nhập."
-			);
+		const genericErrorMessage = "Email hoặc mật khẩu không đúng.";
+		// chống user enumeration
 
-		const isMatch = await bcrypt.compare(password, user.password);
-		if (!isMatch)
-			return responseHandler.unauthorized(
-				res,
-				"Email hoặc mật khẩu không đúng."
-			);
+		const DUMMY_HASH =
+			"$2a$10$abcdefghijklmnopqrstuvwxyzaBcdefghijklmnopqrstuvwxyza";
+		// chống timing attack
+		let isValidPassword = false;
+
+		if (user && user.isVerified) {
+			isValidPassword = await bcrypt.compare(password, user.password);
+		} else {
+			await bcrypt.compare(password, DUMMY_HASH);
+			isValidPassword = false;
+		}
+		if (!isValidPassword) {
+			return responseHandler.unauthorized(res, genericErrorMessage);
+		}
 
 		const token = jwt.sign(
 			{
@@ -219,7 +229,10 @@ export const signIn = async (req, res) => {
 		});
 	} catch (err) {
 		console.error("Lỗi đăng nhập:", err);
-		responseHandler.error(res);
+		responseHandler.error(
+			res,
+			err.message || "Unknown error during sign-in."
+		);
 	}
 };
 
@@ -229,7 +242,8 @@ export const forgotPassword = async (req, res) => {
 		const user = await User.findOne({ email });
 		if (!user)
 			return responseHandler.ok(res, {
-				message: "Nếu email này tồn tại, đã gửi liên kết đặt lại mật khẩu.",
+				message:
+					"Nếu email này tồn tại, đã gửi liên kết đặt lại mật khẩu.",
 			});
 
 		const resetToken = generateToken();
@@ -280,7 +294,9 @@ export const resetPassword = async (req, res) => {
 		user.resetTokenExpires = undefined;
 		await user.save();
 
-		return responseHandler.ok(res, { message: "Đặt lại mật khẩu thành công." });
+		return responseHandler.ok(res, {
+			message: "Đặt lại mật khẩu thành công.",
+		});
 	} catch (err) {
 		console.error("Lỗi đặt lại mật khẩu:", err);
 		responseHandler.error(res);
