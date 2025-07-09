@@ -20,3 +20,5 @@ const theaterSystemSchema = new mongoose.Schema({
         default: "No description available.",
     },
 });
+
+export default mongoose.model("TheaterSystem", theaterSystemSchema);
