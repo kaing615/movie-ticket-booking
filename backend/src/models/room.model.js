@@ -8,3 +8,5 @@ const roomSchema = new mongoose.Schema({
         unique: true,
     },
 });
+
+export default mongoose.model('Room', roomSchema);
