@@ -36,3 +36,5 @@ const movieSchema = new mongoose.Schema({
         required: true,
     }
 });
+
+export default mongoose.model("Movie", movieSchema);
