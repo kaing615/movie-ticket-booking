@@ -9,4 +9,5 @@ export const PATH = {
 	COMING_SOON: "coming-soon",
 	ADMIN: "/admin",
 	MANAGER: "/manager",
+	VERIFY_EMAIL: "verify-email",
 };
