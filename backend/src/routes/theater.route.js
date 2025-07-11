@@ -1,9 +1,12 @@
 import express from "express";
 import theaterController from "../controllers/theater.controller.js";
-import requestHandler from "../handlers/request.handler.js";
+
 
 const router = express.Router();
 
-router.post("/", requestHandler.validate, theaterController.createTheater);
+router.post("/create-theater", theaterController.createTheater);
+router.put("/update-theater/:theaterId", theaterController.updateTheater);
+router.delete("/delete-theater/:theaterId", theaterController.deleteTheater);
+
 
 export default router;

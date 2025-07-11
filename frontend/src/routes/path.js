@@ -11,3 +11,11 @@ export const PATH = {
 	MANAGER: "/manager",
 	VERIFY_EMAIL: "verify-email",
 };
+
+export const ADMIN_PATH = {
+	DASHBOARD: "dashboard",
+};
+
+export const MANAGER_PATH = {
+	DASHBOARD: "dashboard",
+};

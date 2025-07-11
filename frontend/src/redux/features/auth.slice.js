@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import publicClient from "../../api/clients/public.client";
+import { userApi } from "../../api/modules/user.api";
 
 export const loginUser = createAsyncThunk(
 	"auth/loginUser",
@@ -43,7 +43,7 @@ const authSlice = createSlice({
 			state.error = null;
 			localStorage.removeItem("user");
 			localStorage.removeItem("actkn");
-			localStorage.removeItem("lastVisitedAdminPath");
+			window.location.replace("/auth/signin");
 		},
 
 		initializeAuth: (state) => {
