@@ -12,7 +12,6 @@ router.post(
 	requestHandler.validate,
 	userController.signUp
 );
-
 router.post(
 	"/signin",
 	userValidator.signInValidator,

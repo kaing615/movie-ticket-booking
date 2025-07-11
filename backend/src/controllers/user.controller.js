@@ -161,7 +161,6 @@ export const signUp = async (req, res) => {
 			return responseHandler.created(res, {
 				token,
 				user: userData,
-				id: user._id,
 			});
 		}
 
@@ -192,7 +191,7 @@ export const signIn = async (req, res) => {
 		// chống user enumeration
 
 		const DUMMY_HASH =
-			"$2a$10$abcdefghijklmnopqrstuvwxyzaBcdefghijklmnopqrstuvwxyza";
+			"$2a$10$ull7LxLFMg9MvAgkKYlWBuQ3yA57nLCbSAT6BPhEqMacBVDOa2Jby";
 		// chống timing attack
 		let isValidPassword = false;
 
@@ -225,7 +224,6 @@ export const signIn = async (req, res) => {
 		return responseHandler.ok(res, {
 			token,
 			user: userData,
-			id: user._id,
 		});
 	} catch (err) {
 		console.error("Lỗi đăng nhập:", err);
@@ -290,8 +288,8 @@ export const resetPassword = async (req, res) => {
 			);
 
 		user.password = await bcrypt.hash(newPassword, 10);
-		user.resetToken = undefined;
-		user.resetTokenExpires = undefined;
+		user.resetToken = null;
+		user.resetTokenExpires = null;
 		await user.save();
 
 		return responseHandler.ok(res, {
