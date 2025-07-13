@@ -5,7 +5,9 @@ const signUpValidator = [
 	body("password")
 		.isLength({ min: 6 })
 		.withMessage("Mật khẩu phải có ít nhất 6 ký tự"),
-	body("userName").notEmpty().withMessage("Tên người dùng không được để trống"),
+	body("userName")
+		.notEmpty()
+		.withMessage("Tên người dùng không được để trống"),
 ];
 
 const signInValidator = [

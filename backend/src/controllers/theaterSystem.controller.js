@@ -4,102 +4,113 @@ import mongoose from "mongoose";
 
 // Tạo hệ thống rạp
 const createTheaterSystem = async (req, res) => {
-  try {
-    const { name, code, logo, description } = req.body;
+	try {
+		const { name, code, logo, description } = req.body;
 
-    if (!name || !code) {
-      return responseHandler.badRequest(res, "Thiếu tên hoặc mã hệ thống.");
-    }
+		const existed = await TheaterSystem.findOne({
+			$or: [{ name }, { code }],
+		});
+		if (existed) {
+			return responseHandler.badRequest(
+				res,
+				"Tên hoặc mã hệ thống đã tồn tại."
+			);
+		}
 
-    const existed = await TheaterSystem.findOne({ $or: [{ name }, { code }] });
-    if (existed) {
-      return responseHandler.badRequest(res, "Tên hoặc mã hệ thống đã tồn tại.");
-    }
+		const theaterSystem = new TheaterSystem({
+			name,
+			code,
+			logo,
+			description,
+		});
 
-    const theaterSystem = new TheaterSystem({
-      name,
-      code,
-      logo,
-      description,
-    });
-
-    await theaterSystem.save();
-    return responseHandler.created(res, {
-      message: "Tạo hệ thống rạp thành công!",
-      theaterSystem,
-    });
-  } catch (err) {
-    console.error("Lỗi tạo hệ thống rạp:", err);
-    responseHandler.error(res);
-  }
+		await theaterSystem.save();
+		return responseHandler.created(res, {
+			message: "Tạo hệ thống rạp thành công!",
+			theaterSystem,
+		});
+	} catch (err) {
+		console.error("Lỗi tạo hệ thống rạp:", err);
+		responseHandler.error(res);
+	}
 };
 
 // Cập nhật hệ thống rạp
 const updateTheaterSystem = async (req, res) => {
-  try {
-    const { systemId } = req.params;
-    const { name, code, logo, description } = req.body;
+	try {
+		const { systemId } = req.params;
+		const { name, code, logo, description } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(systemId)) {
-      return responseHandler.badRequest(res, "ID hệ thống không hợp lệ.");
-    }
+		const theaterSystem = await TheaterSystem.findById(systemId);
+		if (!theaterSystem) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy hệ thống rạp."
+			);
+		}
 
-    const theaterSystem = await TheaterSystem.findById(systemId);
-    if (!theaterSystem) {
-      return responseHandler.notFound(res, "Không tìm thấy hệ thống rạp.");
-    }
+		if (name && name !== theaterSystem.name) {
+			const existedName = await TheaterSystem.findOne({
+				name,
+				_id: { $ne: systemId },
+			});
+			if (existedName) {
+				return responseHandler.badRequest(
+					res,
+					"Tên hệ thống đã tồn tại."
+				);
+			}
+			theaterSystem.name = name;
+		}
 
-    if (name && name !== theaterSystem.name) {
-      const existedName = await TheaterSystem.findOne({ name, _id: { $ne: systemId } });
-      if (existedName) {
-        return responseHandler.badRequest(res, "Tên hệ thống đã tồn tại.");
-      }
-      theaterSystem.name = name;
-    }
+		if (code && code !== theaterSystem.code) {
+			const existedCode = await TheaterSystem.findOne({
+				code,
+				_id: { $ne: systemId },
+			});
+			if (existedCode) {
+				return responseHandler.badRequest(
+					res,
+					"Mã hệ thống đã tồn tại."
+				);
+			}
+			theaterSystem.code = code;
+		}
 
-    if (code && code !== theaterSystem.code) {
-      const existedCode = await TheaterSystem.findOne({ code, _id: { $ne: systemId } });
-      if (existedCode) {
-        return responseHandler.badRequest(res, "Mã hệ thống đã tồn tại.");
-      }
-      theaterSystem.code = code;
-    }
+		if (logo) theaterSystem.logo = logo;
+		if (description) theaterSystem.description = description;
 
-    if (logo) theaterSystem.logo = logo;
-    if (description) theaterSystem.description = description;
-
-    await theaterSystem.save();
-    return responseHandler.ok(res, {
-      message: "Cập nhật hệ thống rạp thành công!",
-      theaterSystem,
-    });
-  } catch (err) {
-    console.error("Lỗi cập nhật hệ thống rạp:", err);
-    responseHandler.error(res);
-  }
+		await theaterSystem.save();
+		return responseHandler.ok(res, {
+			message: "Cập nhật hệ thống rạp thành công!",
+			theaterSystem,
+		});
+	} catch (err) {
+		console.error("Lỗi cập nhật hệ thống rạp:", err);
+		responseHandler.error(res);
+	}
 };
 
 // Xóa hệ thống rạp (hard delete)
 const deleteTheaterSystem = async (req, res) => {
-  try {
-    const { systemId } = req.params;
+	try {
+		const { systemId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(systemId)) {
-      return responseHandler.badRequest(res, "ID hệ thống không hợp lệ.");
-    }
+		const deleted = await TheaterSystem.findByIdAndDelete(systemId);
+		if (!deleted) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy hệ thống để xóa."
+			);
+		}
 
-    const deleted = await TheaterSystem.findByIdAndDelete(systemId);
-    if (!deleted) {
-      return responseHandler.notFound(res, "Không tìm thấy hệ thống để xóa.");
-    }
-
-    return responseHandler.ok(res, {
-      message: "Xóa hệ thống rạp thành công!",
-    });
-  } catch (err) {
-    console.error("Lỗi xóa hệ thống rạp:", err);
-    responseHandler.error(res);
-  }
+		return responseHandler.ok(res, {
+			message: "Xóa hệ thống rạp thành công!",
+		});
+	} catch (err) {
+		console.error("Lỗi xóa hệ thống rạp:", err);
+		responseHandler.error(res);
+	}
 };
 
 const addTheaterToSystem = async (req, res) => {
