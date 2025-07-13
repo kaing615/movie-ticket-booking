@@ -11,14 +11,14 @@ import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 
 import HomeLayout from "../components/layout/HomeLayout";
 import AuthLayout from "../components/layout/AuthLayout";
-import HomePage from "../pages/customer/HomePage.jsx";
-import LoginPage from "../pages/auth/SigninPage";
+import HomePage from "../pages/HomePage";
 import SignupPage from "../pages/auth/SignupPage";
 import NotFound from "../pages/NotFound";
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
 import Booking from "../pages/customer/Booking.jsx";
 import Movies from "../pages/customer/Movies.jsx";
 import SigninPage from "../pages/auth/SigninPage";
+import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 
 
 
@@ -81,6 +81,10 @@ const useRouterElements = () => {
                 {
                     path: PATH.SIGNUP,
                     element: <SignupPage />,
+                },
+                {
+                    path: PATH.VERIFY_EMAIL,
+                    element: <VerifyMailPage />,
                 }
             ]
         },
