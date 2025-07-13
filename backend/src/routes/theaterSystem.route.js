@@ -1,5 +1,7 @@
 import express from "express";
 import controller from "../controllers/theaterSystem.controller.js";
+import requestHandler from "../handlers/request.handler.js";
+import theaterSystemValidator from "../middlewares/validators/theaterSystem.middleware.js";
 
 const router = express.Router();
 
