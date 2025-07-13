@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userApi } from "../../api/modules/user.api";
+import { authApi } from "../../api/modules/auth.api.js";
 
 export const loginUser = createAsyncThunk(
 	"auth/loginUser",
 	async ({ email, password }, { rejectWithValue }) => {
 		try {
-			const response = await userApi.signin({ email, password });
+			const response = await authApi.signin({ email, password });
 			console.log(response);
 
 			if (response?.data?.token) {

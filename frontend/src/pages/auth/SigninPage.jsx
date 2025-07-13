@@ -53,7 +53,7 @@ const SigninPage = () => {
                 <div className="bg-white rounded-2xl shadow-2xl p-10 border-0">
                     <div className="flex flex-col items-center mb-8">
                         <img
-                            src="../../../public/img/logo.png"
+                            src="/img/logo.png"
                             alt="Cinema Gate"
                             className="w-40 h-40 mb-2 drop-shadow-lg"
                             style={{ objectFit: "contain" }}
