@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const theaterSchema = new mongoose.Schema({
-    managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    managerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     theaterName: {
         type: String,
         required: true,

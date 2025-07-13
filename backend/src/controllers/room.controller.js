@@ -3,12 +3,18 @@ import Theater from "../models/theater.model.js";
 import responseHandler from "../handlers/response.handler.js";
 import mongoose from "mongoose";
 
+// Helper: Check quyền sở hữu của theater-manager với rạp
+const isTheaterManagerOf = async (userId, theaterId) => {
+  const theater = await Theater.findById(theaterId);
+  if (!theater || theater.isDeleted) return false;
+  return theater.managerId.toString() === userId;
+};
+
 // Thêm phòng chiếu
 const createRoom = async (req, res) => {
   try {
     const { theaterId, roomNumber } = req.body;
     const currentUserId = req.user?.id;
-    const currentUserRole = req.user?.role;
 
     if (!theaterId || !roomNumber) {
       return responseHandler.badRequest(res, "Thiếu thông tin bắt buộc.");
@@ -18,15 +24,13 @@ const createRoom = async (req, res) => {
       return responseHandler.badRequest(res, "ID rạp không hợp lệ.");
     }
 
-    const theater = await Theater.findById(theaterId);
-    if (!theater || theater.isDeleted) {
-      return responseHandler.notFound(res, "Không tìm thấy rạp.");
-    }
-
-    if (currentUserRole !== "theater-manager" || theater.managerId.toString() !== currentUserId) {
+    // Check quyền manager
+    const isManager = await isTheaterManagerOf(currentUserId, theaterId);
+    if (!isManager) {
       return responseHandler.unauthorized(res, "Bạn không có quyền tạo phòng cho rạp này.");
     }
 
+    // Check số phòng trùng
     const existed = await Room.findOne({ roomNumber, theaterId });
     if (existed) {
       return responseHandler.badRequest(res, "Số phòng đã tồn tại trong rạp này.");
@@ -51,7 +55,6 @@ const updateRoom = async (req, res) => {
     const { roomId } = req.params;
     const { roomNumber } = req.body;
     const currentUserId = req.user?.id;
-    const currentUserRole = req.user?.role;
 
     if (!mongoose.Types.ObjectId.isValid(roomId)) {
       return responseHandler.badRequest(res, "ID phòng không hợp lệ.");
@@ -62,12 +65,9 @@ const updateRoom = async (req, res) => {
       return responseHandler.notFound(res, "Không tìm thấy phòng.");
     }
 
-    const theater = await Theater.findById(room.theaterId);
-    if (!theater || theater.isDeleted) {
-      return responseHandler.notFound(res, "Rạp chứa phòng này không tồn tại.");
-    }
-
-    if (currentUserRole !== "theater-manager" || theater.managerId.toString() !== currentUserId) {
+    // Check quyền manager
+    const isManager = await isTheaterManagerOf(currentUserId, room.theaterId);
+    if (!isManager) {
       return responseHandler.unauthorized(res, "Bạn không có quyền cập nhật phòng của rạp này.");
     }
 
@@ -96,7 +96,6 @@ const deleteRoom = async (req, res) => {
   try {
     const { roomId } = req.params;
     const currentUserId = req.user?.id;
-    const currentUserRole = req.user?.role;
 
     if (!mongoose.Types.ObjectId.isValid(roomId)) {
       return responseHandler.badRequest(res, "ID phòng không hợp lệ.");
@@ -107,12 +106,9 @@ const deleteRoom = async (req, res) => {
       return responseHandler.notFound(res, "Không tìm thấy phòng.");
     }
 
-    const theater = await Theater.findById(room.theaterId);
-    if (!theater || theater.isDeleted) {
-      return responseHandler.notFound(res, "Rạp chứa phòng này không tồn tại.");
-    }
-
-    if (currentUserRole !== "theater-manager" || theater.managerId.toString() !== currentUserId) {
+    // Check quyền manager
+    const isManager = await isTheaterManagerOf(currentUserId, room.theaterId);
+    if (!isManager) {
       return responseHandler.unauthorized(res, "Bạn không có quyền xóa phòng của rạp này.");
     }
 

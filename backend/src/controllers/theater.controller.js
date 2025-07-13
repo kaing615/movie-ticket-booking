@@ -3,63 +3,99 @@ import User from "../models/user.model.js";
 import TheaterSystem from "../models/theaterSystem.model.js";
 import responseHandler from "../handlers/response.handler.js";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
-// Thêm rạp chiếu phim
-const createTheater = async (req, res) => {
+// Thêm rạp chiếu phim + tạo tài khoản theater-manager
+const createTheaterAndManager = async (req, res) => {
   try {
-    const { managerId, theaterName, location, theaterSystemId } = req.body;
+    const {
+      theaterName,
+      location,
+      theaterSystemId,
+      managerEmail,
+      managerUserName,
+      managerPassword,
+    } = req.body;
 
-    if (!managerId || !theaterName || !location || !theaterSystemId) {
+    // Validate bắt buộc
+    if (
+      !theaterName ||
+      !location ||
+      !theaterSystemId ||
+      !managerEmail ||
+      !managerUserName ||
+      !managerPassword
+    ) {
       return responseHandler.badRequest(res, "Thiếu thông tin bắt buộc.");
     }
 
-    if (![managerId, theaterSystemId].every(id => mongoose.Types.ObjectId.isValid(id))) {
-      return responseHandler.badRequest(res, "ID không hợp lệ.");
+    if (!mongoose.Types.ObjectId.isValid(theaterSystemId)) {
+      return responseHandler.badRequest(res, "ID hệ thống không hợp lệ.");
     }
 
-    const manager = await User.findOne({ _id: managerId, isDeleted: false });
-    if (!manager) {
-      return responseHandler.notFound(res, "Không tìm thấy người dùng quản lý.");
-    }
-
-    if (manager.role !== 'theater-manager') {
-      return responseHandler.badRequest(res, "Người dùng không phải là theater-manager.");
-    }
-
-    const existingTheater = await Theater.findOne({ managerId, isDeleted: false });
-    if (existingTheater) {
-      return responseHandler.badRequest(res, "Người quản lý này đã được phân công cho một rạp khác.");
-    }
-
+    // Check hệ thống rạp tồn tại
     const system = await TheaterSystem.findById(theaterSystemId);
     if (!system) {
       return responseHandler.notFound(res, "Không tìm thấy hệ thống rạp.");
     }
 
-    const existed = await Theater.findOne({ theaterName });
-    if (existed) {
-      return responseHandler.badRequest(res, "Tên rạp đã tồn tại.");
+    // Kiểm tra tên rạp đã tồn tại chưa
+    const existedTheater = await Theater.findOne({ theaterName, theaterSystemId, isDeleted: false });
+    if (existedTheater) {
+      return responseHandler.badRequest(res, "Tên rạp đã tồn tại trong hệ thống này.");
     }
 
+    // Kiểm tra email quản lý đã tồn tại chưa
+    const existedUser = await User.findOne({ email: managerEmail, isDeleted: false });
+    if (existedUser) {
+      return responseHandler.badRequest(res, "Email quản lý đã được sử dụng.");
+    }
+
+    // Hash password cho manager
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(managerPassword, saltRounds);
+
+    // Tạo user theater-manager
+    const newManager = new User({
+      email: managerEmail,
+      userName: managerUserName,
+      password: hashedPassword,
+      role: "theater-manager",
+      isVerified: true,
+      verifyKey: crypto.randomBytes(32).toString("hex"),
+      verifyKeyExpires: Date.now() + 24 * 60 * 60 * 1000, // 1 ngày
+    });
+
+    await newManager.save();
+
+    // Tạo rạp gắn manager vừa tạo
     const theater = new Theater({
-      managerId,
       theaterName,
       location,
-      theaterSystemId
+      theaterSystemId,
+      managerId: newManager._id,
     });
 
     await theater.save();
 
+    // Ẩn thông tin nhạy cảm manager trước khi trả về
+    const safeManager = newManager.toObject();
+    delete safeManager.password;
+    delete safeManager.verifyKey;
+    delete safeManager.verifyKeyExpires;
+
     return responseHandler.created(res, {
-      message: "Tạo rạp chiếu phim thành công!",
-      theater
+      message: "Tạo rạp và tài khoản theater-manager thành công!",
+      theater,
+      manager: safeManager,
     });
+
   } catch (err) {
-    console.error("Lỗi tạo rạp:", err);
+    console.error("Lỗi tạo rạp và quản lý:", err);
     responseHandler.error(res);
   }
 };
-
 
 // Cập nhật rạp chiếu phim
 const updateTheater = async (req, res) => {
@@ -77,9 +113,14 @@ const updateTheater = async (req, res) => {
     }
 
     if (theaterName) {
-      const nameTaken = await Theater.findOne({ theaterName, _id: { $ne: theaterId } });
+      const nameTaken = await Theater.findOne({
+        theaterName,
+        theaterSystemId: theater.theaterSystemId,
+        _id: { $ne: theaterId },
+        isDeleted: false
+      });
       if (nameTaken) {
-        return responseHandler.badRequest(res, "Tên rạp đã được sử dụng.");
+        return responseHandler.badRequest(res, "Tên rạp đã được sử dụng trong hệ thống này.");
       }
       theater.theaterName = theaterName;
     }
@@ -90,7 +131,7 @@ const updateTheater = async (req, res) => {
       if (!mongoose.Types.ObjectId.isValid(managerId)) {
         return responseHandler.badRequest(res, "ID quản lý không hợp lệ.");
       }
-      const manager = await User.findOne({ _id: managerId, role: 'theater-manager', isDeleted: false });
+      const manager = await User.findOne({ _id: managerId, role: "theater-manager", isDeleted: false });
       if (!manager) {
         return responseHandler.notFound(res, "Không tìm thấy quản lý.");
       }
@@ -141,7 +182,7 @@ const deleteTheater = async (req, res) => {
 };
 
 export default {
-  createTheater,
+  createTheaterAndManager,
   updateTheater,
-  deleteTheater
+  deleteTheater,
 };
