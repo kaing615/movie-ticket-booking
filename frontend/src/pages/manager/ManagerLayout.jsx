@@ -12,16 +12,16 @@ const ManagerLayout = () => {
                 <h1 className="text-2xl font-bold mb-4">Manager Layout</h1>
                 <ul>
                     <li>
-                        <a href="/admin/dashboard">Dashboard</a>
+                        <a href="/manager/dashboard">Dashboard</a>
                     </li>
                     <li>
-                        <a href="/admin/users">Users</a>
+                        <a href="/manager/users">Users</a>
                     </li>
                     <li>
-                        <a href="/admin/theaters">Theaters</a>
+                        <a href="/manager/theaters">Theaters</a>
                     </li>
                     <li>
-                        <a href="/admin/movies">Movies</a>
+                        <a href="/manager/movies">Movies</a>
                     </li>
                     <li>
                         <button onClick={() => dispatch(logout())} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">Logout</button>
