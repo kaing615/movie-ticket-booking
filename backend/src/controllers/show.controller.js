@@ -157,9 +157,30 @@ const getShowsByTheater = async (req, res) => {
   }
 };
 
+const getShowsByMovie = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return responseHandler.badRequest(res, "ID phim không hợp lệ.");
+    }
+
+    const shows = await Show.find({ movieId })
+      .populate("theaterId", "theaterName location")
+      .populate("roomId", "roomNumber")
+      .sort({ startTime: 1 });
+
+    return responseHandler.ok(res, { shows });
+  } catch (err) {
+    console.error("Lỗi lấy lịch chiếu theo phim:", err);
+    responseHandler.error(res);
+  }
+};
+
 export default {
   addShow,
   updateShow,
   deleteShow,
-  getShowsByTheater
+  getShowsByTheater,
+  getShowsByMovie,
 };

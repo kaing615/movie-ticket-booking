@@ -7,5 +7,4 @@ router.post("/create", roomController.createRoom);
 router.put("/:roomId", roomController.updateRoom);
 router.delete("/:roomId", roomController.deleteRoom);
 
-
 export default router;

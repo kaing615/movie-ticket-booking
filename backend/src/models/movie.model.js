@@ -34,7 +34,26 @@ const movieSchema = new mongoose.Schema({
         type: String,
         enum: ['P', 'K', 'T13', 'T16', 'T18'],
         required: true,
-    }
-});
+    },
+    status: {
+        type: String,
+        enum: ['Coming Soon', 'Now Showing', 'Ended'],
+        default: 'Coming Soon',
+    },
+    director: {
+        type: String,
+        required: true,
+    },
+    trailer: {
+        type: String,
+        required: true,
+    },
+    allowedShowStart: {
+        type: Date,
+        required: true,
+    },
+    ratingScore: { type: Number, default: 0 },
+    ratingCount: { type: Number, default: 0 },
+}, { timestamps: true });
 
 export default mongoose.model("Movie", movieSchema);

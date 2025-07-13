@@ -5,23 +5,11 @@ import theaterSystemValidator from "../middlewares/validators/theaterSystem.midd
 
 const router = express.Router();
 
-router.post(
-	"/",
-	theaterSystemValidator.createTheaterSystemValidator,
-	requestHandler.validate,
-	controller.createTheaterSystem
-);
-router.put(
-	"/:systemId",
-	theaterSystemValidator.updateTheaterSystem,
-	requestHandler.validate,
-	controller.updateTheaterSystem
-);
-router.delete(
-	"/:systemId",
-	theaterSystemValidator.deleteTheaterSystem,
-	requestHandler.validate,
-	controller.deleteTheaterSystem
-);
+router.post("/", controller.createTheaterSystem);
+router.post("/add-theater", controller.addTheaterToSystem);
+router.get("/", controller.getAllTheaterSystems);
+router.get("/:systemId", controller.getTheaterSystemById);
+router.put("/:systemId", controller.updateTheaterSystem);
+router.delete("/:systemId", controller.deleteTheaterSystem);
 
 export default router;

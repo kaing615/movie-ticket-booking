@@ -6,23 +6,8 @@ import requestHandler from "../handlers/request.handler.js";
 const router = express.Router();
 
 router.get("/", theaterController.getTheatersBySystem);
-router.post(
-	"/",
-	theatherValidator.createTheaterValidator,
-	requestHandler.validate,
-	theaterController.createTheater
-);
-router.put(
-	"/:theaterId",
-	theatherValidator.updateTheaterValidator,
-	requestHandler.validate,
-	theaterController.updateTheater
-);
-router.delete(
-	"/:theaterId",
-	theatherValidator.deleteTheaterValidator,
-	requestHandler.validate,
-	theaterController.deleteTheater
-);
+router.post("/", theaterController.createTheaterAndManager);
+router.put("/update-theater/:theaterId", theaterController.updateTheater);
+router.delete("/delete-theater/:theaterId", theaterController.deleteTheater);
 
 export default router;
