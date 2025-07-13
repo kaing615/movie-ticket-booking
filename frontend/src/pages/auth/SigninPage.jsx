@@ -18,7 +18,7 @@ const SigninPage = () => {
         if (isAuthenticated && status === "succeeded" && user) {
             if (user.role === "admin") {
                 navigate("/admin/dashboard", { replace: true });
-            } else if (user.role === "theater manager") {
+            } else if (user.role === "theater-manager") {
                 navigate("/manager/dashboard", { replace: true });
             } else {
                 navigate("/customer/home", { replace: true });

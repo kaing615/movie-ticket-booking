@@ -5,10 +5,7 @@ export const loginUser = createAsyncThunk(
 	"auth/loginUser",
 	async ({ email, password }, { rejectWithValue }) => {
 		try {
-			const response = await publicClient.post("user/signin", {
-				email,
-				password,
-			});
+			const response = await userApi.signin({ email, password });
 			console.log(response);
 
 			if (response?.data?.token) {
@@ -16,12 +13,12 @@ export const loginUser = createAsyncThunk(
 				localStorage.setItem("actkn", response.data.token);
 				return response.data;
 			} else {
-				return rejectWithValue("Login failed."); 
+				return rejectWithValue("Login failed.");
 			}
-			} catch (error) {
-				const message = error.message || "An unexpected error occurred.";
-				return rejectWithValue(message);
-			}
+		} catch (error) {
+			const message = error.message || "An unexpected error occurred.";
+			return rejectWithValue(message);
+		}
 	}
 );
 
