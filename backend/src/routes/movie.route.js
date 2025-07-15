@@ -6,30 +6,19 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
+//public routes that don't requires auth
 router.get("/", movieController.getMovies);
 
 router.get("/:id", movieController.getMovieById);
 
-router.post(
-  "/",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
-  requestHandler.validate,
-  movieController.createMovie
-);
+router.use(tokenMiddleware.auth);
+router.use(authorizeRoles(["admin", "theater-manager"]));
+//everything below requires auth
 
-router.put(
-  "/:id",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
-  requestHandler.validate,
-  movieController.updateMovie
-);
+router.post("/", requestHandler.validate, movieController.createMovie);
 
-router.delete(
-  "/:id",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
-  requestHandler.validate,
-  movieController.deleteMovie
-);
+router.put("/:id", requestHandler.validate, movieController.updateMovie);
+
+router.delete("/:id", requestHandler.validate, movieController.deleteMovie);
+
+export default router;

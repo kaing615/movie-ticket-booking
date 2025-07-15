@@ -7,33 +7,32 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.get(
-    "/", 
-    theaterController.getTheater
-);
+//public routes that don't requires auth
+router.get("/", theaterController.getTheater);
+
+router.use(tokenMiddleware.auth);
+router.use(authorizeRoles(["theater-manager"]));
+//everything below requires auth
 
 router.post(
-    "/", 
-    requestHandler.validateRequest(theaterValidator.createTheaterValidator),
-    tokenMiddleware.auth(),
-    authorizeRoles(["theater-manager"]),
-    theaterController.createTheaterAndManager
+	"/",
+	theaterValidator.createTheaterValidator,
+	requestHandler.validate,
+	theaterController.createTheaterAndManager
 );
 
 router.put(
-    "/update-theater/:theaterId", 
-    requestHandler.validateRequest(theaterValidator.updateTheaterValidator),
-    tokenMiddleware.auth(),
-    authorizeRoles(["theater-manager"]),
-    theaterController.updateTheater
+	"/update-theater/:theaterId",
+	theaterValidator.updateTheaterValidator,
+	requestHandler.validate,
+	theaterController.updateTheater
 );
 
 router.delete(
-    "/delete-theater/:theaterId", 
-    requestHandler.validateRequest(theaterValidator.deleteTheaterValidator),
-    tokenMiddleware.auth(),
-    authorizeRoles(["theater-manager"]),
-    theaterController.deleteTheater
+	"/delete-theater/:theaterId",
+	theaterValidator.deleteTheaterValidator,
+	requestHandler.validate,
+	theaterController.deleteTheater
 );
 
 export default router;
