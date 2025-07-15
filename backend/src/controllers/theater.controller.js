@@ -283,11 +283,20 @@ const aggregateTheatersBySystem = async () => {
   }
 };
 
-const getTheatersBySystem = async (req, res) => {
+const getTheater = async (req, res) => {
   try {
-    const theaters = await aggregateTheatersBySystem();
-    return responseHandler.ok(res, theaters);
+    const { systemId } = req.query;
+    const filter = { isDeleted: false };
+    if (systemId) {
+      if (!mongoose.Types.ObjectId.isValid(systemId)) {
+        return responseHandler.badRequest(res, "systemId không hợp lệ.");
+      }
+      filter.theaterSystemId = systemId;
+    }
+    const theaters = await Theater.find(filter);
+    return responseHandler.ok(res, { theaters });
   } catch (error) {
+    console.error("Lỗi lấy danh sách rạp:", error);
     return responseHandler.serverError(res, error.message || "Unknown server error.");
   }
 };
@@ -297,5 +306,5 @@ export default {
   createTheater,             // Dùng khi manager đã có account
   updateTheater,
   deleteTheater,
-  getTheatersBySystem,       // Lấy danh sách rạp theo hệ thống (cho admin/FE)
+  getTheater,
 };

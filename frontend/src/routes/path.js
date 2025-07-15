@@ -3,7 +3,7 @@ export const PATH = {
 	AUTH: "/auth",
 	ADMIN: "/admin",
 	MANAGER: "/manager",
-	CUSTOMER: "/customer",
+	CUSTOMER: "/",
 };
 
 export const AUTH_PATH = {

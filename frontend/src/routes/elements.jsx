@@ -33,7 +33,7 @@ const useRouterElements = () => {
     const elements = useRoutes([
         {
             path: "/",
-            element: <Navigate to={`${PATH.AUTH}/${AUTH_PATH.SIGNIN}`} replace />
+            element: <Navigate to={`${CUSTOMER_PATH.HOME}`} replace />
         },
         {
             path: PATH.CUSTOMER,

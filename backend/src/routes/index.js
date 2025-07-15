@@ -14,11 +14,11 @@ const router = express.Router();
 router.use("/user", userRoute);
 router.use("/show", showRoute);
 router.use("/movies", movieRoute);
+router.use("/theater-system", theaterSystemRoute);
+router.use("/theater", theaterRoute);
 
 router.use(token.auth);
 
-router.use("/theater-system", authorizeRoles(["admin"]), theaterSystemRoute);
-router.use("/theater", authorizeRoles(["admin"]) ,theaterRoute);
 router.use("/room", authorizeRoles(["theater-manager"]), roomRoute);
 
 export default router;
