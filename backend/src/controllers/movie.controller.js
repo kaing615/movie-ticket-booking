@@ -6,7 +6,7 @@ export const getMovies = async (req, res) => {
     const { status, genre } = req.query;
     let filter = {};
     if (status) filter.status = status;
-    if (genre) filter.genre = genre;
+    if (genre) filter.genres = genre; 
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -15,12 +15,20 @@ export const getMovies = async (req, res) => {
     const movies = await Movie.find(filter).skip(skip).limit(limit);
     const total = await Movie.countDocuments(filter);
 
+    const moviesWithId = movies.map(movie => {
+      const obj = movie.toObject();
+      obj.movieId = obj._id;
+      delete obj._id;
+      delete obj.__v;
+      return obj;
+    });
+
     return responseHandler.success(res, {
       message: "Lấy danh sách phim thành công!",
       total,
       page,
       limit,
-      movies,
+      movies: moviesWithId,
     });
   } catch (err) {
     console.error("Error fetching movies:", err);

@@ -61,9 +61,9 @@ const deleteTheaterValidator = [
 		.withMessage("ID rạp không hợp lệ."),
 ];
 
-const theatherValidator = {
+const theaterValidator = {
 	createTheaterValidator,
 	updateTheaterValidator,
 	deleteTheaterValidator,
 };
-export default theatherValidator;
+export default theaterValidator;

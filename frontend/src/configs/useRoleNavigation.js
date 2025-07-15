@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/features/user.slice";
-import { ROLE } from "../constants/role";
 import { PATH } from "../routes/path";
+import { ROLE } from "../constants/role"
 
 export const useRoleNavigation = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ export const useRoleNavigation = () => {
   const user = useSelector((state) => state.user);
   const [isUserLoaded, setIsUserLoaded] = useState(false);
 
+  // Khôi phục user từ localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -19,37 +20,40 @@ export const useRoleNavigation = () => {
         const parsedUser = JSON.parse(storedUser);
         dispatch(setUser(parsedUser));
       } catch (error) {
-        console.error("Lỗi khi phân tích user từ localStorage:", error);
+        console.error("Error parsing user from localStorage:", error);
         localStorage.removeItem("user");
       }
     }
     setIsUserLoaded(true);
   }, [dispatch]);
 
+  // Điều hướng dựa trên vai trò
   useEffect(() => {
     if (!isUserLoaded) return;
 
     if (user) {
-      if (user.role === ROLE.ADMIN && !location.pathname.startsWith("/admin")) {
-        navigate(PATH.ADMIN);
-      } else if (
-        user.role === ROLE.THEATERMANAGER &&
-        !location.pathname.startsWith("/manager")
-      ) {
-        if (PATH.MANAGER) navigate(PATH.MANAGER);
-      } else if (
+      // Nếu là admin và không ở trang admin, chuyển đến admin
+      if (user.role === ROLE.ADMIN && !location.pathname.startsWith(PATH.ADMIN)) {
+        navigate(`${PATH.ADMIN}/dashboard`, { replace: true });
+      }
+      // Nếu là theater-manager và không ở trang manager, chuyển đến manager
+      else if (user.role === ROLE.MANAGER && !location.pathname.startsWith(PATH.MANAGER)) {
+        navigate(`${PATH.MANAGER}/dashboard`, { replace: true });
+      }
+      // Nếu là customer (hoặc các role khác) và đang ở admin/manager thì chuyển về trang customer/home
+      else if (
         user.role === ROLE.CUSTOMER &&
-        (location.pathname.startsWith("/admin") ||
-          location.pathname.startsWith("/manager"))
+        (location.pathname.startsWith(PATH.ADMIN) || location.pathname.startsWith(PATH.MANAGER))
       ) {
-        navigate(PATH.HOME);
+        navigate(`${PATH.CUSTOMER}home`, { replace: true });
       }
     } else {
+      // Nếu chưa đăng nhập mà vào trang admin hoặc manager, chuyển về trang đăng nhập
       if (
-        location.pathname.startsWith("/admin") ||
-        location.pathname.startsWith("/manager")
+        location.pathname.startsWith(PATH.ADMIN) ||
+        location.pathname.startsWith(PATH.MANAGER)
       ) {
-        navigate(PATH.SIGNIN);
+        navigate(`${PATH.AUTH}/signin`, { replace: true });
       }
     }
   }, [user, navigate, location.pathname, isUserLoaded]);
