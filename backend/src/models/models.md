@@ -10,6 +10,3 @@
 -   `User.js`
 -   `Booking.js`
 -   `Review.js`
-
-**Chứa file tạo dữ liệu mẫu**
-Chạy file seed.js để tạo dữ liệu mẫu cho model, giúp tăng nhanh tốc độ phát triển và testing.

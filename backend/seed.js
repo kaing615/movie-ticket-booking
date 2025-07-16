@@ -1,3 +1,7 @@
+//Cách chạy: chạy lệnh
+// cd backend
+// node seed.js
+
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs"; // Import bcrypt
