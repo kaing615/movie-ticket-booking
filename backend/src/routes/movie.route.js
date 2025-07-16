@@ -1,5 +1,5 @@
 import express from "express";
-import movieController from "../controllers/movie.controller.js";
+import movieController from "../controllers/movie.controller.js"
 import requestHandler from "../handlers/request.handler.js";
 import tokenMiddleware from "../middlewares/token.middleware.js";
 import authorizeRoles from "../middlewares/role.middleware.js";
@@ -33,3 +33,5 @@ router.delete(
   requestHandler.validate,
   movieController.deleteMovie
 );
+
+export default router;

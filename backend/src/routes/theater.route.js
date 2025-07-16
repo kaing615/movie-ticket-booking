@@ -14,24 +14,27 @@ router.get(
 
 router.post(
     "/", 
-    requestHandler.validateRequest(theaterValidator.createTheaterValidator),
-    tokenMiddleware.auth(),
+    ...theaterValidator.createTheaterValidator,
+    requestHandler.validate,
+    tokenMiddleware.auth,
     authorizeRoles(["theater-manager"]),
     theaterController.createTheaterAndManager
 );
 
 router.put(
     "/update-theater/:theaterId", 
-    requestHandler.validateRequest(theaterValidator.updateTheaterValidator),
-    tokenMiddleware.auth(),
+    ...theaterValidator.updateTheaterValidator,
+    requestHandler.validate,
+    tokenMiddleware.auth,
     authorizeRoles(["theater-manager"]),
     theaterController.updateTheater
 );
 
 router.delete(
     "/delete-theater/:theaterId", 
-    requestHandler.validateRequest(theaterValidator.deleteTheaterValidator),
-    tokenMiddleware.auth(),
+    ...theaterValidator.deleteTheaterValidator,
+    requestHandler.validate,
+    tokenMiddleware.auth,
     authorizeRoles(["theater-manager"]),
     theaterController.deleteTheater
 );

@@ -1,7 +1,7 @@
 import responseHandler from "../handlers/response.handler.js";
 import Movie from "../models/movie.model.js";
 
-export const getMovies = async (req, res) => {
+const getMovies = async (req, res) => {
   try {
     const { status, genre } = req.query;
     let filter = {};
@@ -36,7 +36,7 @@ export const getMovies = async (req, res) => {
   }
 };
 
-export const createMovie = async (req, res) => {
+const createMovie = async (req, res) => {
   try {
     const newMovie = new Movie(req.body);
     await newMovie.save();
@@ -50,7 +50,7 @@ export const createMovie = async (req, res) => {
   }
 };
 
-export const deleteMovie = async (req, res) => {
+const deleteMovie = async (req, res) => {
   try {
     const deleted = await Movie.findByIdAndDelete(req.params.id);
     if (!deleted) return responseHandler.notFound(res, "Phim không tồn tại!");
@@ -59,7 +59,7 @@ export const deleteMovie = async (req, res) => {
     responseHandler.error(res, err.message);
   }
 };
-export const updateMovie = async (req, res) => {
+const updateMovie = async (req, res) => {
   try {
     const updatedMovie = await Movie.findByIdAndUpdate(
       req.params.id,
@@ -81,7 +81,7 @@ export const updateMovie = async (req, res) => {
   }
 };
 
-export const getMovieById = async (req, res) => {
+const getMovieById = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie) return responseHandler.notFound(res, "Phim không tồn tại!");
@@ -94,3 +94,11 @@ export const getMovieById = async (req, res) => {
     responseHandler.error(res, err.message);
   }
 };
+
+export default {
+  getMovies,
+  getMovieById,
+  createMovie,
+  deleteMovie, 
+  updateMovie
+}

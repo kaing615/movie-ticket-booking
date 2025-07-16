@@ -9,7 +9,8 @@ const router = express.Router();
 
 router.post(
     "/", 
-    requestHandler.validateRequest(theaterSystemValidator.createTheaterSystemValidator),
+    ...theaterSystemValidator.createTheaterSystemValidator,
+    requestHandler.validate, 
     tokenMiddleware.auth,
     authorizeRoles(["admin"]),
     controller.createTheaterSystem
@@ -32,7 +33,9 @@ router.get(
 );
 
 router.put(
-    "/:systemId", 
+    "/:systemId",
+    ...theaterSystemValidator.updateTheaterSystem,
+    requestHandler.validate,
     tokenMiddleware.auth,
     authorizeRoles(["admin"]),
     controller.updateTheaterSystem
@@ -40,6 +43,8 @@ router.put(
 
 router.delete(
     "/:systemId", 
+    ...theaterSystemValidator.deleteTheaterSystem,
+    requestHandler.validate,
     tokenMiddleware.auth,
     authorizeRoles(["admin"]),
     controller.deleteTheaterSystem
