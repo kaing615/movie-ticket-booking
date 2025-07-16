@@ -7,7 +7,6 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-//public routes that don't requires auth
 router.get("/", movieController.getMovies);
 
 router.get(
@@ -18,8 +17,7 @@ router.get(
 );
 
 router.use(tokenMiddleware.auth);
-router.use(authorizeRoles(["admin", "theater-manager"]));
-//everything below requires auth
+router.use(authorizeRoles(["admin"]));
 
 router.post(
 	"/",

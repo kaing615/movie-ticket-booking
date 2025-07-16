@@ -144,23 +144,23 @@ export const updateMovie = async (req, res) => {
 };
 
 export const getMovieById = async (req, res) => {
-	try {
-		const movie = await Movie.findById(req.params.id);
-		if (!movie) return responseHandler.notFound(res, "Phim không tồn tại!");
-		responseHandler.ok(res, {
-			message: "Lấy thông tin phim thành công!",
-			movie,
-		});
-	} catch (err) {
-		console.error("Error fetching movie by ID:", err);
-		responseHandler.error(res, err.message);
-	}
+  try {
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) return responseHandler.notFound(res, "Phim không tồn tại!");
+    responseHandler.ok(res, {
+      message: "Lấy thông tin phim thành công!",
+      movie,
+    });
+  } catch (err) {
+    console.error("Error fetching movie by ID:", err);
+    responseHandler.error(res, err.message);
+  }
 };
 
 export default {
-	getMovies,
-	createMovie,
-	deleteMovie,
-	updateMovie,
-	getMovieById,
-};
+  getMovies,
+  getMovieById,
+  createMovie,
+  deleteMovie, 
+  updateMovie
+}
