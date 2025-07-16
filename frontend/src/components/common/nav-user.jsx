@@ -46,10 +46,10 @@ export function NavUser({ user }) {
       <DropdownMenuTrigger className="flex items-center gap-2 cursor-pointer">
         <Avatar className="h-8 w-8 rounded-lg grayscale">
           {/* <AvatarImage src={user.avatar} alt={user.hoTen} /> */}
-          <AvatarFallback className="rounded-lg">{getInitials(user?.hoTen)}</AvatarFallback>
+          <AvatarFallback className="rounded-lg">{getInitials(user?.userName)}</AvatarFallback>
         </Avatar>
         <div className="flex-1 text-left text-sm leading-tight hidden md:grid">
-          <span className="truncate font-medium">{user?.hoTen}</span>
+          <span className="truncate font-medium">{user?.userName}</span>
           <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
         </div>
       </DropdownMenuTrigger>
@@ -63,7 +63,7 @@ export function NavUser({ user }) {
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-8 w-8 rounded-lg">
               {/* <AvatarImage src={user.avatar} alt={user.hoTen} /> */}
-              <AvatarFallback className="rounded-lg">{getInitials(user?.hoTen)}</AvatarFallback>
+              <AvatarFallback className="rounded-lg">{getInitials(user?.userName)}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user?.hoTen}</span>
