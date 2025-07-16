@@ -133,32 +133,6 @@ const HomeLayout = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="px-3 cursor-pointer">
-                    Góc Điện Ảnh
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[200px] gap-4">
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Thể Loại Phim</Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Diễn Viên</Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Đạo Diễn</Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Bình Luận Phim</Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Blog Điện Ảnh</Link>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="px-3 cursor-pointer">
                     Sự Kiện
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
