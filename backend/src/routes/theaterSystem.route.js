@@ -16,21 +16,7 @@ router.post(
     controller.createTheaterSystem
 );
 
-router.post(
-    "/add-theater",
-    tokenMiddleware.auth,
-    authorizeRoles(["admin"]),
-    controller.addTheaterToSystem
-);
-
-router.get(
-    "/", 
-    controller.getAllTheaterSystems
-);
-router.get(
-    "/:systemId", 
-    controller.getTheaterSystemById
-);
+router.post("/add-theater", controller.addTheaterToSystem);
 
 router.put(
     "/:systemId",

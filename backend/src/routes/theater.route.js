@@ -7,17 +7,15 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.get(
-    "/", 
-    theaterController.getTheater
-);
+router.get("/", theaterController.getTheater);
+
+router.use(tokenMiddleware.auth);
+router.use(authorizeRoles(["theater-manager"]));
 
 router.post(
     "/", 
     ...theaterValidator.createTheaterValidator,
     requestHandler.validate,
-    tokenMiddleware.auth,
-    authorizeRoles(["theater-manager"]),
     theaterController.createTheaterAndManager
 );
 
@@ -25,8 +23,6 @@ router.put(
     "/update-theater/:theaterId", 
     ...theaterValidator.updateTheaterValidator,
     requestHandler.validate,
-    tokenMiddleware.auth,
-    authorizeRoles(["theater-manager"]),
     theaterController.updateTheater
 );
 
@@ -34,8 +30,6 @@ router.delete(
     "/delete-theater/:theaterId", 
     ...theaterValidator.deleteTheaterValidator,
     requestHandler.validate,
-    tokenMiddleware.auth,
-    authorizeRoles(["theater-manager"]),
     theaterController.deleteTheater
 );
 

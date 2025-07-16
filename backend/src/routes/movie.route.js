@@ -10,28 +10,18 @@ router.get("/", movieController.getMovies);
 
 router.get("/:id", movieController.getMovieById);
 
-router.post(
-  "/",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
-  requestHandler.validate,
-  movieController.createMovie
-);
+router.use(tokenMiddleware.auth);
+router.use(authorizeRoles(["admin"]));
 
-router.put(
-  "/:id",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
-  requestHandler.validate,
-  movieController.updateMovie
-);
+router.post("/", requestHandler.validate, movieController.createMovie);
 
 router.delete(
   "/:id",
   tokenMiddleware.auth,
-  authorizeRoles(["admin", "theater-manager"]),
+  authorizeRoles(["admin"]),
   requestHandler.validate,
   movieController.deleteMovie
 );
+
 
 export default router;
