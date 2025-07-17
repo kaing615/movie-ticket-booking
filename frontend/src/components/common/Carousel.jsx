@@ -8,8 +8,8 @@ import "swiper/css/navigation";
 
 const Carousel = () => {
   const banners = [
-    "/img/banner/ballerina-2048_1748252066486.jpg",
     "/img/banner/bi-kip-luyen-rong-2048_1749195168873.jpg",
+    "/img/banner/ballerina-2048_1748252066486.jpg",
     "/img/banner/doraemon-movie-44-1_1748017461000.jpg",
     "/img/banner/duoi-day-ho-p-2048_1748921724215.jpg",
     "/img/banner/glx-2048x682_1747389452013.png",

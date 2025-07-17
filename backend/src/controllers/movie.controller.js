@@ -159,8 +159,8 @@ export const getMovieById = async (req, res) => {
 
 export default {
 	getMovies,
+	getMovieById,
 	createMovie,
 	deleteMovie,
 	updateMovie,
-	getMovieById,
 };

@@ -7,7 +7,6 @@ const router = express.Router();
 
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
-//everything below this requires auth
 
 router.post("/", showController.addShow);
 

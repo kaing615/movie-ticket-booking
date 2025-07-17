@@ -1,8 +1,8 @@
 import publicClient from "../clients/public.client";
 
 const userEndpoints = {
-	signin: "auth/signin",
-	signup: "auth/signup",
+	signin: "user/signin",
+	signup: "user/signup",
 	verifyEmail: "auth/verify",
 	resendVerificationEmail: "auth/resend-verification-email",
 	forgotPassword: "auth/forgot-password",
