@@ -1,5 +1,5 @@
 import { IconCreditCard, IconLogout, IconNotification, IconUserCircle } from "@tabler/icons-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,7 +43,7 @@ export function NavUser({ user }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 cursor-pointer">
+      <DropdownMenuTrigger className="flex items-center gap-2 cursor-pointer bg-white">
         <Avatar className="h-8 w-8 rounded-lg grayscale">
           {/* <AvatarImage src={user.avatar} alt={user.hoTen} /> */}
           <AvatarFallback className="rounded-lg">{getInitials(user?.userName)}</AvatarFallback>
@@ -54,7 +54,7 @@ export function NavUser({ user }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg bg-white"
         side="bottom"
         align="end"
         sideOffset={4}

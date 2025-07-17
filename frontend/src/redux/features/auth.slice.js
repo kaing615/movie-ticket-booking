@@ -9,7 +9,7 @@ export const loginUser = createAsyncThunk(
 			console.log(response);
 
 			if (response?.data?.token) {
-				localStorage.setItem("user", JSON.stringify(response.data));
+				localStorage.setItem("user", JSON.stringify(response.data.user));
 				localStorage.setItem("actkn", response.data.token);
 				return response.data;
 			} else {

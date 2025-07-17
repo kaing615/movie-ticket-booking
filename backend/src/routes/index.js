@@ -2,7 +2,7 @@ import express from "express";
 import token from "../middlewares/token.middleware.js";
 import authorizeRoles from "../middlewares/role.middleware.js";
 
-//import userRoute from "./user.route.js";
+import userRoute from "./auth.route.js";
 import theaterRoute from "./theater.route.js";
 import showRoute from "./show.route.js";
 import theaterSystemRoute from "./theaterSystem.route.js";
@@ -11,7 +11,7 @@ import movieRoute from "./movie.route.js";
 
 const router = express.Router();
 
-//router.use("/user", userRoute);
+router.use("/user", userRoute);
 router.use("/show", showRoute);
 router.use("/movies", movieRoute);
 router.use("/theater-system", theaterSystemRoute);

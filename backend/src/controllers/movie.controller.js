@@ -23,7 +23,7 @@ export const getMovies = async (req, res) => {
 			return obj;
 		});
 
-		return responseHandler.success(res, {
+		return responseHandler.ok(res, {
 			message: "Lấy danh sách phim thành công!",
 			total,
 			page,
