@@ -15,13 +15,14 @@ const SigninPage = () => {
     const { isAuthenticated, status, error, user } = useSelector((state) => state.auth);
 
     useEffect(() => {
+        console.log("USER LOGIN:", user);
         if (isAuthenticated && status === "succeeded" && user) {
             if (user.role === "admin") {
                 navigate("/admin/dashboard", { replace: true });
             } else if (user.role === "theater-manager") {
                 navigate("/manager/dashboard", { replace: true });
             } else {
-                navigate("/customer/home", { replace: true });
+                navigate("/home", { replace: true });
             }
         }
     }, [isAuthenticated, status, navigate, user]);

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import BlurLeft from "../../../public/img/blur-left.png";
-import BlurRight from "../../../public/img/blur-right.png";
+import BlurLeft from "../../assets/img/blur-left.png";
+import BlurRight from "../../assets/img/blur-right.png";
 import { CalendarIcon, ClockIcon, Play, StarIcon } from "lucide-react";
 import { movieApi } from "../../api/modules/movie.api";
 import { useNavigate, useParams } from "react-router-dom";

@@ -12,8 +12,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";
 import Logo from "../common/logo"
-import logo from "../../../public/img/logo.png"
-import btnTicket from "../../../public/img/btn-ticket.webp";
+import logo from "../../assets/img/logo.png"
+import btnTicket from "../../assets/img/btn-ticket.webp";
 import {
   NavigationMenu,
   NavigationMenuContent,
