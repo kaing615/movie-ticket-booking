@@ -1,5 +1,6 @@
 import express from "express";
-import movieController from "../controllers/movie.controller.js"
+import movieValidator from "../middlewares/validators/movie.middleware.js";
+import movieController from "../controllers/movie.controller.js";
 import requestHandler from "../handlers/request.handler.js";
 import tokenMiddleware from "../middlewares/token.middleware.js";
 import authorizeRoles from "../middlewares/role.middleware.js";
@@ -8,20 +9,35 @@ const router = express.Router();
 
 router.get("/", movieController.getMovies);
 
-router.get("/:id", movieController.getMovieById);
+router.get(
+	"/:id",
+	movieValidator.movieIdValidator,
+	requestHandler.validate,
+	movieController.getMovieById
+);
 
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["admin"]));
 
-router.post("/", requestHandler.validate, movieController.createMovie);
-
-router.delete(
-  "/:id",
-  tokenMiddleware.auth,
-  authorizeRoles(["admin"]),
-  requestHandler.validate,
-  movieController.deleteMovie
+router.post(
+	"/",
+	movieValidator.createMovieValidation,
+	requestHandler.validate,
+	movieController.createMovie
 );
 
+router.put(
+	"/:id",
+	movieValidator.updateMovieValidation,
+	requestHandler.validate,
+	movieController.updateMovie
+);
+
+router.delete(
+	"/:id",
+	movieValidator.movieIdValidator,
+	requestHandler.validate,
+	movieController.deleteMovie
+);
 
 export default router;

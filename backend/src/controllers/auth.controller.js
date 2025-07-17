@@ -5,7 +5,6 @@ import User from "../models/user.model.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import { CONNREFUSED } from "dns";
 
 dotenv.config();
 
@@ -21,7 +20,9 @@ var transport = nodemailer.createTransport({
 const generateToken = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
 
 export const sendVerificationEmail = async (email, verifyKey, userName) => {
-	const verifyLink = `${process.env.FRONTEND_URL}/auth/verify-email?verified=1&email=${encodeURIComponent(
+	const verifyLink = `${
+		process.env.FRONTEND_URL
+	}/auth/verify-email?verified=1&email=${encodeURIComponent(
 		email
 	)}&verifyKey=${verifyKey}`;
 	const data = {
@@ -250,7 +251,9 @@ export const forgotPassword = async (req, res) => {
 
 		await user.save();
 
-		const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}&email=${encodeURIComponent(
+		const resetLink = `${
+			process.env.FRONTEND_URL
+		}/reset-password?token=${resetToken}&email=${encodeURIComponent(
 			email
 		)}`;
 
