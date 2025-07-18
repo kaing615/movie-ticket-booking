@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
 import responseHandler from "../../handlers/response.handler.js";
 import Ticket from "../../models/ticket.model.js";
+import User from "../../models/user.model.js";
+import TheaterSystem from "../../models/theaterSystem.model.js";
 
 const DateRangeHelper = (res, start, end) => {
 	// Input validation for dates
@@ -109,14 +112,9 @@ const getDailyTicketCount = async (req, res) => {
 			message: "Daily ticket counts retrieved successfully",
 			data: dailyTicketCounts,
 		});
-
-		// res.status(200).json({
-		// 	message: "Daily ticket counts retrieved successfully",
-		// 	data: dailyTicketCounts,
-		// });
 	} catch (error) {
 		console.error("Error fetching daily ticket counts:", error);
-		responseHandler.error(res);
+		responseHandler.error(res, error.message || "Internal server error");
 	}
 };
 
@@ -144,7 +142,7 @@ const getDailyRevenue = async (req, res) => {
 						month: { $month: "$createdAt" },
 						day: { $dayOfMonth: "$createdAt" },
 					},
-					totalRevenue: { $sum: "$price" },
+					dailyTotalRevenue: { $sum: "$price" },
 				},
 			},
 			// Stage 3: Project to format the output (e.g., "YYYY-MM-DD")
@@ -158,13 +156,29 @@ const getDailyRevenue = async (req, res) => {
 							day: "$_id.day",
 						},
 					},
-					totalRevenue: 1,
+					dailyTotalRevenue: 1,
 				},
 			},
 			// Stage 4: Sort the results by date in ascending order
 			{
 				$sort: {
 					date: 1,
+				},
+			},
+			// Stage 5: Calculate the overall revenue
+			{
+				$group: {
+					_id: null,
+					dailyRevenue: { $push: "$$ROOT" },
+					overallTotalRevenue: { $sum: "$dailyTotalRevenue" },
+				},
+			},
+			// Stage 6: Project to format the output (e.g., "YYYY-MM-DD")
+			{
+				$project: {
+					_id: 0, // Exclude the default _id field
+					dailyRevenue: 1,
+					overallTotalRevenue: 1,
 				},
 			},
 		]);
@@ -174,11 +188,119 @@ const getDailyRevenue = async (req, res) => {
 		});
 	} catch (error) {
 		console.error("Error fetching daily revenue:", error);
-		res.status(500).json({ message: "Server error", error: error.message });
+		responseHandler.error(res, error.message || "Unknown server error.");
+	}
+};
+
+export const getUserCountByRole = async (req, res) => {
+	try {
+		const userCountsByRole = await User.aggregate([
+			// Stage 1: Group by the 'role' field
+			{
+				$group: {
+					_id: "$role", // Group by the value of the 'role' field
+					count: { $sum: 1 }, // Count the number of users in each role
+				},
+			},
+			// Stage 2: Project to rename _id to role for cleaner output
+			{
+				$project: {
+					_id: 0, // Exclude the default _id field
+					role: "$_id", // Rename _id to role
+					count: 1, // Include the count
+				},
+			},
+			// Stage 3: Sort the results by role name (optional)
+			{
+				$sort: {
+					role: 1,
+				},
+			},
+		]);
+
+		return responseHandler.ok(res, {
+			message: "User counts by role retrieved successfully",
+			data: userCountsByRole,
+		});
+	} catch (error) {
+		console.error("Error fetching user counts by role:", error);
+		responseHandler.error(res, error.message || "Unknown server error.");
+	}
+};
+
+// ==========================
+// Lấy danh sách rạp nhóm theo hệ thống
+const aggregateTheatersBySystem = async () => {
+	try {
+		const pipeline = [
+			{ $match: { isDeleted: false } },
+			{
+				$group: {
+					_id: "$theaterSystemId",
+					theaters: {
+						$push: {
+							_id: "$_id",
+							managerId: "$managerId",
+							theaterName: "$theaterName",
+							location: "$location",
+						},
+					},
+					theaterCount: { $sum: 1 },
+				},
+			},
+			{
+				$lookup: {
+					from: TheaterSystem.collection.name,
+					localField: "_id",
+					foreignField: "_id",
+					as: "systemInfo",
+				},
+			},
+			{
+				$unwind: {
+					path: "$systemInfo",
+					preserveNullAndEmptyArrays: true,
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					theaterSystemId: "$_id",
+					theaterSystemName: "$systemInfo.name",
+					theaterSystemCode: "$systemInfo.code",
+					theaterSystemLogo: "$systemInfo.logo",
+					theaters: "$theaters",
+					totalTheaters: "$theaterCount",
+				},
+			},
+		];
+
+		const aggregatedTheaters = await mongoose
+			.model("Theater")
+			.aggregate(pipeline);
+		return aggregatedTheaters;
+	} catch (error) {
+		console.error("Error aggregating theaters by system:", error);
+		throw error;
+	}
+};
+
+const getTheaterBySystem = async (req, res) => {
+	try {
+		const theaters = await aggregateTheatersBySystem();
+		return responseHandler.ok(res, { theaters });
+	} catch (error) {
+		console.error("Lỗi lấy danh sách rạp theo hệ thống:", error);
+		return responseHandler.serverError(
+			res,
+			error.message || "Unknown server error."
+		);
 	}
 };
 
 export default {
 	getDailyTicketCount,
 	getDailyRevenue,
+	getUserCountByRole,
+	getTheaterBySystem,
 };

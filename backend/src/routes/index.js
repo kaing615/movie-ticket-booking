@@ -18,9 +18,9 @@ router.use("/movies", movieRoute);
 router.use("/theater-system", theaterSystemRoute);
 router.use("/theater", theaterRoute);
 
-router.use("/analytics", analyticsRoute);
-
 router.use(token.auth);
 
 router.use("/room", authorizeRoles(["theater-manager"]), roomRoute);
+router.use("/analytics", authorizeRoles(["admin"]), analyticsRoute);
+
 export default router;
