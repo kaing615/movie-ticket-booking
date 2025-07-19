@@ -49,7 +49,6 @@ const seedDatabase = async () => {
 		// 1. Create Users
 		// Hash passwords before saving
 		const salt = await bcrypt.genSalt(10);
-
 		const adminPassword = await bcrypt.hash("password123", salt);
 		const adminUser = await User.create({
 			email: "admin@example.com",

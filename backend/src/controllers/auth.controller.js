@@ -187,7 +187,6 @@ export const signIn = async (req, res) => {
 			);
 
 		const user = await User.findOne({ email });
-
 		const genericErrorMessage = "Email hoặc mật khẩu không đúng.";
 		// chống user enumeration
 
