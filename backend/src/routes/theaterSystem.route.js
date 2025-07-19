@@ -7,6 +7,16 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
+router.get(
+    "/",
+    controller.getAllTheaterSystems
+)
+
+router.get(
+    "/:id",
+    controller.getTheaterSystemById
+)
+
 router.post(
     "/", 
     ...theaterSystemValidator.createTheaterSystemValidator,

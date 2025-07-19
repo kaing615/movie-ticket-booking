@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 import MovieCard from "../movie/MovieCard";
 import { Button } from "@/components/common/button";
 import { useNavigate } from "react-router-dom";
@@ -17,15 +17,19 @@ const MovieList = ({ filterId }) => {
     keepPreviousData: true,
   });
 
-  const filteredMovies = useMemo(() => {
-    if (!data || !Array.isArray(data.movies)) return [];
+  const filteredMovies = React.useMemo(() => {
+    if (!data?.data?.movies) return [];
     switch (filterId) {
       case "nowShowing":
-        return data.movies.filter((movie) => movie.status === "Now Showing");
+        return data.data.movies.filter(
+          (movie) => movie.status === "Now Showing"
+        );
       case "comingSoon":
-        return data.movies.filter((movie) => movie.status === "Coming Soon");
+        return data.data.movies.filter(
+          (movie) => movie.status === "Coming Soon"
+        );
       default:
-        return [];
+        return data.data.movies;
     }
   }, [data, filterId]);
 
@@ -38,6 +42,12 @@ const MovieList = ({ filterId }) => {
       navigate(`/phim-sap-chieu`);
     }
   };
+
+  useEffect(() => {
+    console.log("filterId truyền vào MovieList:", filterId);
+    console.log("Data từ API:", data);
+    console.log("filteredMovies:", filteredMovies);
+  }, [filterId, data, filteredMovies]);
 
   return (
     <div className="space-y-6 flex flex-col items-center mb-12">
@@ -52,13 +62,15 @@ const MovieList = ({ filterId }) => {
           </div>
         )}
       </div>
-      <Button
-        onClick={handleShowMore}
-        variant="outline"
-        className="px-6 py-2 sm:px-8 sm:py-3 border-[#F26B38] text-[#F26B38] hover:bg-[#F26B38] hover:text-white transition-all duration-200 cursor-pointer text-sm sm:text-base"
-      >
-        Xem thêm
-      </Button>
+      {filteredMovies.length > 8 && (
+        <Button
+          onClick={handleShowMore}
+          variant="outline"
+          className="px-6 py-2 sm:px-8 sm:py-3 border-[#F26B38] text-[#F26B38] hover:bg-[#F26B38] hover:text-white transition-all duration-200 cursor-pointer text-sm sm:text-base"
+        >
+          Xem thêm
+        </Button>
+      )}
     </div>
   );
 };

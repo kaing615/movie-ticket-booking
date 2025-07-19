@@ -118,12 +118,12 @@ const HomeLayout = () => {
                     <ul className="grid w-[200px] gap-4 z-100">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link href={CUSTOMER_PATH.ONGOING} className="hover:text-[#F26B38]">
+                          <Link to={CUSTOMER_PATH.ONGOING} className="hover:text-[#F26B38]">
                             Phim Đang Chiếu
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <Link href={CUSTOMER_PATH.COMING_SOON} className="hover:text-[#F26B38]">
+                          <Link to={CUSTOMER_PATH.COMING_SOON} className="hover:text-[#F26B38]">
                             Phim Sắp Chiếu
                           </Link>
                         </NavigationMenuLink>
@@ -150,7 +150,7 @@ const HomeLayout = () => {
                     Hệ Thống Rạp
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[300px] gap-2 p-2 max-h-[325px] overflow-y-auto -mr-2 hover:text-[#F26B38]">
+                    <ul className="grid w-[300px] gap-2 p-2 max-h-[325px] overflow-y-auto -mr-2">
                       {theaterSystems?.map((system) => (
                         <li key={system._id}>
                           <div className="font-bold text-base pl-1">

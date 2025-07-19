@@ -149,10 +149,7 @@ const addTheaterToSystem = async (req, res) => {
 const getAllTheaterSystems = async (req, res) => {
   try {
     const systems = await TheaterSystem.find();
-    return responseHandler.ok(res, {
-      message: "Danh sách tất cả hệ thống rạp",
-      theaterSystems: systems
-    });
+    return responseHandler.ok(res, systems);
   } catch (err) {
     console.error("Lỗi lấy danh sách hệ thống rạp:", err);
     responseHandler.error(res, err.message);
