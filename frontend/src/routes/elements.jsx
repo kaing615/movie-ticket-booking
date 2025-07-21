@@ -4,6 +4,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 //Admin pages
 import AdminLayout from "../pages/admin/AdminLayout.jsx";
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import UserManagement from "../pages/admin/UserManagement.jsx";
 
 //Manager pages
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
@@ -26,6 +27,7 @@ import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 
 //General pages
 import NotFound from "../pages/NotFound";
+import ShowManagement from "../pages/admin/ShowManagement.jsx";
 
 
 
@@ -68,6 +70,14 @@ const useRouterElements = () => {
                 {
                     path: ADMIN_PATH.DASHBOARD,
                     element: <AdminDashboard />,
+                },
+                {
+                    path: ADMIN_PATH.USERS,
+                    element: <UserManagement />
+                },
+                {
+                    path: ADMIN_PATH.SHOWS,
+                    element: <ShowManagement />
                 }
             ]
         },

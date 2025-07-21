@@ -6,6 +6,11 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
+router.get(
+    "/",
+    roomController.getRoomByTheater,
+);
+
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
 
