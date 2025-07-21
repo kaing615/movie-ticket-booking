@@ -1,3 +1,5 @@
+import { Theater, Users } from "lucide-react";
+
 export const PATH = {
 	NOT_FOUND: "*",
 	AUTH: "/auth",
@@ -22,6 +24,10 @@ export const CUSTOMER_PATH = {
 
 export const ADMIN_PATH = {
 	DASHBOARD: "dashboard",
+	USERS: "users",
+	THEATERS: "theaters",
+	MOVIES: "movies",
+	SHOWS: "shows",
 };
 
 export const MANAGER_PATH = {

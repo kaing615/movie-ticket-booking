@@ -20,7 +20,7 @@ router.use("/theater", theaterRoute);
 
 router.use(token.auth);
 
-router.use("/room", authorizeRoles(["theater-manager"]), roomRoute);
+router.use("/room", authorizeRoles(["theater-manager", "admin"]), roomRoute);
 router.use("/analytics", authorizeRoles(["admin"]), analyticsRoute);
 
 export default router;

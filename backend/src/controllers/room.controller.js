@@ -121,8 +121,26 @@ const deleteRoom = async (req, res) => {
   }
 };
 
+const getRoomByTheater = async (req, res) => {
+  try {
+    const { theaterId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(theaterId)) {
+      return responseHandler.badRequest(res, "ID rạp không hợp lệ.");
+    }
+
+    const rooms = await Room.find({ theaterId });
+
+    return responseHandler.ok(res, { rooms });
+  } catch (err) {
+    console.log("Lỗi lấy phòng: ", err);
+    responseHandler.error(res);
+  }
+};
+
 export default {
   createRoom,
   updateRoom,
-  deleteRoom
+  deleteRoom,
+  getRoomByTheater,
 };
