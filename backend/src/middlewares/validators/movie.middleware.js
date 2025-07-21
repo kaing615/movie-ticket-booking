@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 
 const movieIdValidator = [
-	param("movieId").isMongoId().withMessage("Invalid movie ID."),
+	param("id").isMongoId().withMessage("Invalid movie ID."),
 ];
 // Middleware to validate movie creation data
 const createMovieValidation = [
@@ -126,7 +126,7 @@ const createMovieValidation = [
 ];
 
 const updateMovieValidation = [
-	param("movieId").isMongoId().withMessage("Invalid movie ID."),
+	param("id").isMongoId().withMessage("Invalid movie ID."),
 	// movieName validation (optional)
 	body("movieName")
 		.optional() // Field is optional for update

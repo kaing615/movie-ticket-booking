@@ -6,8 +6,8 @@ export const showEndpoints = {
 }
 
 export const showApi = {
-    getShowsByMovie: async (movieId) => {
-        const response = await publicClient.get(showEndpoints.getShowsByMovie(movieId));
+    getShowsByMovie: async (id) => {
+        const response = await publicClient.get(showEndpoints.getShowsByMovie(id));
         return response.data.shows || response.data;
     },
     getShowsByTheater: async (theaterId) => {

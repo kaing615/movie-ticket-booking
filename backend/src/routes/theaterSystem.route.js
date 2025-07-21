@@ -29,7 +29,7 @@ router.post(
 router.post("/add-theater", controller.addTheaterToSystem);
 
 router.put(
-    "/:systemId",
+    "/:id",
     ...theaterSystemValidator.updateTheaterSystem,
     requestHandler.validate,
     tokenMiddleware.auth,
@@ -38,7 +38,7 @@ router.put(
 );
 
 router.delete(
-    "/:systemId", 
+    "/:id", 
     ...theaterSystemValidator.deleteTheaterSystem,
     requestHandler.validate,
     tokenMiddleware.auth,

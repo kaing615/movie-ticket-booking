@@ -44,11 +44,11 @@ const useRouterElements = () => {
                     element: <HomePage />,
                 },
                 {
-                    path: `${CUSTOMER_PATH.MOVIE_DETAILS}/:movieId`,
+                    path: `${CUSTOMER_PATH.MOVIE_DETAILS}/:id`,
                     element: <MovieDetails />,
                 },
                 {
-                    path: `${CUSTOMER_PATH.BOOKING}/:movieId`,
+                    path: `${CUSTOMER_PATH.BOOKING}/:id`,
                     element: <Booking />,
                 },
                 {
