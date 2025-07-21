@@ -18,18 +18,18 @@ const MovieList = ({ filterId }) => {
   });
 
   const filteredMovies = React.useMemo(() => {
-    if (!data?.data?.movies) return [];
+    if (!data?.movies) return [];
     switch (filterId) {
       case "nowShowing":
-        return data.data.movies.filter(
+        return data.movies.filter(
           (movie) => movie.status === "Now Showing"
         );
       case "comingSoon":
-        return data.data.movies.filter(
+        return data.movies.filter(
           (movie) => movie.status === "Coming Soon"
         );
       default:
-        return data.data.movies;
+        return data.movies;
     }
   }, [data, filterId]);
 
@@ -54,7 +54,7 @@ const MovieList = ({ filterId }) => {
       <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
         {displayedMovies.length > 0 ? (
           displayedMovies.map((movie) => (
-            <MovieCard key={movie.movieId} movie={movie} />
+            <MovieCard key={movie.id} movie={movie} />
           ))
         ) : (
           <div className="col-span-full text-center py-8 text-gray-500">

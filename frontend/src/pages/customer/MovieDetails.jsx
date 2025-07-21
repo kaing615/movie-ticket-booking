@@ -7,7 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import MovieTrailer from "../../components/movie/MovieTrailer";
 import { Label } from "../../components/common/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/common/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/common/select";
 import { theaterSystemApi } from "../../api/modules/theaterSystem.api";
 import { theaterApi } from "../../api/modules/theater.api";
 import { showApi } from "../../api/modules/show.api";
@@ -17,59 +23,70 @@ import { CUSTOMER_PATH } from "../../routes/path";
 const MovieDetails = () => {
   const [showTrailer, setShowTrailer] = useState(false);
   const { id } = useParams();
+  console.log("Param id:", id);
+
   const navigate = useNavigate();
 
-  // Lấy thông tin phim
   const { data: movieRes } = useQuery({
     queryKey: ["movie", id],
     queryFn: () => movieApi.getMovieById(id),
     enabled: !!id,
   });
   const movie = movieRes?.movie;
+  console.log("Movie: ", movie);
 
-  // Lấy hệ thống rạp
-  const { data: theaterSystems } = useQuery({
+  const { data: theaterSystemsList = [] } = useQuery({
     queryKey: ["theaterSystems"],
-    queryFn: () => theaterSystemApi.getAll(),
+    queryFn: () =>
+      theaterSystemApi.getAllTheaterSystems().then((res) => res.data),
   });
+  console.log("TheaterSystemsList: ", theaterSystemsList);
 
-  // Hệ thống rạp đang chọn
   const [selectedSystemId, setSelectedSystemId] = useState("");
-  // Rạp đang chọn
-  const [selectedTheaterId, setSelectedTheaterId] = useState("");
+  const [selectedTheaterId, setSelectedTheaterId] = useState("all");
 
-  // Khi theaterSystems load xong thì set mặc định system đầu tiên
   React.useEffect(() => {
-    if (theaterSystems && theaterSystems.length > 0 && !selectedSystemId) {
-      setSelectedSystemId(theaterSystems[0]._id);
-      setSelectedTheaterId(""); // Để mặc định là ALL
+    if (
+      Array.isArray(theaterSystemsList) &&
+      theaterSystemsList.length > 0 &&
+      !selectedSystemId
+    ) {
+      setSelectedSystemId(theaterSystemsList[0]._id);
+      setSelectedTheaterId("all");
     }
-  }, [theaterSystems, selectedSystemId]);
+  }, [theaterSystemsList, selectedSystemId]);
 
-  // Lấy danh sách rạp theo hệ thống đã chọn
   const { data: theaters } = useQuery({
     queryKey: ["theaters", selectedSystemId],
-    queryFn: () => theaterApi.getBySystem(selectedSystemId),
+    queryFn: () => theaterApi.getTheater(selectedSystemId),
     enabled: !!selectedSystemId,
   });
+  console.log("Theater from API: ", theaters);
 
-  // Lấy tất cả showtimes của phim này (populate theaterId, roomId)
   const { data: showsRes } = useQuery({
     queryKey: ["shows-by-movie", id],
     queryFn: () => showApi.getShowsByMovie(id),
     enabled: !!id,
   });
-  const shows = showsRes?.shows || [];
+  const shows = showsRes;
+  console.log("Shows from API:", shows);
+
+  React.useEffect(() => {
+    if (showsRes) {
+      console.log("showsRes raw:", showsRes);
+    }
+  }, [showsRes]);
 
   // Bộ lọc ngày (dựa trên shows trả về)
   const uniqueDates = useMemo(() => {
     const set = new Set();
-    shows.forEach(show => {
+    (shows || []).forEach((show) => {
       const d = new Date(show.startTime);
       set.add(d.toLocaleDateString("vi-VN"));
     });
     return Array.from(set);
   }, [shows]);
+
   const [selectedDate, setSelectedDate] = useState(uniqueDates[0] || "");
 
   // Khi shows đổi thì auto chọn ngày đầu tiên có showtimes
@@ -79,22 +96,36 @@ const MovieDetails = () => {
     }
   }, [uniqueDates, selectedDate]);
 
+  React.useEffect(() => {
+    setSelectedTheaterId("all");
+  }, [selectedSystemId]);
+
+  const theaterIds = Array.isArray(theaters) ? theaters.map((t) => t._id) : [];
+
   // Filter showtimes theo system, theater, date
   const filteredShows = useMemo(() => {
-    return shows.filter(show => {
-      const theaterOk = !selectedTheaterId || show.theaterId._id === selectedTheaterId;
-      const systemOk = !selectedSystemId || show.theaterId.theaterSystemId === selectedSystemId;
+    return (shows || []).filter((show) => {
+      // Chỉ show lịch chiếu thuộc các rạp của hệ thống đang chọn
+      const systemOk =
+        !selectedSystemId || theaterIds.includes(show.theaterId._id);
+
+      // Lọc theo rạp con (nếu chọn cụ thể)
+      const theaterOk =
+        selectedTheaterId === "all" || show.theaterId._id === selectedTheaterId;
+
+      // Lọc theo ngày
       const dateOk =
         !selectedDate ||
         new Date(show.startTime).toLocaleDateString("vi-VN") === selectedDate;
-      return theaterOk && systemOk && dateOk;
+
+      return systemOk && theaterOk && dateOk;
     });
-  }, [shows, selectedTheaterId, selectedSystemId, selectedDate]);
+  }, [shows, selectedTheaterId, selectedSystemId, selectedDate, theaters]);
 
   // Group showtimes theo rạp (nếu muốn)
   const showsByTheater = useMemo(() => {
     const group = {};
-    filteredShows.forEach(show => {
+    filteredShows.forEach((show) => {
       const theater = show.theaterId;
       if (!group[theater._id]) group[theater._id] = { theater, shows: [] };
       group[theater._id].shows.push(show);
@@ -110,7 +141,11 @@ const MovieDetails = () => {
         <div className="absolute w-full h-full z-10 bg-black/30"></div>
         <div className="relative h-full">
           <div className="absolute top-0 left-0 z-20 hidden lg:block">
-            <img alt="Blur Left" className="w-auto h-[250px] sm:h-[350px] lg:h-[500px] object-cover" src={BlurLeft} />
+            <img
+              alt="Blur Left"
+              className="w-auto h-[250px] sm:h-[350px] lg:h-[500px] object-cover"
+              src={BlurLeft}
+            />
           </div>
           <div className="relative flex justify-center">
             <img
@@ -126,7 +161,11 @@ const MovieDetails = () => {
             </button>
           </div>
           <div className="absolute top-0 right-0 z-20 hidden lg:block">
-            <img alt="Blur Right" className="w-auto h-[250px] sm:h-[350px] lg:h-[500px] object-cover" src={BlurRight} />
+            <img
+              alt="Blur Right"
+              className="w-auto h-[250px] sm:h-[350px] lg:h-[500px] object-cover"
+              src={BlurRight}
+            />
           </div>
         </div>
       </div>
@@ -155,30 +194,55 @@ const MovieDetails = () => {
               </div>
               <div className="flex items-center gap-2 text-sm font-medium">
                 <CalendarIcon className="w-4 h-4 text-orange-500" />
-                <span>{movie?.releaseDate && new Date(movie.releaseDate).toLocaleDateString("vi-VN")}</span>
+                <span>
+                  {movie?.releaseDate &&
+                    new Date(movie.releaseDate).toLocaleDateString("vi-VN")}
+                </span>
               </div>
             </div>
             <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
               <StarIcon className="w-5 h-5 text-orange-500 fill-orange-500" />
-              <span className="text-lg font-semibold">{movie?.ratingScore || "0"}</span>
-              <span className="text-sm text-gray-500">({movie?.ratingCount || "0"} lượt đánh giá)</span>
+              <span className="text-lg font-semibold">
+                {movie?.ratingScore || "0"}
+              </span>
+              <span className="text-sm text-gray-500">
+                ({movie?.ratingCount || "0"} lượt đánh giá)
+              </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div className="flex flex-col sm:flex-row">
-                <span className="font-medium text-gray-600 w-full sm:w-24 mb-1 sm:mb-0">Quốc gia:</span>
-                <span className="text-gray-800">{movie?.country || "Đang cập nhật"}</span>
+                <span className="font-medium text-gray-600 w-full sm:w-24 mb-1 sm:mb-0">
+                  Quốc gia:
+                </span>
+                <span className="text-gray-800">
+                  {movie?.country || "Đang cập nhật"}
+                </span>
               </div>
               <div className="flex flex-col sm:flex-row">
-                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">Nhà sản xuất:</span>
-                <span className="text-gray-800">{movie?.producer || "Đang cập nhật"}</span>
+                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">
+                  Nhà sản xuất:
+                </span>
+                <span className="text-gray-800">
+                  {movie?.producer || "Đang cập nhật"}
+                </span>
               </div>
               <div className="flex flex-col sm:flex-row">
-                <span className="font-medium text-gray-600 w-full sm:w-24 mb-1 sm:mb-0">Thể loại:</span>
-                <span className="text-gray-800">{Array.isArray(movie?.genres) ? movie.genres.join(", ") : movie?.genres || "Đang cập nhật"}</span>
+                <span className="font-medium text-gray-600 w-full sm:w-24 mb-1 sm:mb-0">
+                  Thể loại:
+                </span>
+                <span className="text-gray-800">
+                  {Array.isArray(movie?.genres)
+                    ? movie.genres.join(", ")
+                    : movie?.genres || "Đang cập nhật"}
+                </span>
               </div>
               <div className="flex flex-col sm:flex-row">
-                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">Đạo diễn:</span>
-                <span className="text-gray-800">{movie?.director || "Đang cập nhật"}</span>
+                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">
+                  Đạo diễn:
+                </span>
+                <span className="text-gray-800">
+                  {movie?.director || "Đang cập nhật"}
+                </span>
               </div>
               {/* Có thể thêm diễn viên nếu muốn */}
             </div>
@@ -192,7 +256,10 @@ const MovieDetails = () => {
             <h2 className="text-lg font-bold text-gray-900">Nội dung phim</h2>
           </div>
           <div className="text-gray-700 text-sm leading-relaxed">
-            <p className="mb-4">{movie?.description || "Thông tin nội dung phim đang được cập nhật..."}</p>
+            <p className="mb-4">
+              {movie?.description ||
+                "Thông tin nội dung phim đang được cập nhật..."}
+            </p>
           </div>
         </div>
 
@@ -211,11 +278,17 @@ const MovieDetails = () => {
                   <button
                     key={idx}
                     className={`flex flex-col items-center text-center text-xs sm:text-sm min-w-[70px] sm:min-w-[80px] h-16 rounded-lg py-2 cursor-pointer transition-all duration-200 ${
-                      date === selectedDate ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      date === selectedDate
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                     onClick={() => setSelectedDate(date)}
                   >
-                    <span className="font-medium">{date === (new Date()).toLocaleDateString("vi-VN") ? "Hôm nay" : date}</span>
+                    <span className="font-medium">
+                      {date === new Date().toLocaleDateString("vi-VN")
+                        ? "Hôm nay"
+                        : date}
+                    </span>
                     <span className="text-xs opacity-80">{date}</span>
                   </button>
                 ))}
@@ -226,13 +299,20 @@ const MovieDetails = () => {
               {/* Hệ thống rạp */}
               <div className="space-y-1">
                 <Label className="text-sm font-medium">Hệ thống rạp</Label>
-                <Select onValueChange={setSelectedSystemId} value={selectedSystemId}>
+                <Select
+                  onValueChange={setSelectedSystemId}
+                  value={selectedSystemId}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn hệ thống rạp" />
                   </SelectTrigger>
                   <SelectContent>
-                    {theaterSystems?.map((item) => (
-                      <SelectItem key={item._id} value={item._id}>
+                    {theaterSystemsList?.map((item) => (
+                      <SelectItem
+                        key={item._id}
+                        value={item._id}
+                        className="z-100"
+                      >
                         {item.name}
                       </SelectItem>
                     ))}
@@ -250,7 +330,7 @@ const MovieDetails = () => {
                     <SelectValue placeholder="Chọn rạp" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tất cả</SelectItem>
+                    <SelectItem value="all">Tất cả</SelectItem>
                     {theaters?.map((item) => (
                       <SelectItem key={item._id} value={item._id}>
                         {item.theaterName}
@@ -267,18 +347,28 @@ const MovieDetails = () => {
           {showsByTheater.length > 0 ? (
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {showsByTheater.map(({ theater, shows }) => (
-                <div key={theater._id} className="border-b border-gray-200 pb-3">
+                <div
+                  key={theater._id}
+                  className="border-b border-gray-200 pb-3"
+                >
                   <div className="flex flex-col gap-2 ">
-                    <h4 className="text-sm font-semibold">{theater.theaterName}</h4>
+                    <h4 className="text-sm font-semibold">
+                      {theater.theaterName}
+                    </h4>
                     <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 items-center">
                       {shows.map((show) => (
                         <Button
                           key={show._id}
                           className="text-xs text-gray-500 cursor-pointer"
                           variant="outline"
-                          onClick={() => navigate(`${CUSTOMER_PATH.BOOKING}/${show._id}`)}
+                          onClick={() =>
+                            navigate(`${CUSTOMER_PATH.BOOKING}/${show._id}`)
+                          }
                         >
-                          {new Date(show.startTime).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+                          {new Date(show.startTime).toLocaleTimeString(
+                            "vi-VN",
+                            { hour: "2-digit", minute: "2-digit" }
+                          )}
                         </Button>
                       ))}
                     </div>
@@ -303,7 +393,9 @@ const MovieDetails = () => {
                   />
                 </svg>
                 <p className="text-gray-600 font-medium">Không có lịch chiếu</p>
-                <p className="text-sm text-gray-400 mt-1">Vui lòng chọn hệ thống rạp và rạp khác</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  Vui lòng chọn hệ thống rạp và rạp khác
+                </p>
               </div>
             </div>
           )}

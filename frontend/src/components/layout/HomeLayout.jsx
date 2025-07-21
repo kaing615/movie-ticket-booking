@@ -11,8 +11,8 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, Link } from "react-router-dom";
-import Logo from "../common/logo"
-import logo from "../../assets/img/logo.png"
+import Logo from "../common/logo";
+import logo from "../../assets/img/logo.png";
 import btnTicket from "../../assets/img/btn-ticket.webp";
 import {
   NavigationMenu,
@@ -42,12 +42,14 @@ const HomeLayout = () => {
     queryKey: ["theaterSystems"],
     queryFn: () => theaterSystemApi.getAllTheaterSystems(),
   });
+  console.log("Theater Systems: ", theaterSystems);
 
   const { data: theaters } = useQuery({
     queryKey: ["theaters"],
     queryFn: () => theaterApi.getTheater(),
     enabled: !!theaterSystems,
   });
+  console.log("Theaters: ", theaters);
 
   // Hide scrollbar globally but keep scroll functionality
   useEffect(() => {
@@ -118,12 +120,18 @@ const HomeLayout = () => {
                     <ul className="grid w-[200px] gap-4 z-100">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link to={CUSTOMER_PATH.ONGOING} className="hover:text-[#F26B38]">
+                          <Link
+                            to={CUSTOMER_PATH.ONGOING}
+                            className="hover:text-[#F26B38]"
+                          >
                             Phim Đang Chiếu
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <Link to={CUSTOMER_PATH.COMING_SOON} className="hover:text-[#F26B38]">
+                          <Link
+                            to={CUSTOMER_PATH.COMING_SOON}
+                            className="hover:text-[#F26B38]"
+                          >
                             Phim Sắp Chiếu
                           </Link>
                         </NavigationMenuLink>
@@ -139,7 +147,9 @@ const HomeLayout = () => {
                     <ul className="grid w-[200px] gap-4">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link href="#" className="hover:text-[#F26B38]">Ưu Đãi</Link>
+                          <Link href="#" className="hover:text-[#F26B38]">
+                            Ưu Đãi
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -197,7 +207,10 @@ const HomeLayout = () => {
                   >
                     Đăng nhập
                   </Button>
-                  <Button onClick={handleRegister} className="hidden md:block cursor-pointer hover:text-[#F26B38]">
+                  <Button
+                    onClick={handleRegister}
+                    className="hidden md:block cursor-pointer hover:text-[#F26B38]"
+                  >
                     Đăng ký
                   </Button>
                 </>
@@ -291,45 +304,6 @@ const HomeLayout = () => {
                           <Link to="#" className="hover:text-[#FD841F]">
                             Phim Hay Tháng
                           </Link>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Rạp/Giá Vé Section */}
-                    <div className="border-b pb-2">
-                      <div
-                        className="flex items-center justify-between cursor-pointer"
-                        onClick={() => setOpenSection("rapgiave")}
-                      >
-                        <p className="font-semibold">Rạp/Giá Vé</p>
-                        <ChevronDown
-                          className={`w-4 h-4 transition-transform ${
-                            openSection === "rapgiave" ? "rotate-180" : ""
-                          }`}
-                        />
-                      </div>
-                      {openSection === "rapgiave" && (
-                        <div className="ml-2 flex flex-col space-y-1 text-sm mt-2 max-h-[200px] overflow-y-auto">
-                          {theaterSystems?.map((system) => (
-                            <React.Fragment key={system._id}>
-                              <div className="font-bold mt-2 mb-1 text-base">
-                                {system.name}
-                              </div>
-                              {theaters
-                                ?.filter(
-                                  (rap) => rap.theaterSystemId === system._id
-                                )
-                                .map((rap) => (
-                                  <Link
-                                    key={rap._id}
-                                    to={`/theater/${rap._id}`}
-                                    className="pl-3 hover:text-[#FD841F]"
-                                  >
-                                    {rap.theaterName}
-                                  </Link>
-                                ))}
-                            </React.Fragment>
-                          ))}
                         </div>
                       )}
                     </div>
@@ -528,9 +502,7 @@ const HomeLayout = () => {
                 <h3 className="text-white text-lg font-semibold">
                   CÔNG TY CỔ PHẦN PHIM CINEMA GATE
                 </h3>
-                <p>
-                    999 Đường Tôn Đức Thắng, P.Bến Nghé, Q.1, TP.HCM
-                </p>
+                <p>999 Đường Tôn Đức Thắng, P.Bến Nghé, Q.1, TP.HCM</p>
                 <p className="flex items-center gap-2 flex-wrap">
                   <Phone className="w-5 h-5 text-gray-400" />
                   <a
