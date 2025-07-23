@@ -2,7 +2,7 @@ import { PATH, AUTH_PATH, ADMIN_PATH, MANAGER_PATH, CUSTOMER_PATH } from "./path
 import { useRoutes, Navigate } from "react-router-dom";
 
 //Admin pages
-import AdminLayout from "../pages/admin/AdminLayout.jsx";
+import AdminLayout from "../pages/admin/Layout/AdminLayout.jsx";
 import AdminDashboard from "../pages/admin/Dashboard/AdminDashboard.jsx";
 import UserManagement from "../pages/admin/UserManagement.jsx";
 

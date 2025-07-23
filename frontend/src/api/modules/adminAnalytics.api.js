@@ -7,7 +7,7 @@ export const adminAnalyticEndpoints = {
 	getTheaterBySystem: "analytics/theater-by-system",
 };
 
-export const movieApi = {
+export const adminAnalyticsApi = {
 	getUserCountByRole: () =>
 		createPrivateClient
 			.get(adminAnalyticEndpoints.getUserCountByRole)
