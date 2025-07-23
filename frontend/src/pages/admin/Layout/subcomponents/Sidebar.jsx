@@ -13,29 +13,16 @@ const navLinks = [
 ];
 
 const AdminSidebar = () => {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const dispatch = useDispatch();
     return (
-        <aside className={`${isExpanded ? "w-64" : "w-17"} h-screen fixed bg-white border-r border-gray-200 shadow-sm flex flex-col z-10 transition-transform duration-300`}>
+        <aside className={`${isExpanded ? "w-64" : "w-17"} h-screen fixed bg-white border-r border-gray-200 shadow-sm flex flex-col z-10 transition-[width] duration-100`} onMouseEnter={() => setIsExpanded(true)} onMouseLeave={() => setIsExpanded(false)}>
             <div className="py-6 px-6 flex items-center justify-between">
-                {isExpanded ? <span className="text-2xl font-extrabold text-indigo-600 tracking-wide">Admin</span> : <Menu size={18} className="cursor-pointer h-[2rem]" onClick={() => setIsExpanded(!isExpanded)} />}
+                {isExpanded ? <span className="text-2xl font-extrabold text-indigo-600 tracking-wide">Admin</span> : <Menu size={18} className="h-[2rem]" />}
             </div>
             <nav className={`flex-1 ${isExpanded ? "px-4" : "px-2"}`}>
                 <ul className="space-y-2">
                     {navLinks.map(link => (
-                        //     <li key={link.to}>
-                        //         <NavLink
-                        //             to={link.to}
-                        //             className={({ isActive }) =>
-                        //                 `flex items-center gap-3 py-2 px-4 rounded-lg transition 
-                        // ${isActive ? "bg-indigo-100 text-indigo-700 font-semibold" : "text-gray-700 hover:bg-gray-100"}`
-                        //             }
-                        //             end
-                        //         >
-                        //             {link.icon}
-                        //             <span>{link.label}</span>
-                        //         </NavLink>
-                        //     </li>
                         <SidebarLink key={link.to} icon={link.icon} text={link.label} linkTo={link.to} isExpanded={isExpanded} />
                     ))}
                 </ul>
