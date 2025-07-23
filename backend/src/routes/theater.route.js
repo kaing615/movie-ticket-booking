@@ -12,6 +12,12 @@ router.get("/", theaterController.getTheater);
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
 
+router.get(
+    "/manager/:managerId", 
+    requestHandler.validate,
+    theaterController.getTheaterByManagerId
+);
+
 router.post(
     "/", 
     ...theaterValidator.createTheaterValidator,
