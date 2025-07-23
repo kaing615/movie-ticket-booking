@@ -13,24 +13,7 @@ export const theaterApi = {
     },
     
     getTheaterByManagerId: async (managerId) => {
-        try {
-            console.log('Calling getTheaterByManagerId with:', managerId);
-            const token = localStorage.getItem('actkn');
-            console.log('Token present:', !!token);
-            
-            const response = await createPrivateClient.get(
-                theaterEndpoints.getTheaterByManagerId(managerId)
-            );
-            console.log('API Response:', response);
-            
-            return response.data.theater || response.data;
-        } catch (error) {
-            console.error('API Error:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data
-            });
-            throw error;
-        }
+        const response = await publicClient.get(theaterEndpoints.getTheaterByManagerId(managerId));
+        return response.data.theater || response.data;
     }
 }

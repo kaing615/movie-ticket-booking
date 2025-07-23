@@ -7,7 +7,7 @@ export const movieEndpoints = {
     createMovie: "movies",
     updateMovie: (id) => `movies/${id}`,
     deleteMovie: (id) => `movies/${id}`,
-    getMoviesOfTheater: (theaterId) => `show/theaters/${theaterId}/movies`
+    getMoviesOfTheater: (theaterId) => `show/theater/${theaterId}/movies`
 };
 
 export const movieApi = {

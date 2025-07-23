@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import {theaterApi} from "../../api/modules/theater.api.js";
 import {movieApi} from "../../api/modules/movie.api.js";
 import {showApi} from "../../api/modules/show.api.js";
+import { roomApi } from "../../api/modules/room.api.js";
 
 const ManagerDashboard = () => {
     const [showAddMovieModal, setShowAddMovieModal] = React.useState(false);
@@ -22,74 +23,121 @@ const ManagerDashboard = () => {
     });
 
     console.log("Theater data:", theater);
-    console.log("User data:", user);
-
     const { data: theaterMovies } = useQuery({
         queryKey: ["theaterMovies", theater?._id],
         queryFn: () => movieApi.getMoviesOfTheater(theater?._id),
         enabled: !!theater?._id
     });
 
+    console.log("Theater movies:", theaterMovies);
+    const { data: rooms } = useQuery({
+        queryKey: ["rooms", theater?._id],
+        queryFn: () => roomApi.getRoomsByTheater(theater?._id),
+        enabled: !!theater?._id
+    });
 
     const { data: allMovies } = useQuery({
         queryKey: ["allMovies"],
         queryFn: () => movieApi.getMovies()
     });
 
-    console.log("Theater Movies:", theaterMovies);
-    console.log("All Movies:", allMovies);  
-
-    // Mutations
-    const addMovieMutation = useMutation({
-        mutationFn: (movieId) => 
-            movieApi.addMovieToTheater(theater._id, movieId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(["theaterMovies"]);
-            setShowAddMovieModal(false);
-            message.success("Thêm phim vào rạp thành công!");
-        },
-        onError: (error) => {
-            message.error(error.message || "Có lỗi xảy ra!");
-        }
+    console.log("All movies:", allMovies);
+    // Add query for theater shows
+    const { data: theaterShows } = useQuery({
+        queryKey: ["theaterShows", theater?._id],
+        queryFn: () => showApi.getShowsByTheater(theater?._id),
+        enabled: !!theater?._id
     });
 
+    const getAvailableMovies = () => {
+    // Tạo Set chứa ID của các phim trong theater
+    const theaterMovieIds = new Set(
+        theaterMovies?.map(movie => movie.movieId ? movie.movieId.toString() : movie._id.toString())
+    );
+    // Lọc những phim không có trong theater
+    const availableMovies = allMovies.filter(movie => {
+        const movieId = movie.movieId ? movie.movieId.toString() : movie._id.toString();
+        const isAvailable = !theaterMovieIds.has(movieId);       
+        return isAvailable;
+    });
+
+    console.log("Final available movies:", availableMovies.map(m => m.movieName));
+    return availableMovies;
+    }
+    console.log("Available movies:", getAvailableMovies());
+
     const removeMovieMutation = useMutation({
-        mutationFn: (movieId) => 
-            movieApi.removeMovieFromTheater(theater._id, movieId),
+        mutationFn: async (movieId) => {
+            // Xóa tất cả show của movie này
+            const shows = theaterShows.filter(show => show.movieId._id === movieId);
+            await Promise.all(shows.map(show => showApi.deleteShow(show._id)));
+            return true;
+        },
         onSuccess: () => {
-            queryClient.invalidateQueries(["theaterMovies"]);
+            queryClient.invalidateQueries(["theaterShows"]);
             message.success("Xóa phim khỏi rạp thành công!");
         },
         onError: (error) => {
-            message.error(error.message || "Có lỗi xảy ra!");
+            console.error("Remove movie error:", error);
+            message.error("Có lỗi xảy ra khi xóa phim!");
         }
     });
 
     const addScheduleMutation = useMutation({
-        mutationFn: (data) => 
-            scheduleApi.createSchedule({
+        mutationFn: (values) => {
+            const startTime = new Date(values.date);
+            startTime.setHours(values.time.hour(), values.time.minute());
+            
+            const endTime = new Date(startTime);
+            endTime.setMinutes(endTime.getMinutes() + selectedMovie.duration);
+
+            const showData = {
                 movieId: selectedMovie._id,
                 theaterId: theater._id,
-                ...data
-            }),
-        onSuccess: () => {
+                roomId: values.roomId,
+                startTime: startTime.toISOString(),
+                endTime: endTime.toISOString()
+            };
+
+            console.log("Creating new show:", showData);
+            return showApi.addShow(showData);
+        },
+        onSuccess: (data) => {
+            console.log("Show created:", data);
+            queryClient.invalidateQueries(["theaterShows"]);
             setShowScheduleModal(false);
-            message.success("Thêm lịch chiếu thành công!");
+            
+            const isNewMovie = !theaterShows?.some(
+                show => show.movieId._id === selectedMovie._id
+            );
+            
+            message.success(
+                isNewMovie 
+                    ? "Thêm phim mới vào rạp thành công!" 
+                    : "Thêm lịch chiếu mới thành công!"
+            );
         },
         onError: (error) => {
-            message.error(error.message || "Có lỗi xảy ra!");
+            console.error("Add show error:", error);
+            message.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm lịch chiếu!");
         }
     });
 
-    // Handlers
-    const handleAddMovie = (movieId) => {
-        addMovieMutation.mutate(movieId);
+    const validateScheduleTime = (_, value) => {
+        if (!value) return Promise.reject("Vui lòng chọn thời gian!");
+        
+        const selectedTime = new Date(value);
+        if (selectedTime < new Date()) {
+            return Promise.reject("Không thể chọn thời gian trong quá khứ!");
+        }
+        
+        return Promise.resolve();
     };
 
     const handleRemoveMovie = (movieId) => {
         Modal.confirm({
             title: "Xác nhận xóa",
-            content: "Bạn có chắc chắn muốn xóa phim này khỏi rạp?",
+            content: "Bạn có chắc chắn muốn xóa phim này khỏi rạp? Tất cả lịch chiếu của phim sẽ bị xóa.",
             okText: "Xóa",
             cancelText: "Hủy",
             okButtonProps: { danger: true },
@@ -101,10 +149,30 @@ const ManagerDashboard = () => {
         addScheduleMutation.mutate(values);
     };
 
+    const ActionButton = ({ movie }) => {
+        const hasExistingShows = theaterShows?.some(
+            show => show.movieId._id === movie._id
+        );
+
+        return (
+            <Button
+                icon={<ScheduleOutlined />}
+                onClick={() => {
+                    setSelectedMovie(movie);
+                    setShowScheduleModal(true);
+                }}
+                className="flex items-center bg-orange-500 text-white hover:bg-orange-600 border-none shadow-md"
+                loading={addScheduleMutation.isLoading}
+            >
+                {hasExistingShows ? "Thêm lịch chiếu" : "Thêm phim vào rạp"}
+            </Button>
+        );
+    };
+
     const columns = [
         {
             title: "Tên phim",
-            dataIndex: "title",
+            dataIndex: "movieName",
             key: "title",
             className: "font-semibold text-gray-800",
         },
@@ -121,17 +189,7 @@ const ManagerDashboard = () => {
             key: "action",
             render: (_, record) => (
                 <div className="flex space-x-3">
-                    <Button
-                        icon={<ScheduleOutlined />}
-                        onClick={() => {
-                            setSelectedMovie(record);
-                            setShowScheduleModal(true);
-                        }}
-                        className="flex items-center bg-orange-500 text-white hover:bg-orange-600 border-none shadow-md"
-                        loading={addScheduleMutation.isLoading}
-                    >
-                        Thêm lịch chiếu
-                    </Button>
+                    <ActionButton movie={record} />
                     <Button
                         icon={<DeleteOutlined />}
                         onClick={() => handleRemoveMovie(record._id)}
@@ -159,7 +217,7 @@ const ManagerDashboard = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-3xl font-bold text-gray-800">Cinema Gate</h1>
-                            <p className="text-gray-500 mt-1">Quản lý rạp {theater?.name}</p>
+                            <p className="text-gray-500 mt-1">Quản lý rạp {theater?.theaterName}</p>
                         </div>
                         <Button
                             type="primary"
@@ -224,7 +282,11 @@ const ManagerDashboard = () => {
 
             {/* Add Movie Modal */}
             <Modal
-                title="Thêm phim vào rạp"
+                title={
+                    <div className="text-lg font-bold">
+                        Thêm phim mới vào rạp
+                    </div>
+                }
                 open={showAddMovieModal}
                 onCancel={() => setShowAddMovieModal(false)}
                 footer={null}
@@ -232,11 +294,15 @@ const ManagerDashboard = () => {
                 className="rounded-xl overflow-hidden"
             >
                 <div className="grid grid-cols-2 gap-6 p-6">
-                    {allMovies?.map(movie => (
+                    {getAvailableMovies()?.map(movie => (
                         <div
                             key={movie._id}
                             className="group relative overflow-hidden rounded-xl border border-gray-200 hover:border-orange-500 cursor-pointer transition-all duration-300 hover:shadow-2xl"
-                            onClick={() => handleAddMovie(movie._id)}
+                            onClick={() => {
+                                setSelectedMovie(movie);
+                                setShowAddMovieModal(false);
+                                setShowScheduleModal(true);
+                            }}
                         >
                             <img
                                 src={movie.poster}
@@ -256,7 +322,10 @@ const ManagerDashboard = () => {
             <Modal
                 title={
                     <div className="text-lg font-bold">
-                        Thêm lịch chiếu - {selectedMovie?.movieName}
+                        {theaterShows?.some(show => show.movieId._id === selectedMovie?._id)
+                            ? `Thêm lịch chiếu - ${selectedMovie?.movieName}`
+                            : `Thêm phim mới - ${selectedMovie?.movieName}`
+                        }
                     </div>
                 }
                 open={showScheduleModal}
@@ -272,11 +341,15 @@ const ManagerDashboard = () => {
                     <Form.Item
                         name="date"
                         label="Ngày chiếu"
-                        rules={[{ required: true, message: "Vui lòng chọn ngày chiếu!" }]}
+                        rules={[
+                            { required: true, message: "Vui lòng chọn ngày chiếu!" },
+                            { validator: validateScheduleTime }
+                        ]}
                     >
                         <DatePicker 
                             className="w-full h-10 rounded-lg" 
                             placeholder="Chọn ngày chiếu"
+                            disabledDate={current => current && current < Date.now()}
                         />
                     </Form.Item>
                     <Form.Item
@@ -288,6 +361,7 @@ const ManagerDashboard = () => {
                             className="w-full h-10 rounded-lg" 
                             format="HH:mm"
                             placeholder="Chọn giờ chiếu" 
+                            minuteStep={5}
                         />
                     </Form.Item>
                     <Form.Item
@@ -299,9 +373,9 @@ const ManagerDashboard = () => {
                             className="w-full rounded-lg" 
                             placeholder="Chọn phòng chiếu"
                         >
-                            {theater?.rooms?.map(room => (
+                            {rooms?.map(room => (
                                 <Select.Option key={room._id} value={room._id}>
-                                    {room.name}
+                                    {`Phòng ${room.roomNumber}`}
                                 </Select.Option>
                             ))}
                         </Select>
@@ -313,7 +387,10 @@ const ManagerDashboard = () => {
                             className="w-full h-10 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg rounded-lg border-none shadow-md"
                             loading={addScheduleMutation.isLoading}
                         >
-                            Thêm lịch chiếu
+                            {theaterShows?.some(show => show.movieId._id === selectedMovie?._id)
+                                ? "Thêm lịch chiếu"
+                                : "Thêm phim vào rạp"
+                            }
                         </Button>
                     </Form.Item>
                 </Form>
