@@ -22,14 +22,14 @@ const ManagerDashboard = () => {
         enabled: !!user?._id
     });
 
-    console.log("Theater data:", theater);
+    //console.log("Theater data:", theater);
     const { data: theaterMovies } = useQuery({
         queryKey: ["theaterMovies", theater?._id],
         queryFn: () => movieApi.getMoviesOfTheater(theater?._id),
         enabled: !!theater?._id
     });
 
-    console.log("Theater movies:", theaterMovies);
+   console.log("Theater movies:", theaterMovies);
     const { data: rooms } = useQuery({
         queryKey: ["rooms", theater?._id],
         queryFn: () => roomApi.getRoomsByTheater(theater?._id),
@@ -41,7 +41,7 @@ const ManagerDashboard = () => {
         queryFn: () => movieApi.getMovies()
     });
 
-    console.log("All movies:", allMovies);
+    //console.log("All movies:", allMovies);
     // Add query for theater shows
     const { data: theaterShows } = useQuery({
         queryKey: ["theaterShows", theater?._id],
@@ -55,33 +55,49 @@ const ManagerDashboard = () => {
         theaterMovies?.map(movie => movie.movieId ? movie.movieId.toString() : movie._id.toString())
     );
     // Lọc những phim không có trong theater
-    const availableMovies = allMovies.filter(movie => {
+    const availableMovies = allMovies?.filter(movie => {
         const movieId = movie.movieId ? movie.movieId.toString() : movie._id.toString();
-        const isAvailable = !theaterMovieIds.has(movieId);       
+        const isAvailable = !theaterMovieIds?.has(movieId);       
         return isAvailable;
     });
 
-    console.log("Final available movies:", availableMovies.map(m => m.movieName));
+    // console.log("Final available movies:", availableMovies?.map(m => m.movieName));
     return availableMovies;
     }
-    console.log("Available movies:", getAvailableMovies());
-
+    // console.log("Available movies:", getAvailableMovies());
     const removeMovieMutation = useMutation({
         mutationFn: async (movieId) => {
-            // Xóa tất cả show của movie này
-            const shows = theaterShows.filter(show => show.movieId._id === movieId);
-            await Promise.all(shows.map(show => showApi.deleteShow(show._id)));
+            // Get all shows for this movie in the theater
+            const movieShows = theaterShows?.filter(
+                show => show.movieId._id === movieId || show.movieId === movieId
+            );
+            
+            if (!movieShows || movieShows.length === 0) {
+                console.log("No shows found for movie:", movieId);
+                return true;
+            }
+
+            console.log("Deleting shows:", movieShows);
+            
+            // Delete all shows for this movie
+            const deletePromises = movieShows.map(show => showApi.deleteShow(show._id));
+            await Promise.all(deletePromises);
+            
             return true;
         },
         onSuccess: () => {
+            // Refresh both theater shows and theater movies data
             queryClient.invalidateQueries(["theaterShows"]);
+            queryClient.invalidateQueries(["theaterMovies"]);
             message.success("Xóa phim khỏi rạp thành công!");
         },
         onError: (error) => {
             console.error("Remove movie error:", error);
-            message.error("Có lỗi xảy ra khi xóa phim!");
+            message.error("Có lỗi xảy ra khi xóa phim khỏi rạp!");
         }
     });
+
+    console.log("Theater ID: ", theater?._id);
 
     const addScheduleMutation = useMutation({
         mutationFn: (values) => {
@@ -91,8 +107,12 @@ const ManagerDashboard = () => {
             const endTime = new Date(startTime);
             endTime.setMinutes(endTime.getMinutes() + selectedMovie.duration);
 
+            // Log selectedMovie to debug
+            console.log("Selected movie:", selectedMovie);
+
             const showData = {
-                movieId: selectedMovie._id,
+                // Use the correct movieId reference
+                movieId: selectedMovie?._id || selectedMovie?.movieId,
                 theaterId: theater._id,
                 roomId: values.roomId,
                 startTime: startTime.toISOString(),
@@ -135,13 +155,24 @@ const ManagerDashboard = () => {
     };
 
     const handleRemoveMovie = (movieId) => {
+        console.log("Removing movie with ID:", movieId);
+
         Modal.confirm({
             title: "Xác nhận xóa",
             content: "Bạn có chắc chắn muốn xóa phim này khỏi rạp? Tất cả lịch chiếu của phim sẽ bị xóa.",
             okText: "Xóa",
             cancelText: "Hủy",
-            okButtonProps: { danger: true },
-            onOk: () => removeMovieMutation.mutate(movieId)
+            okButtonProps: { 
+                danger: true,
+                loading: removeMovieMutation.isLoading 
+            },
+            onOk:async () => {
+                return removeMovieMutation.mutateAsync(movieId)
+                    .catch(error => {
+                        console.error("Delete error:", error);
+                        message.error("Có lỗi xảy ra khi xóa phim!");
+                    });
+                }
         });
     };
 
@@ -150,6 +181,13 @@ const ManagerDashboard = () => {
     };
 
     const ActionButton = ({ movie }) => {
+        // Log movie data when button is clicked
+        const handleClick = () => {
+            console.log("Movie selected for schedule:", movie);
+            setSelectedMovie(movie);
+            setShowScheduleModal(true);
+        };
+
         const hasExistingShows = theaterShows?.some(
             show => show.movieId._id === movie._id
         );
@@ -157,10 +195,7 @@ const ManagerDashboard = () => {
         return (
             <Button
                 icon={<ScheduleOutlined />}
-                onClick={() => {
-                    setSelectedMovie(movie);
-                    setShowScheduleModal(true);
-                }}
+                onClick={handleClick}
                 className="flex items-center bg-orange-500 text-white hover:bg-orange-600 border-none shadow-md"
                 loading={addScheduleMutation.isLoading}
             >
@@ -184,6 +219,7 @@ const ManagerDashboard = () => {
                 <span className="text-orange-500">{duration} phút</span>
             ),
         },
+
         {
             title: "Thao tác",
             key: "action",
@@ -191,16 +227,16 @@ const ManagerDashboard = () => {
                 <div className="flex space-x-3">
                     <ActionButton movie={record} />
                     <Button
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleRemoveMovie(record._id)}
-                        className="flex items-center bg-red-500 text-white hover:bg-red-600 border-none shadow-md"
-                        loading={removeMovieMutation.isLoading}
-                    >
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleRemoveMovie(record._id)}
+                    className="flex items-center bg-red-500 text-white hover:bg-red-600 border-none shadow-md"
+                    loading={removeMovieMutation.isLoading}
+                >
                         Xóa khỏi rạp
                     </Button>
                 </div>
             ),
-        },
+        }
     ];
 
     if (isLoadingTheater) {

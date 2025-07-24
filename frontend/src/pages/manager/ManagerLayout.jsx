@@ -22,7 +22,7 @@ const MENU_ITEMS = [
         icon: <UserOutlined className="text-xl" />
     },
     {
-        path: "/manager/theaters",
+        path: "/manager/theater-dashboard",
         label: "Theaters",
         icon: <VideoCameraOutlined className="text-xl" />
     },

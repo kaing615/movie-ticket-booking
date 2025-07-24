@@ -7,7 +7,7 @@ const store = configureStore({
 	reducer: {
 		user: userSlice,
 		loading: loadingSlice,
-		auth: authSlice,
+		auth: authSlice
 	},
 	devTools: true,
 });
