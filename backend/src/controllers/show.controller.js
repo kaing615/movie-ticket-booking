@@ -12,6 +12,40 @@ const isTheaterManagerOf = async (userId, theaterId) => {
   return theater.managerId.equals(userId);
 };
 
+const getMoviesOfTheater = async (req, res) => {
+  try {
+    const { theaterId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(theaterId)) {
+      return responseHandler.badRequest(res, "ID rạp không hợp lệ.");
+    }
+
+    // Get all shows from this theater and populate movie details
+    const shows = await Show.find({ theaterId })
+      .populate({
+        path: 'movieId',
+        select: '-__v' // Select all fields except __v
+      });
+
+    // Extract unique movies (avoid duplicates)
+    const moviesMap = new Map();
+    shows.forEach(show => {
+      if (show.movieId && !moviesMap.has(show.movieId._id.toString())) {
+        moviesMap.set(show.movieId._id.toString(), show.movieId);
+      }
+    });
+
+    // Convert map values to array
+    const movies = Array.from(moviesMap.values());
+
+    return responseHandler.ok(res, { movies });
+  } catch (err) {
+    console.error("Lỗi lấy danh sách phim của rạp:", err);
+    responseHandler.error(res);
+  }
+};
+
+
 // Thêm lịch chiếu
 const addShow = async (req, res) => {
   try {
@@ -128,7 +162,14 @@ const deleteShow = async (req, res) => {
       return responseHandler.unauthorized(res, "Bạn không có quyền xóa lịch chiếu này.");
     }
 
-    await Show.deleteOne({ _id: showId });
+    await Show.updateOne(
+      { _id: showId },
+      { 
+        isDeleted: true,
+        deletedAt: new Date(),
+        deletedBy: userId
+      }
+    );
     return responseHandler.ok(res, { message: "Xóa lịch chiếu thành công!" });
   } catch (err) {
     console.error("Lỗi xóa lịch chiếu:", err);
@@ -183,4 +224,5 @@ export default {
   deleteShow,
   getShowsByTheater,
   getShowsByMovie,
+  getMoviesOfTheater
 };

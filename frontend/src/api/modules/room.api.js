@@ -1,7 +1,7 @@
 import publicClient from "../clients/public.client";
 
 export const roomEndpoints = {
-    getRoomsByTheater: (theaterId) => `/room?theaterId=${theaterId}`
+    getRoomsByTheater: (theaterId) => `/room/${theaterId}`
 }
 
 export const roomApi = {

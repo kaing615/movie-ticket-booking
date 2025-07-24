@@ -8,9 +8,15 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 const router = express.Router();
 
 router.get("/", theaterController.getTheater);
-
+router.get(
+    "/manager/:managerId", 
+    requestHandler.validate,
+    theaterController.getTheaterByManagerId
+);
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
+
+
 
 router.post(
     "/", 
