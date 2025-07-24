@@ -162,7 +162,14 @@ const deleteShow = async (req, res) => {
       return responseHandler.unauthorized(res, "Bạn không có quyền xóa lịch chiếu này.");
     }
 
-    await Show.deleteOne({ _id: showId });
+    await Show.updateOne(
+      { _id: showId },
+      { 
+        isDeleted: true,
+        deletedAt: new Date(),
+        deletedBy: userId
+      }
+    );
     return responseHandler.ok(res, { message: "Xóa lịch chiếu thành công!" });
   } catch (err) {
     console.error("Lỗi xóa lịch chiếu:", err);
