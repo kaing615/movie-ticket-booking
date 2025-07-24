@@ -83,6 +83,11 @@ const TheaterDashboard = () => {
         mutationFn: (showId) => showApi.deleteShow(showId),
         onSuccess: () => {
             queryClient.invalidateQueries(['theaterShows']);
+            message.success('Xóa lịch chiếu thành công');
+        },
+        onError: (error) => {
+            message.error('Có lỗi xảy ra khi xóa lịch chiếu');
+            console.error('Delete error:', error);
         }
     });
 
@@ -93,24 +98,22 @@ const TheaterDashboard = () => {
     };
 
     const handleDelete = (record) => {
+        console.log('Deleting show:', record);
         Modal.confirm({
             title: 'Xác nhận xóa',
             content: 'Bạn có chắc chắn muốn xóa lịch chiếu này?',
             okText: 'Xóa',
             okType: 'danger',
             cancelText: 'Hủy',
-            onOk: async () => {
-            try {
-                await deleteShow(record._id);
+            onOk:() => {
+                deleteShow(record._id);
                 message.success('Xóa lịch chiếu thành công');
-            } catch (error) {
-                message.error('Có lỗi xảy ra khi xóa lịch chiếu');
-                console.error(error);
             }
         }
-        });
+        );
     };
 
+   
 
     const columns = [
         {
