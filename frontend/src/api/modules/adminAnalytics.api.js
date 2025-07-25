@@ -1,4 +1,4 @@
-import createPrivateClient from "../clients/private.client";
+import { configuredPrivateClient } from "../clients/configuredClient";
 
 export const adminAnalyticEndpoints = {
 	getUserCountByRole: "analytics/user-count-by-role",
@@ -9,15 +9,23 @@ export const adminAnalyticEndpoints = {
 
 export const adminAnalyticsApi = {
 	getUserCountByRole: () =>
-		createPrivateClient
+		configuredPrivateClient
 			.get(adminAnalyticEndpoints.getUserCountByRole)
 			.then((res) => res.data),
-	getDailyTicketCount: () =>
-		createPrivateClient
-			.get(adminAnalyticEndpoints.getDailyTicketCount)
+	getDailyTicketCount: (params) =>
+		configuredPrivateClient
+			.get(adminAnalyticEndpoints.getDailyTicketCount, {
+				params,
+			})
 			.then((res) => res.data),
-	deleteMovie: (id) =>
-		createPrivateClient
-			.delete(movieEndpoints.deleteMovie(id))
+	getDailyTicketRevenue: (params) =>
+		configuredPrivateClient
+			.get(adminAnalyticEndpoints.getDailyRevenue, {
+				params,
+			})
+			.then((res) => res.data),
+	getTheaterBySystem: () =>
+		configuredPrivateClient
+			.get(adminAnalyticEndpoints.getTheaterBySystem)
 			.then((res) => res.data),
 };

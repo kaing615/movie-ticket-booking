@@ -17,11 +17,6 @@ const RecentOrdersTable = () => {
         try {
             const today = dayjs().format("YYYY-MM-DD");
 
-            // Make API call to your /api/orders endpoint with date range and pagination
-            const response = await axiosInstance.get(
-                `/api/orders?page=${page}&limit=${limit}&date=${today}`
-            );
-
             const fetchedOrders = response.data.data?.[0]?.orders || [];
             const apiPagination = response.data.pagination;
 

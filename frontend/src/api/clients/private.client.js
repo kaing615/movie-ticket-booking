@@ -45,8 +45,6 @@ const createPrivateClient = (dispatch) => {
 						"Authentication error: Token expired or invalid. Logging out..."
 					);
 					if (dispatch) {
-						// Assuming `logout` is your Redux action creator
-						// You'll need to import it from your auth slice
 						dispatch(logout());
 					}
 					window.location.href = "auth/signin"; // Redirect to login page

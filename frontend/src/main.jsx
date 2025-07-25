@@ -9,14 +9,12 @@ import createPrivateClient from "./api/clients/private.client.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 3,
+    defaultOptions: {
+        queries: {
+            retry: 3,
+        },
     },
-  },
 });
-
-export const configuredPrivateClient = createPrivateClient(store.dispatch);
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
