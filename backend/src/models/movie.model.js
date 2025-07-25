@@ -46,8 +46,8 @@ const movieSchema = new mongoose.Schema(
 		},
 		status: {
 			type: String,
-			enum: ["Coming Soon", "Now Showing", "Ended"],
-			default: "Coming Soon",
+			enum: ["coming", "showing", "ended"],
+			default: "coming",
 		},
 		director: {
 			type: String,

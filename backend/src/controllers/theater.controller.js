@@ -317,10 +317,53 @@ const getTheater = async (req, res) => {
 	}
 };
 
+const getTheaterByManagerId = async (req, res) => {
+  try {
+    const { managerId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(managerId)) {
+      return responseHandler.badRequest(res, "ID manager không hợp lệ.");
+    }
+
+    // Kiểm tra manager có tồn tại và là theater-manager không
+    const manager = await User.findOne({ 
+      _id: managerId, 
+      role: "theater-manager",
+      isDeleted: false 
+    });
+
+    if (!manager) {
+      return responseHandler.notFound(res, "Không tìm thấy theater manager.");
+    }
+
+    // Tìm theater được quản lý bởi manager này
+    const theater = await Theater.findOne({ 
+      managerId: managerId,
+      isDeleted: false 
+    })
+    .populate('managerId', 'userName email') // Lấy thông tin manager
+    .populate('theaterSystemId', 'name code logo'); // Lấy thông tin hệ thống rạp
+
+    if (!theater) {
+      return responseHandler.notFound(res, "Không tìm thấy rạp được quản lý bởi manager này.");
+    }
+
+    return responseHandler.ok(res, {
+      message: "Lấy thông tin rạp thành công!",
+      theater
+    });
+
+  } catch (err) {
+    console.error("Lỗi lấy thông tin rạp theo manager:", err);
+    responseHandler.error(res);
+  }
+};
+
 export default {
 	createTheaterAndManager, // Dùng khi muốn tạo mới cả rạp và manager cùng lúc
 	createTheater, // Dùng khi manager đã có account
 	updateTheater,
 	deleteTheater,
 	getTheater,
+	getTheaterByManagerId
 };

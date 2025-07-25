@@ -32,4 +32,5 @@ export const ADMIN_PATH = {
 
 export const MANAGER_PATH = {
 	DASHBOARD: "dashboard",
+	THEATERDASHBOARD: "theater-dashboard",
 };

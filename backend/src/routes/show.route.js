@@ -8,6 +8,7 @@ const router = express.Router();
 router.get("/theater/:theaterId", showController.getShowsByTheater);
 
 router.get("/movie/:movieId", showController.getShowsByMovie);
+router.get("/theater/:theaterId/movies", showController.getMoviesOfTheater);
 
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
