@@ -16,32 +16,31 @@ const AdminDashboard = () => {
     const [currentDateSelection, setCurrentDateSelection] = useState([dayjs().format("YYYY-MM-DD"), dayjs().format("YYYY-MM-DD")]);
     useEffect(() => {
         const { start, end } = currentDateSelection[0] ? { start: currentDateSelection[0], end: currentDateSelection[1] } : { start: dayjs().format("YYYY-MM-DD"), end: dayjs().format("YYYY-MM-DD") };
-        console.log(start, end);
     }, [currentDateSelection])
+
     // Query for User Count by Role
     const { data: userCounts, isLoading: userCountsLoading, error: userCountsError } = useQuery({
         queryKey: ['userCountsByRole'], // Unique key for this query
         queryFn: adminAnalyticsApi.getUserCountByRole,    // The function that fetches the data
     });
 
-    console.log(userCounts);
-    if (userCountsLoading) {
-        return <div>Loading analytics data...</div>;
-    }
+    const {
+        data: dailyTicketCount,
+        isLoading: dailyTicketCountLoading,
+        error: dailyTicketCountError
+    } = useQuery({
+        queryKey: ['dailyTicketCount', currentDateSelection],
+        queryFn: () => adminAnalyticsApi.getDailyTicketCount(currentDateSelection[0], currentDateSelection[1]),
+    });
 
-    if (userCountsError) {
-        return <div>Error loading data:
-            {userCountsError?.message}
-        </div>;
-    }
-
-    // const { DailyTicketCount } = useQuery({
-    //     queryKey: ["DailyTicketCount", start, end],
-    //     queryFn: () => adminAnalyticsApi.getDailyTicketCount(start, end),
-    //     onSuccess: (data) => {
-    //         console.log(data);
-    //     }
-    // })
+    const {
+        data: dailyTicketRevenue,
+        isLoading: dailyTicketRevenueLoading,
+        error: dailyTicketRevenueError
+    } = useQuery({
+        queryKey: ['dailyTicketRevenue', currentDateSelection],
+        queryFn: () => adminAnalyticsApi.getDailyTicketRevenue(currentDateSelection[0], currentDateSelection[1]),
+    });
 
     return (
         <>

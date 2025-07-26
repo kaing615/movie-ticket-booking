@@ -4,13 +4,11 @@ import Ticket from "../../models/ticket.model.js";
 import User from "../../models/user.model.js";
 import TheaterSystem from "../../models/theaterSystem.model.js";
 
-const DateRangeHelper = (res, start, end) => {
+const DateRangeHelper = (start, end) => {
 	// Input validation for dates
-	if (!start && !end) {
-		return res.status(400).json({
-			success: false,
-			message: "Start or end date is required.",
-		});
+	if (!start || !end) {
+		// Throw an error that the caller can catch and handle (e.g., send 400)
+		throw new Error("Start date or end date is required.");
 	}
 
 	let startDate = start ? new Date(start) : null;
@@ -20,40 +18,39 @@ const DateRangeHelper = (res, start, end) => {
 		(startDate && isNaN(startDate.getTime())) ||
 		(endDate && isNaN(endDate.getTime()))
 	) {
-		return res
-			.status(400)
-			.json({ success: false, message: "Invalid date format." });
+		throw new Error(
+			"Invalid date format. Please use a valid date string (e.g., YYYY-MM-DD)."
+		);
 	}
 
 	if (startDate && endDate && startDate > endDate) {
-		return res.status(400).json({
-			success: false,
-			message: "Start date cannot be after end date.",
-		});
+		throw new Error("Start date cannot be after end date.");
 	}
 
 	// Prevent end date from being in the future relative to the current date
 	const currentDate = new Date();
-	currentDate.setHours(23, 59, 59, 999); // Set to end of current day for comparison
+	// Ensure comparison is accurate to the end of the current day
+	currentDate.setHours(23, 59, 59, 999);
 
 	if (endDate && endDate > currentDate) {
-		return res.status(400).json({
-			success: false,
-			message: "End date cannot be in the future.",
-		});
+		throw new Error("End date cannot be in the future.");
 	}
 
 	// Adjust dates for full day range
+	// Set startDate to the beginning of the day (00:00:00.000)
 	if (startDate) startDate.setHours(0, 0, 0, 0);
+	// Set endDate to the end of the day (23:59:59.999)
 	if (endDate) endDate.setHours(23, 59, 59, 999);
 
 	// Default dates if only one is provided
 	if (startDate && !endDate) {
-		endDate = new Date(); // Today
+		// If only startDate is provided, endDate defaults to today (end of day)
+		endDate = new Date();
 		endDate.setHours(23, 59, 59, 999);
 	}
 
 	if (!startDate && endDate) {
+		// If only endDate is provided, startDate defaults to Epoch (beginning of time)
 		startDate = new Date("1970-01-01T00:00:00Z"); // Epoch
 	}
 
@@ -63,7 +60,7 @@ const DateRangeHelper = (res, start, end) => {
 const getDailyTicketCount = async (req, res) => {
 	try {
 		const { start, end } = req.query;
-		const { startDate, endDate } = DateRangeHelper(res, start, end);
+		const { startDate, endDate } = DateRangeHelper(start, end);
 		const dailyTicketCounts = await Ticket.aggregate([
 			// Stage 1: Filter tickets by date range if startDate or endDate are provided
 			{
@@ -121,7 +118,7 @@ const getDailyTicketCount = async (req, res) => {
 const getDailyRevenue = async (req, res) => {
 	try {
 		const { start, end } = req.query;
-		const { startDate, endDate } = DateRangeHelper(res, start, end);
+		const { startDate, endDate } = DateRangeHelper(start, end);
 
 		const dailyRevenue = await Ticket.aggregate([
 			// Stage 1: Filter bookings by date range if startDate or endDate are provided

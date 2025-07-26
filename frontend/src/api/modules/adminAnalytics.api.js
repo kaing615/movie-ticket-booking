@@ -12,16 +12,16 @@ export const adminAnalyticsApi = {
 		configuredPrivateClient
 			.get(adminAnalyticEndpoints.getUserCountByRole)
 			.then((res) => res.data),
-	getDailyTicketCount: (params) =>
+	getDailyTicketCount: (startDate, endDate) =>
 		configuredPrivateClient
 			.get(adminAnalyticEndpoints.getDailyTicketCount, {
-				params,
+				params: { start: startDate, end: endDate },
 			})
 			.then((res) => res.data),
-	getDailyTicketRevenue: (params) =>
+	getDailyTicketRevenue: (startDate, endDate) =>
 		configuredPrivateClient
 			.get(adminAnalyticEndpoints.getDailyRevenue, {
-				params,
+				params: { start: startDate, end: endDate },
 			})
 			.then((res) => res.data),
 	getTheaterBySystem: () =>
