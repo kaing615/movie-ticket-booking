@@ -6,7 +6,7 @@ import TheaterSystem from "../../models/theaterSystem.model.js";
 
 const DateRangeHelper = (start, end) => {
 	// Input validation for dates
-	if (!start || !end) {
+	if (!start && !end) {
 		// Throw an error that the caller can catch and handle (e.g., send 400)
 		throw new Error("Start date or end date is required.");
 	}
