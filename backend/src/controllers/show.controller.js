@@ -112,7 +112,7 @@ const addShow = async (req, res) => {
 const updateShow = async (req, res) => {
   try {
     const { showId } = req.params;
-    const { startTime, endTime, status } = req.body;
+    const { startTime, endTime, status, roomId } = req.body;
     const userId = req.user.id;
 
     if (!mongoose.Types.ObjectId.isValid(showId)) {
@@ -120,7 +120,9 @@ const updateShow = async (req, res) => {
     }
 
     const show = await Show.findById(showId);
-    if (!show) return responseHandler.notFound(res, "Không tìm thấy lịch chiếu.");
+    if (!show) {
+      return responseHandler.notFound(res, "Không tìm thấy lịch chiếu.");
+    }
 
     // Kiểm tra quyền theater-manager
     const isManager = await isTheaterManagerOf(userId, show.theaterId);
@@ -128,10 +130,47 @@ const updateShow = async (req, res) => {
       return responseHandler.unauthorized(res, "Bạn không có quyền cập nhật lịch chiếu này.");
     }
 
+    // Nếu roomId được cập nhật, kiểm tra hợp lệ và đúng rạp
+    if (roomId) {
+      if (!mongoose.Types.ObjectId.isValid(roomId)) {
+        return responseHandler.badRequest(res, "ID phòng chiếu không hợp lệ.");
+      }
+
+      const room = await Room.findById(roomId);
+      if (!room) return responseHandler.notFound(res, "Không tìm thấy phòng chiếu.");
+
+      if (!room.theaterId.equals(show.theaterId)) {
+        return responseHandler.badRequest(res, "Phòng không thuộc rạp của lịch chiếu.");
+      }
+
+      show.roomId = roomId;
+    }
+
+    // Kiểm tra thời gian
     if (startTime && endTime && new Date(startTime) >= new Date(endTime)) {
       return responseHandler.badRequest(res, "Thời gian bắt đầu phải trước thời gian kết thúc.");
     }
 
+    // Kiểm tra trùng lịch nếu thay đổi thời gian hoặc phòng
+    const newRoomId = roomId || show.roomId;
+    const newStart = startTime || show.startTime;
+    const newEnd = endTime || show.endTime;
+
+    const overlappingShow = await Show.findOne({
+      _id: { $ne: showId }, // bỏ qua lịch chiếu hiện tại
+      roomId: newRoomId,
+      $or: [
+        { startTime: { $lt: newEnd, $gte: newStart } },
+        { endTime: { $lte: newEnd, $gt: newStart } },
+        { startTime: { $lte: newStart }, endTime: { $gte: newEnd } }
+      ]
+    });
+
+    if (overlappingShow) {
+      return responseHandler.badRequest(res, "Phòng này đã có lịch chiếu trong khoảng thời gian đó.");
+    }
+
+    // Cập nhật các trường còn lại nếu có
     show.startTime = startTime || show.startTime;
     show.endTime = endTime || show.endTime;
     show.status = status || show.status;
@@ -144,11 +183,11 @@ const updateShow = async (req, res) => {
   }
 };
 
-// Xóa lịch chiếu
-const deleteShow = async (req, res) => {
+// Xóa tất cả lịch chiếu của một phim khỏi rạp
+const deleteMovieFromTheater = async (req, res) => {
   try {
     const { showId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(showId)) {
       return responseHandler.badRequest(res, "ID lịch chiếu không hợp lệ.");
@@ -158,24 +197,25 @@ const deleteShow = async (req, res) => {
     if (!show) return responseHandler.notFound(res, "Không tìm thấy lịch chiếu.");
 
     const isManager = await isTheaterManagerOf(userId, show.theaterId);
+
     if (!isManager) {
       return responseHandler.unauthorized(res, "Bạn không có quyền xóa lịch chiếu này.");
     }
 
-    await Show.updateOne(
-      { _id: showId },
-      { 
-        isDeleted: true,
-        deletedAt: new Date(),
-        deletedBy: userId
-      }
-    );
+    const result = await Show.deleteOne({ _id: showId });
+    if (result.deletedCount === 0) {
+      return responseHandler.notFound(res, "Không tìm thấy lịch chiếu để xóa.");
+    }
+
     return responseHandler.ok(res, { message: "Xóa lịch chiếu thành công!" });
   } catch (err) {
     console.error("Lỗi xóa lịch chiếu:", err);
     responseHandler.error(res);
   }
 };
+
+// xóa 1 lịch chiếu cụ thể
+
 
 // Lấy danh sách lịch chiếu theo rạp
 const getShowsByTheater = async (req, res) => {
@@ -221,7 +261,7 @@ const getShowsByMovie = async (req, res) => {
 export default {
   addShow,
   updateShow,
-  deleteShow,
+  deleteMovieFromTheater,
   getShowsByTheater,
   getShowsByMovie,
   getMoviesOfTheater
