@@ -1,4 +1,4 @@
-import { adminAnalyticsApi } from "../../../api/modules/adminAnalytics.api";
+import { adminAnalyticsApi } from "../../../api/modules/admin/adminAnalytics.api";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -62,6 +62,9 @@ const AdminDashboard = () => {
         queryFn: () => adminAnalyticsApi.getDailyTicketRevenue(currentDateSelection[0], currentDateSelection[1]),
     });
 
+    console.log(dailyTicketCount);
+    console.log(dailyTicketRevenue);
+
     return (
         <>
             <div className="flex items-center justify-between w-full h-25 py-3 px-4">
@@ -82,8 +85,8 @@ const AdminDashboard = () => {
                 <MetricCard title={'Managers'} stat={userCounts?.data[2].count}></MetricCard>
                 <MetricCard title={'Admins'} stat={userCounts?.data[0].count}></MetricCard>
             </div>
-            <DailyTicketChart></DailyTicketChart>
-            <DailyRevenueChart></DailyRevenueChart>
+            <DailyTicketChart data={dailyTicketCount}></DailyTicketChart>
+            <DailyRevenueChart data={dailyTicketRevenue}></DailyRevenueChart>
         </>
     );
 };

@@ -61,7 +61,8 @@ const getDailyTicketCount = async (req, res) => {
 	try {
 		const { start, end } = req.query;
 		const { startDate, endDate } = DateRangeHelper(start, end);
-		const dailyTicketCounts = await Ticket.aggregate([
+
+		const dailyTicketCountsResult = await Ticket.aggregate([
 			// Stage 1: Filter tickets by date range if startDate or endDate are provided
 			{
 				$match: {
@@ -103,11 +104,34 @@ const getDailyTicketCount = async (req, res) => {
 					date: 1,
 				},
 			},
+			// Stage 5: Calculate the overall ticket count and push daily counts into an array
+			// This groups all the previous documents into a single document
+			{
+				$group: {
+					_id: null, // Group all documents into a single group
+					dailyTicketCounts: { $push: "$$ROOT" }, // Push the entire daily count document into an array
+					overallTotalTicketCount: { $sum: "$count" }, // Sum up all daily counts for the overall total
+				},
+			},
+			// Stage 6: Project to format the final output, removing the _id field
+			{
+				$project: {
+					_id: 0, // Exclude the default _id field
+					dailyTicketCounts: 1,
+					overallTotalTicketCount: 1,
+				},
+			},
 		]);
+
+		// The aggregation result is an array. We want the first (and only) element.
+		const formattedDailyTicketCounts =
+			dailyTicketCountsResult.length > 0
+				? dailyTicketCountsResult[0]
+				: { dailyTicketCounts: [], overallTotalTicketCount: 0 };
 
 		return responseHandler.ok(res, {
 			message: "Daily ticket counts retrieved successfully",
-			data: dailyTicketCounts,
+			data: formattedDailyTicketCounts, // Directly pass the object
 		});
 	} catch (error) {
 		console.error("Error fetching daily ticket counts:", error);
@@ -120,7 +144,7 @@ const getDailyRevenue = async (req, res) => {
 		const { start, end } = req.query;
 		const { startDate, endDate } = DateRangeHelper(start, end);
 
-		const dailyRevenue = await Ticket.aggregate([
+		const dailyRevenueResult = await Ticket.aggregate([
 			// Stage 1: Filter bookings by date range if startDate or endDate are provided
 			{
 				$match: {
@@ -162,7 +186,7 @@ const getDailyRevenue = async (req, res) => {
 					date: 1,
 				},
 			},
-			// Stage 5: Calculate the overall revenue
+			// Stage 5: Calculate the overall revenue and push daily revenues into an array
 			{
 				$group: {
 					_id: null,
@@ -170,7 +194,7 @@ const getDailyRevenue = async (req, res) => {
 					overallTotalRevenue: { $sum: "$dailyTotalRevenue" },
 				},
 			},
-			// Stage 6: Project to format the output (e.g., "YYYY-MM-DD")
+			// Stage 6: Project to format the output, removing the _id field
 			{
 				$project: {
 					_id: 0, // Exclude the default _id field
@@ -179,9 +203,16 @@ const getDailyRevenue = async (req, res) => {
 				},
 			},
 		]);
+
+		// The aggregation result is an array. We want the first (and only) element.
+		const formattedDailyRevenue =
+			dailyRevenueResult.length > 0
+				? dailyRevenueResult[0]
+				: { dailyRevenue: [], overallTotalRevenue: 0 };
+
 		return responseHandler.ok(res, {
 			message: "Daily revenue retrieved successfully",
-			data: dailyRevenue,
+			data: formattedDailyRevenue, // Directly pass the object
 		});
 	} catch (error) {
 		console.error("Error fetching daily revenue:", error);

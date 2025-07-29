@@ -8,7 +8,8 @@ import showRoute from "./show.route.js";
 import theaterSystemRoute from "./theaterSystem.route.js";
 import roomRoute from "./room.route.js";
 import movieRoute from "./movie.route.js";
-import analyticsRoute from "./analytics.route.js";
+
+import adminRoutes from "../routes/admin/admin.route.js";
 
 const router = express.Router();
 
@@ -21,6 +22,6 @@ router.use("/theater", theaterRoute);
 router.use(token.auth);
 
 router.use("/room", authorizeRoles(["theater-manager", "admin"]), roomRoute);
-router.use("/analytics", authorizeRoles(["admin"]), analyticsRoute);
+router.use("/admin", authorizeRoles(["admin"]), adminRoutes);
 
 export default router;
