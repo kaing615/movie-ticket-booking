@@ -9,6 +9,8 @@ import isBetween from "dayjs/plugin/isBetween";
 import { theaterApi } from "../../api/modules/theater.api.js";
 import { showApi } from "../../api/modules/show.api.js";
 import { roomApi } from "../../api/modules/room.api.js";
+import DeleteShowModal from "../../components/movie/DeleteShowModal.jsx";
+import EditShowModal from "../../components/movie/EditShowModal.jsx";
 
 // Add isBetween plugin to dayjs
 dayjs.extend(isBetween);
@@ -18,6 +20,15 @@ const TheaterDashboard = () => {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [selectedMovie, setSelectedMovie] = useState(null);
     const { user } = useSelector((state) => state.auth);
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        show: null
+    });
+
+    const [editModal, setEditModal] = useState({
+        isOpen: false,
+        show: null
+    });
 
     const queryClient = useQueryClient();
     // Fetch data
@@ -91,29 +102,34 @@ const TheaterDashboard = () => {
         }
     });
 
-    // Add handlers
     const handleEdit = (record) => {
-        
-        console.log("Edit show:", record);
+        setEditModal({
+            isOpen: true,
+            show: record
+        });
+    };
+
+    const handleCloseEditModal = () => {
+        setEditModal({
+            isOpen: false,
+            show: null
+        });
     };
 
     const handleDelete = (record) => {
-        console.log('Deleting show:', record);
-        Modal.confirm({
-            title: 'Xác nhận xóa',
-            content: 'Bạn có chắc chắn muốn xóa lịch chiếu này?',
-            okText: 'Xóa',
-            okType: 'danger',
-            cancelText: 'Hủy',
-            onOk:() => {
-                deleteShow(record._id);
-                message.success('Xóa lịch chiếu thành công');
-            }
-        }
-        );
+        setDeleteModal({
+            isOpen: true,
+            show: record
+        });
     };
 
-   
+
+    const handleCloseDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            show: null
+        });
+    };
 
     const columns = [
         {
@@ -269,6 +285,18 @@ const TheaterDashboard = () => {
                     />
                 </Card>
             </div>
+            <EditShowModal 
+                isOpen={editModal.isOpen}
+                onClose={handleCloseEditModal}
+                show={editModal.show}
+            />
+            
+            <DeleteShowModal 
+                isOpen={deleteModal.isOpen}
+                onClose={handleCloseDeleteModal}
+                show={deleteModal.show}
+            />
+
         </div>
     );
 };

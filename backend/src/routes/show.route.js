@@ -17,6 +17,6 @@ router.post("/", showController.addShow);
 
 router.put("/:showId", showController.updateShow);
 
-router.delete("/:showId", showController.deleteShow);
+router.delete("/:showId/movie", showController.deleteMovieFromTheater);
 
 export default router;

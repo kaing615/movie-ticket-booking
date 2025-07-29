@@ -7,6 +7,7 @@ import {theaterApi} from "../../api/modules/theater.api.js";
 import {movieApi} from "../../api/modules/movie.api.js";
 import {showApi} from "../../api/modules/show.api.js";
 import { roomApi } from "../../api/modules/room.api.js";
+import DeleteMovieModal from "../../components/movie/DeleteMovieModal.jsx";
 
 const ManagerDashboard = () => {
     const [showAddMovieModal, setShowAddMovieModal] = React.useState(false);
@@ -14,6 +15,11 @@ const ManagerDashboard = () => {
     const [selectedMovie, setSelectedMovie] = React.useState(null);
     const queryClient = useQueryClient();
     const { user } = useSelector((state) => state.auth);
+    const [deleteMovieModal, setDeleteMovieModal] = React.useState({
+        isOpen: false,
+        movieId: null,
+        movieName: ''
+    });
 
     // Fetch data
     const { data: theater, isLoading: isLoadingTheater } = useQuery({
@@ -65,38 +71,7 @@ const ManagerDashboard = () => {
     return availableMovies;
     }
     // console.log("Available movies:", getAvailableMovies());
-    const removeMovieMutation = useMutation({
-        mutationFn: async (movieId) => {
-            // Get all shows for this movie in the theater
-            const movieShows = theaterShows?.filter(
-                show => show.movieId._id === movieId || show.movieId === movieId
-            );
-            
-            if (!movieShows || movieShows.length === 0) {
-                console.log("No shows found for movie:", movieId);
-                return true;
-            }
-
-            console.log("Deleting shows:", movieShows);
-            
-            // Delete all shows for this movie
-            const deletePromises = movieShows.map(show => showApi.deleteShow(show._id));
-            await Promise.all(deletePromises);
-            
-            return true;
-        },
-        onSuccess: () => {
-            // Refresh both theater shows and theater movies data
-            queryClient.invalidateQueries(["theaterShows"]);
-            queryClient.invalidateQueries(["theaterMovies"]);
-            message.success("Xóa phim khỏi rạp thành công!");
-        },
-        onError: (error) => {
-            console.error("Remove movie error:", error);
-            message.error("Có lỗi xảy ra khi xóa phim khỏi rạp!");
-        }
-    });
-
+    
     console.log("Theater ID: ", theater?._id);
 
     const addScheduleMutation = useMutation({
@@ -154,25 +129,12 @@ const ManagerDashboard = () => {
         return Promise.resolve();
     };
 
-    const handleRemoveMovie = (movieId) => {
-        console.log("Removing movie with ID:", movieId);
-
-        Modal.confirm({
-            title: "Xác nhận xóa",
-            content: "Bạn có chắc chắn muốn xóa phim này khỏi rạp? Tất cả lịch chiếu của phim sẽ bị xóa.",
-            okText: "Xóa",
-            cancelText: "Hủy",
-            okButtonProps: { 
-                danger: true,
-                loading: removeMovieMutation.isLoading 
-            },
-            onOk:async () => {
-                return removeMovieMutation.mutateAsync(movieId)
-                    .catch(error => {
-                        console.error("Delete error:", error);
-                        message.error("Có lỗi xảy ra khi xóa phim!");
-                    });
-                }
+    const handleRemoveMovie = (movie) => {
+        console.log("Removing movie:", movie);
+        setDeleteMovieModal({
+            isOpen: true,
+            movieId: movie._id,
+            movieName: movie.movieName
         });
     };
 
@@ -224,13 +186,13 @@ const ManagerDashboard = () => {
             title: "Thao tác",
             key: "action",
             render: (_, record) => (
+                console.log("Rendering action for movie:", record),
                 <div className="flex space-x-3">
                     <ActionButton movie={record} />
                     <Button
                     icon={<DeleteOutlined />}
-                    onClick={() => handleRemoveMovie(record._id)}
+                    onClick={() => handleRemoveMovie(record)}
                     className="flex items-center bg-red-500 text-white hover:bg-red-600 border-none shadow-md"
-                    loading={removeMovieMutation.isLoading}
                 >
                         Xóa khỏi rạp
                     </Button>
@@ -353,6 +315,19 @@ const ManagerDashboard = () => {
                     ))}
                 </div>
             </Modal>
+
+            {/* Delete Movie Modal */}
+            <DeleteMovieModal 
+                isOpen={deleteMovieModal.isOpen}
+                onClose={() => setDeleteMovieModal({
+                    isOpen: false,
+                    movieId: null,
+                    movieName: ''
+                })}
+                movieId={deleteMovieModal.movieId}
+                movieName={deleteMovieModal.movieName}
+                theaterShows={theaterShows}
+            />
 
             {/* Schedule Modal */}
             <Modal
