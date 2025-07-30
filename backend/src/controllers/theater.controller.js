@@ -113,10 +113,11 @@ const createTheaterAndManager = async (req, res) => {
 // Tạo rạp, gán managerId có sẵn (option: dùng khi đã có sẵn account manager)
 const createTheater = async (req, res) => {
 	try {
-		const { managerId, theaterName, location, theaterSystemId } = req.body;
+		const { managerEmail, theaterName, location, theaterSystemId } =
+			req.body;
 
 		// Validate
-		if (!managerId || !theaterName || !location || !theaterSystemId) {
+		if (!managerEmail || !theaterName || !location || !theaterSystemId) {
 			return responseHandler.badRequest(res, "Thiếu thông tin bắt buộc.");
 		}
 
@@ -130,7 +131,7 @@ const createTheater = async (req, res) => {
 
 		// Check manager
 		const manager = await User.findOne({
-			_id: managerId,
+			email: managerEmail,
 			isDeleted: false,
 		});
 		if (!manager) {
@@ -148,7 +149,7 @@ const createTheater = async (req, res) => {
 
 		// Một manager chỉ quản lý 1 rạp
 		const existingTheater = await Theater.findOne({
-			managerId,
+			email: managerEmail,
 			isDeleted: false,
 		});
 		if (existingTheater) {
@@ -169,7 +170,7 @@ const createTheater = async (req, res) => {
 
 		// Tạo rạp
 		const theater = new Theater({
-			managerId,
+			managerId: manager._id,
 			theaterName,
 			location,
 			theaterSystemId,
@@ -318,45 +319,50 @@ const getTheater = async (req, res) => {
 };
 
 const getTheaterByManagerId = async (req, res) => {
-  try {
-    const { managerId } = req.params;
+	try {
+		const { managerId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(managerId)) {
-      return responseHandler.badRequest(res, "ID manager không hợp lệ.");
-    }
+		if (!mongoose.Types.ObjectId.isValid(managerId)) {
+			return responseHandler.badRequest(res, "ID manager không hợp lệ.");
+		}
 
-    // Kiểm tra manager có tồn tại và là theater-manager không
-    const manager = await User.findOne({ 
-      _id: managerId, 
-      role: "theater-manager",
-      isDeleted: false 
-    });
+		// Kiểm tra manager có tồn tại và là theater-manager không
+		const manager = await User.findOne({
+			_id: managerId,
+			role: "theater-manager",
+			isDeleted: false,
+		});
 
-    if (!manager) {
-      return responseHandler.notFound(res, "Không tìm thấy theater manager.");
-    }
+		if (!manager) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy theater manager."
+			);
+		}
 
-    // Tìm theater được quản lý bởi manager này
-    const theater = await Theater.findOne({ 
-      managerId: managerId,
-      isDeleted: false 
-    })
-    .populate('managerId', 'userName email') // Lấy thông tin manager
-    .populate('theaterSystemId', 'name code logo'); // Lấy thông tin hệ thống rạp
+		// Tìm theater được quản lý bởi manager này
+		const theater = await Theater.findOne({
+			managerId: managerId,
+			isDeleted: false,
+		})
+			.populate("managerId", "userName email") // Lấy thông tin manager
+			.populate("theaterSystemId", "name code logo"); // Lấy thông tin hệ thống rạp
 
-    if (!theater) {
-      return responseHandler.notFound(res, "Không tìm thấy rạp được quản lý bởi manager này.");
-    }
+		if (!theater) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy rạp được quản lý bởi manager này."
+			);
+		}
 
-    return responseHandler.ok(res, {
-      message: "Lấy thông tin rạp thành công!",
-      theater
-    });
-
-  } catch (err) {
-    console.error("Lỗi lấy thông tin rạp theo manager:", err);
-    responseHandler.error(res);
-  }
+		return responseHandler.ok(res, {
+			message: "Lấy thông tin rạp thành công!",
+			theater,
+		});
+	} catch (err) {
+		console.error("Lỗi lấy thông tin rạp theo manager:", err);
+		responseHandler.error(res);
+	}
 };
 
 export default {
@@ -365,5 +371,5 @@ export default {
 	updateTheater,
 	deleteTheater,
 	getTheater,
-	getTheaterByManagerId
+	getTheaterByManagerId,
 };

@@ -9,34 +9,39 @@ const router = express.Router();
 
 router.get("/", theaterController.getTheater);
 router.get(
-    "/manager/:managerId", 
-    requestHandler.validate,
-    theaterController.getTheaterByManagerId
+	"/manager/:managerId",
+	requestHandler.validate,
+	theaterController.getTheaterByManagerId
 );
 router.use(tokenMiddleware.auth);
 router.use(authorizeRoles(["theater-manager"]));
 
-
+router.post(
+	"/",
+	theaterValidator.createTheaterValidator,
+	requestHandler.validate,
+	theaterController.createTheater
+);
 
 router.post(
-    "/", 
-    ...theaterValidator.createTheaterValidator,
-    requestHandler.validate,
-    theaterController.createTheaterAndManager
+	"/create-theater-and-manager",
+	theaterValidator.createTheaterWithManagerValidator,
+	requestHandler.validate,
+	theaterController.createTheaterAndManager
 );
 
 router.put(
-    "/update-theater/:theaterId", 
-    ...theaterValidator.updateTheaterValidator,
-    requestHandler.validate,
-    theaterController.updateTheater
+	"/:theaterId",
+	theaterValidator.updateTheaterValidator,
+	requestHandler.validate,
+	theaterController.updateTheater
 );
 
 router.delete(
-    "/delete-theater/:theaterId", 
-    ...theaterValidator.deleteTheaterValidator,
-    requestHandler.validate,
-    theaterController.deleteTheater
+	"/:theaterId",
+	theaterValidator.deleteTheaterValidator,
+	requestHandler.validate,
+	theaterController.deleteTheater
 );
 
 export default router;

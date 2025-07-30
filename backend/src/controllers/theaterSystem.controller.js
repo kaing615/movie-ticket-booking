@@ -114,79 +114,94 @@ const deleteTheaterSystem = async (req, res) => {
 };
 
 const addTheaterToSystem = async (req, res) => {
-  try {
-    const { systemId, theaterId } = req.body;
+	try {
+		const { systemId, theaterId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(systemId) || !mongoose.Types.ObjectId.isValid(theaterId)) {
-      return responseHandler.badRequest(res, "ID hệ thống hoặc rạp không hợp lệ.");
-    }
+		if (
+			!mongoose.Types.ObjectId.isValid(systemId) ||
+			!mongoose.Types.ObjectId.isValid(theaterId)
+		) {
+			return responseHandler.badRequest(
+				res,
+				"ID hệ thống hoặc rạp không hợp lệ."
+			);
+		}
 
-    const theaterSystem = await TheaterSystem.findById(systemId);
-    if (!theaterSystem) {
-      return responseHandler.notFound(res, "Không tìm thấy hệ thống rạp.");
-    }
+		const theaterSystem = await TheaterSystem.findById(systemId);
+		if (!theaterSystem) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy hệ thống rạp."
+			);
+		}
 
-    const theater = await Theater.findById(theaterId);
-    if (!theater || theater.isDeleted) {
-      return responseHandler.notFound(res, "Không tìm thấy rạp.");
-    }
+		const theater = await Theater.findById(theaterId);
+		if (!theater || theater.isDeleted) {
+			return responseHandler.notFound(res, "Không tìm thấy rạp.");
+		}
 
-    // Cập nhật rạp gán vào hệ thống
-    theater.theaterSystemId = systemId;
-    await theater.save();
+		// Cập nhật rạp gán vào hệ thống
+		theater.theaterSystemId = systemId;
+		await theater.save();
 
-    return responseHandler.ok(res, {
-      message: "Gán rạp vào hệ thống thành công!",
-      theater,
-      theaterSystem
-    });
-  } catch (err) {
-    console.error("Lỗi gán rạp vào hệ thống:", err);
-    responseHandler.error(res, err.message);
-  }
+		return responseHandler.ok(res, {
+			message: "Gán rạp vào hệ thống thành công!",
+			theater,
+			theaterSystem,
+		});
+	} catch (err) {
+		console.error("Lỗi gán rạp vào hệ thống:", err);
+		responseHandler.error(res, err.message);
+	}
 };
 
 const getAllTheaterSystems = async (req, res) => {
-  try {
-    const systems = await TheaterSystem.find();
-    return responseHandler.ok(res, systems);
-  } catch (err) {
-    console.error("Lỗi lấy danh sách hệ thống rạp:", err);
-    responseHandler.error(res, err.message);
-  }
+	try {
+		const systems = await TheaterSystem.find();
+		return responseHandler.ok(res, systems);
+	} catch (err) {
+		console.error("Lỗi lấy danh sách hệ thống rạp:", err);
+		responseHandler.error(res, err.message);
+	}
 };
 
 const getTheaterSystemById = async (req, res) => {
-  try {
-    const { systemId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(systemId)) {
-      return responseHandler.badRequest(res, "ID hệ thống không hợp lệ.");
-    }
+	try {
+		const { systemId } = req.params;
+		if (!mongoose.Types.ObjectId.isValid(systemId)) {
+			return responseHandler.badRequest(res, "ID hệ thống không hợp lệ.");
+		}
 
-    // Lấy hệ thống rạp
-    const system = await TheaterSystem.findById(systemId);
-    if (!system) {
-      return responseHandler.notFound(res, "Không tìm thấy hệ thống rạp.");
-    }
+		// Lấy hệ thống rạp
+		const system = await TheaterSystem.findById(systemId);
+		if (!system) {
+			return responseHandler.notFound(
+				res,
+				"Không tìm thấy hệ thống rạp."
+			);
+		}
 
-    // Lấy danh sách rạp thuộc hệ thống này
-    const theaters = await Theater.find({ theaterSystemId: systemId, isDeleted: false });
+		// Lấy danh sách rạp thuộc hệ thống này
+		const theaters = await Theater.find({
+			theaterSystemId: systemId,
+			isDeleted: false,
+		});
 
-    return responseHandler.ok(res, {
-      theaterSystem: system,
-      theaters
-    });
-  } catch (err) {
-    console.error("Lỗi lấy chi tiết hệ thống rạp:", err);
-    responseHandler.error(res, err.message);
-  }
+		return responseHandler.ok(res, {
+			theaterSystem: system,
+			theaters,
+		});
+	} catch (err) {
+		console.error("Lỗi lấy chi tiết hệ thống rạp:", err);
+		responseHandler.error(res, err.message);
+	}
 };
 
 export default {
-  createTheaterSystem,
-  updateTheaterSystem,
-  deleteTheaterSystem,
-  getAllTheaterSystems,
-  getTheaterSystemById,
-  addTheaterToSystem,
+	createTheaterSystem,
+	updateTheaterSystem,
+	deleteTheaterSystem,
+	getAllTheaterSystems,
+	getTheaterSystemById,
+	addTheaterToSystem,
 };

@@ -1,11 +1,34 @@
 import { body, param } from "express-validator";
 
-const createTheaterValidator = [
-	body("managerId")
+const createTheaterWithManagerValidator = [
+	body("managerEmail").isEmail().withMessage("Email không hợp lệ"),
+	body("managerPassword")
+		.isLength({ min: 6 })
+		.withMessage("Mật khẩu phải có ít nhất 6 ký tự"),
+	body("managerUserName")
 		.notEmpty()
-		.withMessage("ID quản lý phải được cung cấp.")
+		.withMessage("Tên người dùng không được để trống"),
+	body("theaterName")
+		.trim()
+		.escape()
+		.isString()
+		.notEmpty()
+		.withMessage("Tên rạp phải được cung cấp."),
+	body("location")
+		.trim()
+		.escape()
+		.isString()
+		.notEmpty()
+		.withMessage("Địa chỉ rạp phải được cung cấp."),
+	body("theaterSystemId")
+		.notEmpty()
+		.withMessage("ID hệ thống rạp phải được cung cấp.")
 		.isMongoId()
-		.withMessage("ID quản lý không hợp lệ."),
+		.withMessage("ID hệ thống rạp không hợp lệ."),
+];
+
+const createTheaterValidator = [
+	body("managerEmail").isEmail().withMessage("Email quản lý phải hợp lệ."),
 	body("theaterName")
 		.trim()
 		.escape()
@@ -62,6 +85,7 @@ const deleteTheaterValidator = [
 ];
 
 const theaterValidator = {
+	createTheaterWithManagerValidator,
 	createTheaterValidator,
 	updateTheaterValidator,
 	deleteTheaterValidator,
