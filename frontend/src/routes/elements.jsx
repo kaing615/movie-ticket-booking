@@ -5,6 +5,8 @@ import { useRoutes, Navigate } from "react-router-dom";
 import AdminLayout from "../pages/admin/Layout/AdminLayout.jsx";
 import AdminDashboard from "../pages/admin/Dashboard/AdminDashboard.jsx";
 import UserManagement from "../pages/admin/UserManagement.jsx";
+import TheaterManagement from "../pages/admin/Theaters/Theater.jsx";
+import MovieManagement from "../pages/admin/Movies/Movies.jsx";
 
 //Manager pages
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
@@ -79,6 +81,14 @@ const useRouterElements = () => {
                 {
                     path: ADMIN_PATH.SHOWS,
                     element: <ShowManagement />
+                },
+                {
+                    path: ADMIN_PATH.MOVIES,
+                    element: <MovieManagement />
+                },
+                {
+                    path: ADMIN_PATH.THEATERS,
+                    element: <TheaterManagement />
                 }
             ]
         },

@@ -47,7 +47,7 @@ const createPrivateClient = (dispatch) => {
 					if (dispatch) {
 						dispatch(logout());
 					}
-					window.location.href = "auth/signin"; // Redirect to login page
+					window.location.href = "/auth/signin"; // Redirect to login page
 				}
 			}
 			// Re-throw the error so it can be caught by the calling code (e.g., in a try-catch block)

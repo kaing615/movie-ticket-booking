@@ -1,10 +1,10 @@
-import { configuredPrivateClient } from "../clients/configuredClient";
+import { configuredPrivateClient } from "../../clients/configuredClient";
 
-export const adminAnalyticEndpoints = {
-	getUserCountByRole: "analytics/user-count-by-role",
-	getDailyTicketCount: "analytics/daily-ticket-number",
-	getDailyRevenue: "analytics/daily-ticket-revenue",
-	getTheaterBySystem: "analytics/theater-by-system",
+const adminAnalyticEndpoints = {
+	getUserCountByRole: "/admin/analytics/user-count-by-role",
+	getDailyTicketCount: "/admin/analytics/daily-ticket-number",
+	getDailyRevenue: "/admin/analytics/daily-ticket-revenue",
+	getTheaterBySystem: "/admin/analytics/theater-by-system",
 };
 
 export const adminAnalyticsApi = {

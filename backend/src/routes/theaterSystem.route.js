@@ -7,43 +7,37 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.get(
-    "/",
-    controller.getAllTheaterSystems
-)
+router.get("/", controller.getAllTheaterSystems);
 
-router.get(
-    "/:id",
-    controller.getTheaterSystemById
-)
+router.get("/:id", controller.getTheaterSystemById);
 
 router.post(
-    "/", 
-    ...theaterSystemValidator.createTheaterSystemValidator,
-    requestHandler.validate, 
-    tokenMiddleware.auth,
-    authorizeRoles(["admin"]),
-    controller.createTheaterSystem
+	"/",
+	...theaterSystemValidator.createTheaterSystemValidator,
+	requestHandler.validate,
+	tokenMiddleware.auth,
+	authorizeRoles(["admin"]),
+	controller.createTheaterSystem
 );
 
 router.post("/add-theater", controller.addTheaterToSystem);
 
 router.put(
-    "/:id",
-    ...theaterSystemValidator.updateTheaterSystem,
-    requestHandler.validate,
-    tokenMiddleware.auth,
-    authorizeRoles(["admin"]),
-    controller.updateTheaterSystem
+	"/:id",
+	...theaterSystemValidator.updateTheaterSystem,
+	requestHandler.validate,
+	tokenMiddleware.auth,
+	authorizeRoles(["admin"]),
+	controller.updateTheaterSystem
 );
 
 router.delete(
-    "/:id", 
-    ...theaterSystemValidator.deleteTheaterSystem,
-    requestHandler.validate,
-    tokenMiddleware.auth,
-    authorizeRoles(["admin"]),
-    controller.deleteTheaterSystem
+	"/:id",
+	...theaterSystemValidator.deleteTheaterSystem,
+	requestHandler.validate,
+	tokenMiddleware.auth,
+	authorizeRoles(["admin"]),
+	controller.deleteTheaterSystem
 );
 
 export default router;
