@@ -1,6 +1,13 @@
 import responseHandler from "../handlers/response.handler.js";
 import Movie from "../models/movie.model.js";
 
+const parseGenres = (genres) => {
+  if (Array.isArray(genres)) return genres;
+  if (typeof genres === "string")
+    return genres.split(",").map(g => g.trim()).filter(Boolean);
+  return [];
+};
+
 export const getMovies = async (req, res) => {
 	try {
 		const { status, genre } = req.query;
@@ -57,7 +64,7 @@ export const createMovie = async (req, res) => {
 		const newMovie = new Movie({
 			movieName,
 			description,
-			genres,
+			genres: parseGenres(genres),
 			duration,
 			releaseDate,
 			country,
@@ -119,7 +126,7 @@ export const updateMovie = async (req, res) => {
 
 		if (movieName) updatedMovie.movieName = movieName;
 		if (description) updatedMovie.description = description;
-		if (genres) updatedMovie.genres = genres;
+		if (genres) updatedMovie.genres = parseGenres(genres);
 		if (duration) updatedMovie.duration = duration;
 		if (releaseDate) updatedMovie.releaseDate = releaseDate;
 		if (country) updatedMovie.country = country;
@@ -146,10 +153,18 @@ export const updateMovie = async (req, res) => {
 export const getMovieById = async (req, res) => {
 	try {
 		const movie = await Movie.findById(req.params.id);
-		if (!movie) return responseHandler.notFound(res, "Phim không tồn tại!");
+		if (!movie || movie.isDeleted)
+			return responseHandler.notFound(res, "Phim không tồn tại!");
+
+		// Chuyển đổi object trả về cho frontend nếu cần
+		const obj = movie.toObject();
+		obj.movieId = obj._id;
+		delete obj._id;
+		delete obj.__v;
+
 		responseHandler.ok(res, {
 			message: "Lấy thông tin phim thành công!",
-			movie,
+			movie: obj,
 		});
 	} catch (err) {
 		console.error("Error fetching movie by ID:", err);

@@ -31,6 +31,8 @@ import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 //General pages
 import NotFound from "../pages/NotFound";
 import ShowManagement from "../pages/admin/ShowManagement.jsx";
+import TheaterSystem from "../pages/customer/TheaterSystem.jsx";
+import Theater from "../pages/customer/Theater.jsx";
 
 
 
@@ -57,13 +59,17 @@ const useRouterElements = () => {
                     element: <Booking />,
                 },
                 {
-                    path: CUSTOMER_PATH.ONGOING,
-                    element: <Movies />,
+                    path: `${CUSTOMER_PATH.THEATER_SYSTEMS}/:id`,
+                    element: <TheaterSystem />
                 },
                 {
-                    path: CUSTOMER_PATH.COMING_SOON,
+                    path: `${CUSTOMER_PATH.THEATER}/:theaterId`,
+                    element: <Theater />
+                },
+                {
+                    path: `${CUSTOMER_PATH.MOVIES}/:status?`,
                     element: <Movies />,
-                }
+                },
             ]
         },
         {

@@ -305,7 +305,7 @@ const MovieDetails = () => {
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Chọn hệ thống rạp" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white">
                                         {theaterSystemsList?.map((item) => (
                                             <SelectItem
                                                 key={item._id}
@@ -328,7 +328,7 @@ const MovieDetails = () => {
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Chọn rạp" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white">
                                         <SelectItem value="all">Tất cả</SelectItem>
                                         {theaters?.map((item) => (
                                             <SelectItem key={item._id} value={item._id}>

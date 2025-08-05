@@ -5,7 +5,7 @@ import Carousel from "@/components/common/Carousel";
 import React, { useState } from "react";
 
 const HomePage = () => {
-  const [activeFilter, setActiveFilter] = useState("nowShowing");
+  const [activeFilter, setActiveFilter] = useState("showing");
 
   const handleFilterChange = (filterId) => {
     setActiveFilter(filterId);

@@ -11,7 +11,7 @@ export const theaterSystemApi = {
 		const res = await publicClient.get(
 			theaterSystemEndpoints.getAllTheaterSystems
 		);
-		return res.data;
+		return res.data || []; 
 	},
 	getTheaterSystemById: async (systemId) => {
 		const res = await publicClient.get(

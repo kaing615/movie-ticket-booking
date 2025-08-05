@@ -10,7 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, Link } from "react-router-dom";
+import { Outlet, useNavigate, Link, NavLink } from "react-router-dom";
 import Logo from "../common/logo";
 import logo from "../../assets/img/logo.png";
 import btnTicket from "../../assets/img/btn-ticket.webp";
@@ -121,7 +121,7 @@ const HomeLayout = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to={CUSTOMER_PATH.ONGOING}
+                            to={`${CUSTOMER_PATH.MOVIES}/showing`}
                             className="hover:text-[#F26B38]"
                           >
                             Phim Đang Chiếu
@@ -129,7 +129,7 @@ const HomeLayout = () => {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link
-                            to={CUSTOMER_PATH.COMING_SOON}
+                            to={`${CUSTOMER_PATH.MOVIES}/coming`}
                             className="hover:text-[#F26B38]"
                           >
                             Phim Sắp Chiếu

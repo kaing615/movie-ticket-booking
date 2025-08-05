@@ -18,8 +18,9 @@ export const CUSTOMER_PATH = {
 	HOME: "home",
 	MOVIE_DETAILS: "movie-details",
 	BOOKING: "booking",
-	ONGOING: "ongoing",
-	COMING_SOON: "coming-soon",
+	MOVIES: "movies",
+	THEATER_SYSTEMS: "theater-systems",
+	THEATER: "theater",
 };
 
 export const ADMIN_PATH = {

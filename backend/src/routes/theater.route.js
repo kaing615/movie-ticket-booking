@@ -8,6 +8,7 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 const router = express.Router();
 
 router.get("/", theaterController.getTheater);
+router.get("/:id", theaterController.getTheaterById);
 router.get(
 	"/manager/:managerId",
 	requestHandler.validate,
