@@ -227,7 +227,7 @@ const getShowsByTheater = async (req, res) => {
     }
 
     const shows = await Show.find({ theaterId })
-      .populate("movieId", "movieName duration poster")
+      .populate("movieId")
       .populate("roomId", "roomNumber")
       .sort({ startTime: 1 });
 

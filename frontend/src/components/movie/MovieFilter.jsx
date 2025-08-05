@@ -4,8 +4,8 @@ import { cn } from "@/utils/utils";
 
 const MovieFilter = ({ activeFilter, onFilterChange }) => {
   const filters = [
-    { id: "nowShowing", label: "Đang chiếu" },
-    { id: "comingSoon", label: "Sắp chiếu" },
+    { id: "showing", label: "Đang chiếu" },
+    { id: "coming", label: "Sắp chiếu" },
   ];
 
   return (

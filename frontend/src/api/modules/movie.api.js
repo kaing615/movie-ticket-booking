@@ -14,7 +14,7 @@ export const movieApi = {
 	getMovies: (params) =>
 		publicClient
 			.get(movieEndpoints.getMovies, { params })
-			.then((res) => res.data.movies),
+			.then((res) => res.data?.movies || []),
 	getMoviesOfTheater: (theaterId) =>
 		publicClient
 			.get(movieEndpoints.getMoviesOfTheater(theaterId))

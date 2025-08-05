@@ -96,7 +96,7 @@ const createMovieValidation = [
 		.optional() // Allows the field to be absent
 		.isIn(["coming", "showing", "ended"])
 		.withMessage(
-			"Invalid movie status. Must be Coming Soon, Now Showing, or Ended."
+			"Invalid movie status. Must be coming, showing, or ended."
 		),
 
 	// director validation
@@ -213,7 +213,7 @@ const updateMovieValidation = [
 		.optional()
 		.isIn(["coming", "showing", "ended"])
 		.withMessage(
-			"Invalid movie status. Must be Coming Soon, Now Showing, or Ended."
+			"Invalid movie status. Must be coming, showing, or ended."
 		),
 
 	// director validation (optional)
