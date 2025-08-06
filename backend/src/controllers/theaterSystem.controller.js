@@ -1,4 +1,5 @@
 import TheaterSystem from "../models/theaterSystem.model.js";
+import Theater from "../models/theater.model.js";
 import responseHandler from "../handlers/response.handler.js";
 import mongoose from "mongoose";
 
