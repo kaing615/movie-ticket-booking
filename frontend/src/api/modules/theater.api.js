@@ -17,6 +17,7 @@ export const theaterApi = {
 		const response = await publicClient.get(
 			theaterEndpoints.getTheater(systemId)
 		);
+		// The controller returns { theaters: [...] }
 		return response.data?.theaters || [];
 	},
 
@@ -32,5 +33,34 @@ export const theaterApi = {
 			theaterEndpoints.getTheaterByManagerId(managerId)
 		);
 		return response.data.theater || response.data;
+	},
+
+	createTheater: async (data) => {
+		const response = await configuredPrivateClient.post(
+			theaterEndpoints.createTheater,
+			data
+		);
+		return response.data;
+	},
+	updateTheater: async (theaterId, data) => {
+		const response = await configuredPrivateClient.put(
+			theaterEndpoints.updateTheater(theaterId),
+			data
+		);
+		return response.data;
+	},
+	deleteTheater: async (theaterId) => {
+		const response = await configuredPrivateClient.delete(
+			theaterEndpoints.deleteTheater(theaterId)
+		);
+		return response.data;
+	},
+
+	createTheaterAndManager: async (data) => {
+		const response = await configuredPrivateClient.post(
+			theaterEndpoints.createTheaterAndManager,
+			data
+		);
+		return response.data;
 	},
 };

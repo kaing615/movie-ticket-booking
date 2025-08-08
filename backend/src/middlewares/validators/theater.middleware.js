@@ -28,7 +28,10 @@ const createTheaterWithManagerValidator = [
 ];
 
 const createTheaterValidator = [
-	body("managerEmail").isEmail().withMessage("Email quản lý phải hợp lệ."),
+	body("managerEmail")
+		.optional()
+		.isEmail()
+		.withMessage("Email quản lý phải hợp lệ."),
 	body("theaterName")
 		.trim()
 		.escape()
@@ -41,11 +44,13 @@ const createTheaterValidator = [
 		.isString()
 		.notEmpty()
 		.withMessage("Địa chỉ rạp phải được cung cấp."),
-	body("theaterSystemId")
+	body("theaterSystemCode")
+		.optional()
+		.trim()
+		.escape()
+		.isString()
 		.notEmpty()
-		.withMessage("ID hệ thống rạp phải được cung cấp.")
-		.isMongoId()
-		.withMessage("ID hệ thống rạp không hợp lệ."),
+		.withMessage("Mã hệ thống rạp không hợp lệ."),
 ];
 
 const updateTheaterValidator = [
@@ -66,10 +71,13 @@ const updateTheaterValidator = [
 		.escape()
 		.isString()
 		.withMessage("Location must be a string"),
-	body("managerId")
+	body("managerEmail")
 		.optional()
-		.isMongoId()
-		.withMessage("ID quản lý không hợp lệ."),
+		.isString()
+		.withMessage("managerEmail must be a string")
+		.if(body("managerEmail").notEmpty())
+		.isEmail()
+		.withMessage("Email quản lý phải hợp lệ."),
 	body("theaterSystemId")
 		.optional()
 		.isMongoId()
