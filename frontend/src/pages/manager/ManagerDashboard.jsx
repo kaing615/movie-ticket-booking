@@ -28,14 +28,12 @@ const ManagerDashboard = () => {
         enabled: !!user?._id
     });
 
-    //console.log("Theater data:", theater);
     const { data: theaterMovies } = useQuery({
         queryKey: ["theaterMovies", theater?._id],
         queryFn: () => movieApi.getMoviesOfTheater(theater?._id),
         enabled: !!theater?._id
     });
 
-   console.log("Theater movies:", theaterMovies);
     const { data: rooms } = useQuery({
         queryKey: ["rooms", theater?._id],
         queryFn: () => roomApi.getRoomsByTheater(theater?._id),
@@ -47,8 +45,6 @@ const ManagerDashboard = () => {
         queryFn: () => movieApi.getMovies()
     });
 
-    //console.log("All movies:", allMovies);
-    // Add query for theater shows
     const { data: theaterShows } = useQuery({
         queryKey: ["theaterShows", theater?._id],
         queryFn: () => showApi.getShowsByTheater(theater?._id),
@@ -67,12 +63,10 @@ const ManagerDashboard = () => {
         return isAvailable;
     });
 
-    // console.log("Final available movies:", availableMovies?.map(m => m.movieName));
+    
     return availableMovies;
     }
-    // console.log("Available movies:", getAvailableMovies());
-    
-    console.log("Theater ID: ", theater?._id);
+
 
     const addScheduleMutation = useMutation({
         mutationFn: (values) => {
@@ -81,9 +75,6 @@ const ManagerDashboard = () => {
             
             const endTime = new Date(startTime);
             endTime.setMinutes(endTime.getMinutes() + selectedMovie.duration);
-
-            // Log selectedMovie to debug
-            console.log("Selected movie:", selectedMovie);
 
             const showData = {
                 // Use the correct movieId reference
@@ -94,11 +85,9 @@ const ManagerDashboard = () => {
                 endTime: endTime.toISOString()
             };
 
-            console.log("Creating new show:", showData);
             return showApi.addShow(showData);
         },
         onSuccess: (data) => {
-            console.log("Show created:", data);
             queryClient.invalidateQueries(["theaterShows"]);
             setShowScheduleModal(false);
             
@@ -130,7 +119,6 @@ const ManagerDashboard = () => {
     };
 
     const handleRemoveMovie = (movie) => {
-        console.log("Removing movie:", movie);
         setDeleteMovieModal({
             isOpen: true,
             movieId: movie._id,

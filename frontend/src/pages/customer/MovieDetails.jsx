@@ -6,6 +6,7 @@ import { movieApi } from "../../api/modules/movie.api";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import MovieTrailer from "../../components/movie/MovieTrailer";
+import MovieReview from "./MovieReview";
 import { Label } from "../../components/common/label";
 import {
     Select,
@@ -133,6 +134,8 @@ const MovieDetails = () => {
         return Object.values(group);
     }, [filteredShows]);
 
+    
+    console.log("MovieId:", movie?.movieId);
     // --- UI ---
     return (
         <>
@@ -399,7 +402,10 @@ const MovieDetails = () => {
                         </div>
                     )}
                 </div>
+                <MovieReview movieId={movie?.movieId} />
             </div>
+
+            
 
             {/* Trailer Modal */}
             {showTrailer && (
