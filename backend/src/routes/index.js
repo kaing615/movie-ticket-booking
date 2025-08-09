@@ -8,6 +8,7 @@ import showRoute from "./show.route.js";
 import theaterSystemRoute from "./theaterSystem.route.js";
 import roomRoute from "./room.route.js";
 import movieRoute from "./movie.route.js";
+import reviewRoute from "./review.route.js";
 
 import adminRoutes from "../routes/admin/admin.route.js";
 
@@ -18,6 +19,7 @@ router.use("/show", showRoute);
 router.use("/movies", movieRoute);
 router.use("/theater-system", theaterSystemRoute);
 router.use("/theater", theaterRoute);
+router.use("/review", reviewRoute);
 
 router.use(token.auth);
 

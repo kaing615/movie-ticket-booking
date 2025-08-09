@@ -73,7 +73,7 @@ export function NavUser({ user }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(CUSTOMER_PATH.PROFILE)}>
             <IconUserCircle className="mr-2" />
             Tài khoản
           </DropdownMenuItem>
