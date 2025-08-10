@@ -303,6 +303,65 @@ export const resetPassword = async (req, res) => {
 	}
 };
 
+// Cập nhật thông tin profile user
+export const updateProfile = async (req, res) => {
+    try {
+        const targetId = req.user.role === "admin" ? req.body.userId || req.user._id : req.user._id;
+
+        const { email, userName } = req.body;
+
+        const user = await User.findById(targetId);
+        if (!user) return responseHandler.notFound(res, "Không tìm thấy người dùng.");
+
+		if (typeof email !== "undefined") user.email = email;
+        if (typeof userName !== "undefined") user.userName = userName;
+
+        await user.save();
+
+        const userData = user.toObject();
+        delete userData.password;
+        delete userData.salt;
+        delete userData.verifyKey;
+
+        return responseHandler.ok(res, {
+            message: "Cập nhật thông tin thành công!",
+            user: userData,
+        });
+    } catch (err) {
+        console.error("Lỗi cập nhật profile:", err);
+        responseHandler.error(res);
+    }
+};
+
+
+// Xóa tài khoản user (soft delete)
+export const deleteAccount = async (req, res) => {
+    try {
+        const { userId } = req.body; // userId muốn xóa (nếu không truyền thì mặc định là user tự xóa)
+        const targetUserId = userId || req.user._id;
+
+        // Chỉ cho phép admin hoặc chính user đó xóa
+        if (req.user._id !== targetUserId && req.user.role !== "admin") {
+            return responseHandler.forbidden(res, "Bạn không có quyền xóa tài khoản này.");
+        }
+
+        const user = await User.findById(targetUserId);
+        if (!user) {
+            return responseHandler.notFound(res, "Không tìm thấy người dùng.");
+        }
+
+        user.isDeleted = true;
+        await user.save();
+
+        return responseHandler.ok(res, {
+            message: "Tài khoản đã bị xóa.",
+        });
+    } catch (err) {
+        console.error("Lỗi xóa tài khoản:", err);
+        responseHandler.error(res);
+    }
+};
+
 export default {
 	signUp,
 	signIn,
@@ -310,4 +369,6 @@ export default {
 	resendVerificationEmail,
 	forgotPassword,
 	resetPassword,
+	updateProfile,
+	deleteAccount,
 };
