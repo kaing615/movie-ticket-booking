@@ -248,6 +248,16 @@ const MovieDetails = () => {
                                 </span>
                             </div>
                             {/* Có thể thêm diễn viên nếu muốn */}
+                            <div className="flex flex-col sm:flex-row">
+                                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">
+                                    Diễn viên:
+                                </span>
+                                <span className="text-gray-800">
+                                    {Array.isArray(movie?.actors)
+                                        ? movie.actors.join(", ")
+                                        : movie?.actors || "Đang cập nhật"}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

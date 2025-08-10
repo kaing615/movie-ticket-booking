@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Input, Modal, message, Tooltip } from "antd";
 import { EditOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi } from "../api/modules/auth.api";
-import { logout } from "../redux/features/auth.slice";
+import { userApi } from "../api/modules/user.api.js";
+import { logout } from "../redux/features/auth.slice.js";
+import { updateUser } from "../redux/features/auth.slice.js";
 
 const fields = [
     { key: "email", label: "Email" },
@@ -21,12 +22,14 @@ const ProfilePage = () => {
     const [editingField, setEditingField] = useState(null);
     const [fieldValue, setFieldValue] = useState("");
 
+    
     const updateUserMutation = useMutation({
-        mutationFn: (data) => authApi.updateProfile(data),
-        onSuccess: () => {
+        mutationFn: (data) => userApi.updateProfile(data),
+        onSuccess: (res) => {
             message.success("Cập nhật thành công!");
             setEditingField(null);
             setFieldValue("");
+            if (res?.user) dispatch(updateUser(res.user));
             queryClient.invalidateQueries(["userProfile", user?._id]);
         },
         onError: (err) => {
@@ -35,7 +38,7 @@ const ProfilePage = () => {
     });
 
     const deleteUserMutation = useMutation({
-        mutationFn: () => authApi.deleteProfile(),
+        mutationFn: (data) => userApi.deleteProfile(data),
         onSuccess: () => {
             message.success("Tài khoản đã bị xóa!");
             dispatch(logout());
@@ -74,6 +77,8 @@ const ProfilePage = () => {
         });
     };
 
+    console.log("User: ", user);
+
     return (
         <div className="max-w-2xl mx-auto py-10 px-4">
             <div className="bg-white rounded-xl shadow p-8">
@@ -81,24 +86,25 @@ const ProfilePage = () => {
                 <div className="space-y-5">
                     {fields.map(field => (
                         <div key={field.key} className="flex items-center justify-between group">
-                            <div>
-                                <span className="font-semibold">{field.label}:</span>{" "}
-                                {field.key === "isVerified"
-                                    ? (user?.isVerified ? "Đã xác thực" : "Chưa xác thực")
-                                    : field.key === "role"
-                                    ? user?.role
-                                    : editingField === field.key
-                                        ? (
-                                            <Input
-                                                size="small"
-                                                value={fieldValue}
-                                                onChange={e => setFieldValue(e.target.value)}
-                                                style={{ width: 220, marginRight: 8 }}
-                                                autoFocus
-                                            />
-                                        )
-                                        : user[field.key]
-                                }
+                            <div className="flex items-center">
+                                <span className="font-semibold">{field.label}:</span>
+                                {field.key === "isVerified" ? (
+                                    <span style={{ marginLeft: 8 }}>
+                                    {user?.isVerified ? "Đã xác thực" : "Chưa xác thực"}
+                                    </span>
+                                ) : field.key === "role" ? (
+                                    <span style={{ marginLeft: 8 }}>{user?.role}</span>
+                                ) : editingField === field.key ? (
+                                    <Input
+                                    size="small"
+                                    value={fieldValue}
+                                    onChange={e => setFieldValue(e.target.value)}
+                                    style={{ width: 220, marginLeft: 8 }}
+                                    autoFocus
+                                    />
+                                ) : (
+                                    <span style={{ marginLeft: 8 }}>{user[field.key]}</span>
+                                )}
                             </div>
                             <div className="flex gap-2">
                                 {field.editable !== false && (
@@ -127,6 +133,7 @@ const ProfilePage = () => {
                                                 icon={<EditOutlined />}
                                                 size="small"
                                                 onClick={() => handleEdit(field.key)}
+                                                style={{ marginLeft: 8 }}
                                             />
                                         </Tooltip>
                                     )
@@ -135,7 +142,7 @@ const ProfilePage = () => {
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-end mt-10">
+                <div className="flex justify-center mt-10">
                     <Button danger onClick={handleDelete}>
                         Xóa tài khoản
                     </Button>

@@ -1,6 +1,6 @@
 import express from "express";
 import userValidator from "../middlewares/validators/user.middleware.js";
-
+import tokenMiddleware from "../middlewares/token.middleware.js";
 import authController from "../controllers/auth.controller.js";
 import requestHandler from "../handlers/request.handler.js";
 
@@ -42,4 +42,15 @@ router.post(
 	authController.resetPassword
 );
 
+router.use(tokenMiddleware.auth);
+
+router.put(
+    "/update-account",
+    authController.updateProfile
+);
+
+router.delete(
+    "/delete-account",
+    authController.deleteAccount
+);
 export default router;
