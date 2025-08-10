@@ -10,7 +10,10 @@ router.get("/:movieId", reviewController.getReviews);
 
 // Các route dưới đây yêu cầu đăng nhập
 router.use(tokenMiddleware.auth);
-
+// phải xem phim rồi thì mới được đánh giá
+router.get(
+    "/:movieId/check-watched",
+    reviewController.checkWatched);
 // Tạo review mới
 router.post(
     "/create-review/:movieId",

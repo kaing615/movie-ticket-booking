@@ -206,7 +206,7 @@ const MovieDetails = () => {
                         <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
                             <StarIcon className="w-5 h-5 text-orange-500 fill-orange-500" />
                             <span className="text-lg font-semibold">
-                                {movie?.ratingScore || "0"}
+                                {Number(movie.ratingScore).toFixed(1) || "0"}
                             </span>
                             <span className="text-sm text-gray-500">
                                 ({movie?.ratingCount || "0"} lượt đánh giá)
