@@ -19,6 +19,13 @@ const MovieReview = ({ movieId }) => {
         enabled: !!movieId,
     });
 
+    
+    const { data: hasWatched = false, isLoading: checkingWatched } = useQuery({
+        queryKey: ["hasWatchedMovie", movieId, user?._id],
+        queryFn: () => reviewApi.checkWatched(movieId),
+        enabled: !!movieId && !!user,
+    });
+
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
     const [error, setError] = useState("");
@@ -43,6 +50,7 @@ const MovieReview = ({ movieId }) => {
             setEditId(null);
             setEditError("");
             queryClient.invalidateQueries(["reviews", movieId]);
+            message.success("Cập nhật đánh giá thành công!");
         },
         onError: (err) => {
             setEditError(err?.response?.data?.message || "Có lỗi xảy ra!");
@@ -84,10 +92,18 @@ const MovieReview = ({ movieId }) => {
             setEditError("Vui lòng nhập nhận xét!");
             return;
         }
-        updateReviewMutation.mutate({
-            reviewId,
-            data: { rating: editRating, comment: editComment }
-        });
+        try {
+            updateReviewMutation.mutate({
+                reviewId,
+                data: { 
+                    rating: editRating, 
+                    comment: editComment.trim() 
+                }
+            });
+        } catch (err) {
+            console.error("HandleEditSave error:", err);
+            setEditError("Có lỗi xảy ra khi cập nhật!");
+        }
     };
 
     // Khi hủy edit
@@ -95,6 +111,8 @@ const MovieReview = ({ movieId }) => {
         setEditId(null);
         setEditError("");
     };
+
+    console.log("Reviews: ", reviews);
 
     return (
         <div className="w-full mt-10 mb-10 bg-white rounded-xl shadow-lg py-8 px-4 sm:px-8">
@@ -109,6 +127,18 @@ const MovieReview = ({ movieId }) => {
                 hasReviewed ? (
                     <div className="mb-6 text-green-600 font-medium">
                         Bạn đã đánh giá phim này rồi.
+                    </div>
+                ) : !hasWatched ? (
+                    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="flex items-center gap-2 text-yellow-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <span className="font-medium">Bạn cần xem phim trước khi đánh giá!</span>
+                        </div>
+                        <p className="text-sm text-yellow-600 mt-2">
+                            Vui lòng đặt vé và xem phim để có thể chia sẻ đánh giá của bạn.
+                        </p>
                     </div>
                 ) : (
                     <form

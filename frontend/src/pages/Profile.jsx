@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Input, Modal, message, Tooltip } from "antd";
+import { Button, Input, Modal, message, Tooltip, Table, Tag, Collapse } from "antd";
 import { EditOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { userApi } from "../api/modules/user.api.js";
-import { logout } from "../redux/features/auth.slice.js";
-import { updateUser } from "../redux/features/auth.slice.js";
-
+import {bookingApi} from "../api/modules/booking.api.js";
+import { logout, updateUser } from "../redux/features/auth.slice.js";
+import BookingHistory from "./BookingHistory.jsx";
 const fields = [
     { key: "email", label: "Email" },
     { key: "userName", label: "Tên người dùng" },
@@ -80,11 +80,15 @@ const ProfilePage = () => {
     console.log("User: ", user);
 
     return (
-        <div className="max-w-2xl mx-auto py-10 px-4">
-            <div className="bg-white rounded-xl shadow p-8">
-                <h2 className="text-3xl font-bold text-blue-700 text-center mb-8">Thông tin cá nhân</h2>
-                <div className="space-y-5">
-                    {fields.map(field => (
+         <div className="max-w-7xl mx-auto py-10 px-4"> {/* Increased max-width */}
+            <div className="grid gap-8"> {/* Using grid for better layout */}
+                {/* Profile Information Card */}
+                <div className="bg-white rounded-xl shadow p-8">
+                    <h2 className="text-3xl font-bold text-blue-700 text-center mb-8">
+                        Thông tin cá nhân
+                    </h2>
+                    <div className="space-y-5 max-w-2xl mx-auto"> {/* Centered profile info */}
+                        {fields.map(field => (
                         <div key={field.key} className="flex items-center justify-between group">
                             <div className="flex items-center">
                                 <span className="font-semibold">{field.label}:</span>
@@ -141,11 +145,17 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     ))}
+                    </div>
+                    <div className="flex justify-center mt-10">
+                        <Button danger onClick={handleDelete}>
+                            Xóa tài khoản
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex justify-center mt-10">
-                    <Button danger onClick={handleDelete}>
-                        Xóa tài khoản
-                    </Button>
+
+                {/* Booking History Card */}
+                <div className="bg-white rounded-xl shadow p-8">
+                    <BookingHistory />
                 </div>
             </div>
         </div>
