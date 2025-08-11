@@ -36,6 +36,7 @@ export const theaterApi = {
 	},
 
 	createTheater: async (data) => {
+		console.log(data);
 		const response = await configuredPrivateClient.post(
 			theaterEndpoints.createTheater,
 			data

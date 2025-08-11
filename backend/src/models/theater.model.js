@@ -6,6 +6,7 @@ const theaterSchema = new mongoose.Schema({
 		ref: "User",
 		required: false,
 		unique: true,
+		sparse: true,
 	},
 	theaterName: {
 		type: String,

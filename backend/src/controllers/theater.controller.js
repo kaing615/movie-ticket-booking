@@ -151,7 +151,6 @@ const createTheater = async (req, res) => {
 			}
 			// Một manager chỉ quản lý 1 rạp
 			const existingTheater = await Theater.findOne({
-				_id: { $ne: theaterId },
 				managerId: manager._id,
 				isDeleted: false,
 			});
@@ -176,14 +175,19 @@ const createTheater = async (req, res) => {
 			}
 		}
 
-		// Tạo rạp
-		const theater = new Theater({
-			managerId: manager?._id || null,
+		const theaterData = {
 			theaterName,
 			location,
 			theaterSystemId: system?._id || null,
-		});
+			// Only add managerId if a manager was found
+			// This omits the field entirely if manager is null
+		};
+		if (manager) {
+			theaterData.managerId = manager._id;
+		}
 
+		// Tạo rạp
+		const theater = new Theater(theaterData);
 		await theater.save();
 
 		return responseHandler.created(res, {
@@ -201,7 +205,7 @@ const createTheater = async (req, res) => {
 const updateTheater = async (req, res) => {
 	try {
 		const { theaterId } = req.params;
-		const { theaterName, location, managerEmail, theaterSystemId } =
+		const { theaterName, location, managerEmail, theaterSystemCode } =
 			req.body;
 		let manager = null;
 
@@ -233,7 +237,7 @@ const updateTheater = async (req, res) => {
 		if (location) theater.location = location;
 
 		if (managerEmail !== undefined) {
-			if (managerEmail === "") {
+			if (!managerEmail) {
 				theater.managerId = null;
 			} else {
 				// Check manager
@@ -270,17 +274,22 @@ const updateTheater = async (req, res) => {
 			}
 		}
 
-		if (theaterSystemId) {
-			console.log("theaterSystemId", theaterSystemId);
-			const system = await TheaterSystem.findById(theaterSystemId);
-			console.log(system);
-			if (!system) {
-				return responseHandler.notFound(
-					res,
-					"Không tìm thấy hệ thống."
-				);
+		if (theaterSystemCode !== undefined) {
+			if (!theaterSystemCode) {
+				theater.theaterSystemId = null;
+			} else {
+				console.log(theaterSystemCode);
+				const system = await TheaterSystem.findOne({
+					code: theaterSystemCode,
+				});
+				if (!system) {
+					return responseHandler.notFound(
+						res,
+						"Không tìm thấy hệ thống."
+					);
+				}
+				theater.theaterSystemId = system._id;
 			}
-			theater.theaterSystemId = theaterSystemId;
 		}
 
 		await theater.save();

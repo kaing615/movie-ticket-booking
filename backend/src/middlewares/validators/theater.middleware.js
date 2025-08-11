@@ -30,6 +30,7 @@ const createTheaterWithManagerValidator = [
 const createTheaterValidator = [
 	body("managerEmail")
 		.optional()
+		.if(body("managerEmail").notEmpty())
 		.isEmail()
 		.withMessage("Email quản lý phải hợp lệ."),
 	body("theaterName")
@@ -46,6 +47,7 @@ const createTheaterValidator = [
 		.withMessage("Địa chỉ rạp phải được cung cấp."),
 	body("theaterSystemCode")
 		.optional()
+		.if(body("theaterSystemCode").notEmpty())
 		.trim()
 		.escape()
 		.isString()
@@ -73,8 +75,6 @@ const updateTheaterValidator = [
 		.withMessage("Location must be a string"),
 	body("managerEmail")
 		.optional()
-		.isString()
-		.withMessage("managerEmail must be a string")
 		.if(body("managerEmail").notEmpty())
 		.isEmail()
 		.withMessage("Email quản lý phải hợp lệ."),
