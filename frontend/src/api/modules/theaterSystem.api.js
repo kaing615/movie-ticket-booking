@@ -24,6 +24,7 @@ export const theaterSystemApi = {
 		return res.data;
 	},
 	createTheaterSystem: async (data) => {
+		console.log(data);
 		const res = await configuredPrivateClient.post(
 			theaterSystemEndpoints.createTheaterSystem,
 			data
@@ -31,6 +32,9 @@ export const theaterSystemApi = {
 		return res.data;
 	},
 	updateTheaterSystem: async (systemId, data) => {
+		console.log("System ID:", systemId);
+		console.log("Data:", data);
+		console.log(theaterSystemEndpoints.updateTheaterSystem(systemId));
 		const res = await configuredPrivateClient.put(
 			theaterSystemEndpoints.updateTheaterSystem(systemId),
 			data
