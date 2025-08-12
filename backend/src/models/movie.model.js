@@ -49,9 +49,13 @@ const movieSchema = new mongoose.Schema(
 			enum: ["coming", "showing", "ended"],
 			default: "coming",
 		},
-		director: {
+		producer: {
 			type: String,
 			required: true,
+		},
+		actors: {
+			type: [String],
+			required: true,	
 		},
 		trailer: {
 			type: String,

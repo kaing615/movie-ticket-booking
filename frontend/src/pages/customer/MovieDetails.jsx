@@ -6,6 +6,7 @@ import { movieApi } from "../../api/modules/movie.api";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import MovieTrailer from "../../components/movie/MovieTrailer";
+import MovieReview from "./MovieReview";
 import { Label } from "../../components/common/label";
 import {
     Select,
@@ -133,6 +134,8 @@ const MovieDetails = () => {
         return Object.values(group);
     }, [filteredShows]);
 
+    
+    console.log("MovieId:", movie?.movieId);
     // --- UI ---
     return (
         <>
@@ -203,7 +206,7 @@ const MovieDetails = () => {
                         <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
                             <StarIcon className="w-5 h-5 text-orange-500 fill-orange-500" />
                             <span className="text-lg font-semibold">
-                                {movie?.ratingScore || "0"}
+                                {Number(movie.ratingScore).toFixed(1) || "0"}
                             </span>
                             <span className="text-sm text-gray-500">
                                 ({movie?.ratingCount || "0"} lượt đánh giá)
@@ -245,6 +248,16 @@ const MovieDetails = () => {
                                 </span>
                             </div>
                             {/* Có thể thêm diễn viên nếu muốn */}
+                            <div className="flex flex-col sm:flex-row">
+                                <span className="font-medium text-gray-600 w-full sm:w-28 mb-1 sm:mb-0">
+                                    Diễn viên:
+                                </span>
+                                <span className="text-gray-800">
+                                    {Array.isArray(movie?.actors)
+                                        ? movie.actors.join(", ")
+                                        : movie?.actors || "Đang cập nhật"}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -399,7 +412,10 @@ const MovieDetails = () => {
                         </div>
                     )}
                 </div>
+                <MovieReview movieId={movie?.movieId} />
             </div>
+
+            
 
             {/* Trailer Modal */}
             {showTrailer && (

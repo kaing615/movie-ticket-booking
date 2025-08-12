@@ -8,6 +8,7 @@ const seatSchema = new mongoose.Schema({
     },
     seatType: { 
         type: String, 
+        enum: ["VIP", "Tiêu chuẩn", "Couple"],
         required: true 
     },  
     isDisabled: { 

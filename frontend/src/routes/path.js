@@ -16,6 +16,7 @@ export const AUTH_PATH = {
 
 export const CUSTOMER_PATH = {
 	HOME: "home",
+	PROFILE: "profile",
 	MOVIE_DETAILS: "movie-details",
 	BOOKING: "booking",
 	MOVIES: "movies",
