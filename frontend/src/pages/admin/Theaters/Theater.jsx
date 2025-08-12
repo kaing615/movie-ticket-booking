@@ -315,7 +315,7 @@ const Theater = () => {
                         Theater Management Dashboard
                     </h1>
                     <p className="text-lg text-gray-600 mt-2">
-                        Administrator page for managing theaters and theater systems with full CRUD.
+                        Administrator page for managing theaters and theater systems.
                     </p>
                 </div>
 

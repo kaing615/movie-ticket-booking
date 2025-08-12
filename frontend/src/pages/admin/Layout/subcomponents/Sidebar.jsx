@@ -34,8 +34,8 @@ const AdminSidebar = () => {
                         ${isExpanded ? "w-full text-white bg-red-500 hover:bg-red-600" : "px-2 text-red-500"}`
                     }
                 >
-                    <LogOut size={isExpanded ? 18 : 21} className="cursor-pointer h-[2rem]" />
-                    {isExpanded && <span>Logout</span>}
+                    <LogOut size={isExpanded ? 18 : 21} className={`cursor-pointer h-[2rem] ${isExpanded ? "text-white" : ""}`} />
+                    {isExpanded && <span className="text-white">Logout</span>}
                 </button>
             </div>
         </aside >

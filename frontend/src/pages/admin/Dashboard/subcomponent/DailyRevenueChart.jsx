@@ -47,8 +47,8 @@ const DailyRevenueChart = ({ data }) => {
     const overallRevenue = data?.data.overallTotalRevenue;
 
     return (
-        <div>
-            <h2>Overall Total Revenue: ${overallRevenue}</h2>
+        <div className='flex flex-col items-center border-t border-gray-300 ml-4 mt-7'>
+            <h2 className='text-gray-800 p-4'>Overall Total Revenue: ${overallRevenue}</h2>
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={chartData}

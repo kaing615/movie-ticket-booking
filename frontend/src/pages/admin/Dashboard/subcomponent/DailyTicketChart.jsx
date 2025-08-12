@@ -47,8 +47,8 @@ const DailyTicketChart = ({ data }) => {
     const overallTicketCount = data?.data.overallTotalTicketCount;
 
     return (
-        <div>
-            <h2>Overall Total Ticket Count: {overallTicketCount}</h2>
+        <div className="flex flex-col items-center border-t border-gray-300 mt-3 ml-4">
+            <h2 className='text-gray-800 p-4'>Overall Total Ticket Count: {overallTicketCount}</h2>
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={chartData}
