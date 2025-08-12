@@ -29,11 +29,11 @@ import SigninPage from "../pages/auth/SigninPage";
 import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 
 //General pages
+import ProfilePage from "../pages/Profile.jsx";
 import NotFound from "../pages/NotFound";
 import ShowManagement from "../pages/admin/ShowManagement.jsx";
 import TheaterSystem from "../pages/customer/TheaterSystem.jsx";
 import Theater from "../pages/customer/Theater.jsx";
-
 
 
 const useRouterElements = () => {
@@ -49,6 +49,10 @@ const useRouterElements = () => {
                 {
                     path: CUSTOMER_PATH.HOME,
                     element: <HomePage />,
+                },
+                {
+                    path: CUSTOMER_PATH.PROFILE,
+                    element: <ProfilePage />,
                 },
                 {
                     path: `${CUSTOMER_PATH.MOVIE_DETAILS}/:id`,

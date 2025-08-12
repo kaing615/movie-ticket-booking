@@ -13,10 +13,12 @@ import { useDispatch } from "react-redux";
 import { clearUser } from "../../redux/features/user.slice";
 import { useNavigate } from "react-router-dom";
 import { CUSTOMER_PATH, PATH } from "../../routes/path";
+import { useSelector } from "react-redux";
 
-export function NavUser({ user }) {
+export function NavUser() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.user);
 
     // Hàm lấy 2 chữ cái đầu từ hoTen
     const getInitials = (name) => {
@@ -73,7 +75,7 @@ export function NavUser({ user }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(CUSTOMER_PATH.PROFILE)}>
                         <IconUserCircle className="mr-2" />
                         Tài khoản
                     </DropdownMenuItem>
