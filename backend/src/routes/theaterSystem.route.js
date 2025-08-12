@@ -13,7 +13,7 @@ router.get("/:id", controller.getTheaterSystemById);
 
 router.post(
 	"/",
-	...theaterSystemValidator.createTheaterSystemValidator,
+	theaterSystemValidator.createTheaterSystemValidator,
 	requestHandler.validate,
 	tokenMiddleware.auth,
 	authorizeRoles(["admin"]),
@@ -24,7 +24,7 @@ router.post("/add-theater", controller.addTheaterToSystem);
 
 router.put(
 	"/:id",
-	...theaterSystemValidator.updateTheaterSystem,
+	theaterSystemValidator.updateTheaterSystem,
 	requestHandler.validate,
 	tokenMiddleware.auth,
 	authorizeRoles(["admin"]),
@@ -33,7 +33,7 @@ router.put(
 
 router.delete(
 	"/:id",
-	...theaterSystemValidator.deleteTheaterSystem,
+	theaterSystemValidator.deleteTheaterSystem,
 	requestHandler.validate,
 	tokenMiddleware.auth,
 	authorizeRoles(["admin"]),

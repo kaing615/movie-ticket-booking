@@ -1,4 +1,5 @@
 import TheaterSystem from "../models/theaterSystem.model.js";
+import Theater from "../models/theater.model.js";
 import responseHandler from "../handlers/response.handler.js";
 import mongoose from "mongoose";
 
@@ -38,10 +39,9 @@ const createTheaterSystem = async (req, res) => {
 // Cập nhật hệ thống rạp
 const updateTheaterSystem = async (req, res) => {
 	try {
-		const { systemId } = req.params;
+		const { id } = req.params;
 		const { name, code, logo, description } = req.body;
-
-		const theaterSystem = await TheaterSystem.findById(systemId);
+		const theaterSystem = await TheaterSystem.findById(id);
 		if (!theaterSystem) {
 			return responseHandler.notFound(
 				res,
@@ -52,7 +52,7 @@ const updateTheaterSystem = async (req, res) => {
 		if (name && name !== theaterSystem.name) {
 			const existedName = await TheaterSystem.findOne({
 				name,
-				_id: { $ne: systemId },
+				_id: { $ne: id },
 			});
 			if (existedName) {
 				return responseHandler.badRequest(
@@ -66,7 +66,7 @@ const updateTheaterSystem = async (req, res) => {
 		if (code && code !== theaterSystem.code) {
 			const existedCode = await TheaterSystem.findOne({
 				code,
-				_id: { $ne: systemId },
+				_id: { $ne: id },
 			});
 			if (existedCode) {
 				return responseHandler.badRequest(
@@ -94,9 +94,9 @@ const updateTheaterSystem = async (req, res) => {
 // Xóa hệ thống rạp (hard delete)
 const deleteTheaterSystem = async (req, res) => {
 	try {
-		const { systemId } = req.params;
+		const { id } = req.params;
 
-		const deleted = await TheaterSystem.findByIdAndDelete(systemId);
+		const deleted = await TheaterSystem.findByIdAndDelete(id);
 		if (!deleted) {
 			return responseHandler.notFound(
 				res,

@@ -6,7 +6,7 @@ const createTheaterSystemValidator = [
 		.escape()
 		.isString()
 		.notEmpty()
-		.withMessage("Ten hệ thống không được sé trống."),
+		.withMessage("Ten hệ thống không được trống."),
 	body("code")
 		.trim()
 		.escape()
@@ -16,11 +16,12 @@ const createTheaterSystemValidator = [
 	body("logo")
 		.optional()
 		.trim()
-		.escape()
 		.isString()
-		.withMessage("logo must be a string"),
+		.withMessage("logo must be a string")
+		.isURL()
+		.withMessage("Logo must be a valid URL."),
 	body("description")
-		.notEmpty()
+		.optional()
 		.trim()
 		.isLength({ min: 1 })
 		.escape()
@@ -29,7 +30,7 @@ const createTheaterSystemValidator = [
 ];
 
 const updateTheaterSystem = [
-	param("systemId")
+	param("id")
 		.notEmpty()
 		.withMessage("ID hệ thống phải được cung cấp.")
 		.isMongoId()
@@ -49,9 +50,10 @@ const updateTheaterSystem = [
 	body("logo")
 		.optional()
 		.trim()
-		.escape()
 		.isString()
-		.withMessage("logo must be a string"),
+		.withMessage("logo must be a string")
+		.isURL()
+		.withMessage("Logo must be a valid URL."),
 	body("description")
 		.optional()
 		.trim()
@@ -62,7 +64,7 @@ const updateTheaterSystem = [
 ];
 
 const deleteTheaterSystem = [
-	param("systemId")
+	param("id")
 		.notEmpty()
 		.withMessage("ID hệ thống phải được cung cấp.")
 		.isMongoId()

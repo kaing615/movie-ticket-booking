@@ -15,7 +15,16 @@ router.get(
 	theaterController.getTheaterByManagerId
 );
 router.use(tokenMiddleware.auth);
-router.use(authorizeRoles(["theater-manager"]));
+
+router.use(authorizeRoles(["admin", "theater-manager"]));
+router.put(
+	"/:theaterId",
+	theaterValidator.updateTheaterValidator,
+	requestHandler.validate,
+	theaterController.updateTheater
+);
+
+router.use(authorizeRoles(["admin"]));
 
 router.post(
 	"/",
@@ -29,13 +38,6 @@ router.post(
 	theaterValidator.createTheaterWithManagerValidator,
 	requestHandler.validate,
 	theaterController.createTheaterAndManager
-);
-
-router.put(
-	"/:theaterId",
-	theaterValidator.updateTheaterValidator,
-	requestHandler.validate,
-	theaterController.updateTheater
 );
 
 router.delete(
