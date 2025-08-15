@@ -25,8 +25,10 @@ const TheaterInfo = () => {
 
   const { data: shows } = useQuery({
     queryKey: ["shows", selectedTheaterId],
-    queryFn: () => showApi.getShowsByTheater(selectedTheaterId),
+    queryFn: () =>
+      showApi.getShowsByTheater(selectedTheaterId, { upcoming: true, graceMin: 2, sort: "asc" }),
     enabled: !!selectedTheaterId,
+    refetchInterval: 5 * 60 * 1000,
   });
 
   // Auto select first

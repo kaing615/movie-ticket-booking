@@ -19,6 +19,7 @@ const seatSchema = new mongoose.Schema({
         type: Boolean, 
         default: false 
     },
+    row : { type: String },
 }, { timestamps: true });
 
 export default mongoose.model('Seat', seatSchema);

@@ -1,6 +1,13 @@
 import responseHandler from "../handlers/response.handler.js";
 import Booking from "../models/booking.model.js";
 import Ticket from "../models/ticket.model.js";
+import Seat from "../models/seat.model.js";
+import mongoose from "mongoose";
+import { priceByType } from "../helpers/price.js";
+import { genTicketCode } from "../helpers/id.js";
+import SeatHold from "../models/seatHold.model.js";
+import SeatReservation from "../models/seatReservation.model.js";
+import Show from "../models/show.model.js";
 
 export const getBookingOfUser = async (req, res) => {
     try {
@@ -81,61 +88,83 @@ export const getBookingOfUser = async (req, res) => {
 };
 
 export const createBooking = async (req, res) => {
-    try {
-        const userId = req.user._id; // Lấy userId từ JWT token
-        const {
-            showId,
-            seatIds,
-            totalPrice
-        } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const userId = req.user._id;
+    const { showId, seatIds } = req.body;
 
-        // Kiểm tra xem ghế đã được đặt chưa
-        const existingBooking = await Booking.findOne({
-            showId,
-            seatIds: { $in: seatIds },
-            status: { $in: ["pending", "paid"] }
-        });
-
-        if (existingBooking) {
-            return responseHandler.badRequest(res, "Một số ghế đã được đặt!");
-        }
-
-        const newBooking = new Booking({
-            userId,
-            showId,
-            seatIds,
-            totalPrice,
-            status: "pending"
-        });
-
-        await newBooking.save();
-
-        // Tạo các ticket tương ứng
-        const tickets = await Promise.all(seatIds.map(async (seatId) => {
-            const ticket = new Ticket({
-                bookingId: newBooking._id,
-                ownerId: userId,
-                showId,
-                seatId,
-                price: totalPrice / seatIds.length, // Chia đều giá cho các ghế
-                status: "active"
-            });
-            await ticket.save();
-            return ticket;
-        }));
-
-        // Cập nhật lại booking với danh sách ticket
-        newBooking.tickets = tickets.map(ticket => ticket._id);
-        await newBooking.save();
-
-        return responseHandler.created(res, {
-            message: "Đặt vé thành công!",
-            booking: newBooking
-        });
-    } catch (err) {
-        console.error("Error creating booking:", err);
-        responseHandler.error(res, err.message);
+    // 1) Validate show
+    const show = await Show.findById(showId).select("roomId startTime endTime").session(session);
+    if (!show) {
+      await session.abortTransaction();
+      return responseHandler.notFound(res, "Suất chiếu không tồn tại.");
     }
+
+    // 2) Dedup + lấy ghế
+    const dedupSeatIds = [...new Set(seatIds.map(String))];
+    const seats = await Seat.find({
+      _id: { $in: dedupSeatIds },
+      isDeleted: false,
+      isDisabled: { $ne: true },
+    })
+      .select("seatType seatNumber roomId")
+      .session(session);
+
+    if (seats.length !== dedupSeatIds.length) {
+      await session.abortTransaction();
+      return responseHandler.badRequest(res, "Ghế không hợp lệ hoặc đã bị vô hiệu.");
+    }
+
+    // 3) Ghế đúng phòng
+    if (seats.some(s => String(s.roomId) !== String(show.roomId))) {
+      await session.abortTransaction();
+      return responseHandler.badRequest(res, "Có ghế không thuộc phòng của suất chiếu.");
+    }
+
+    // 4) Tính giá
+    const totalPrice = seats.reduce((sum, s) => sum + priceByType(s.seatType), 0);
+
+    // 5) Tạo booking
+    const [booking] = await Booking.create(
+      [{ userId, showId, seatIds: seats.map(s => s._id), totalPrice, status: "pending" }],
+      { session }
+    );
+
+    // 6) Phát hành vé ngay (giữ chỗ) – rely on unique (showId, seatId)
+    const tickets = await Ticket.insertMany(
+      seats.map((s) => ({
+        bookingId: booking._id,
+        ownerId: userId,
+        showId,
+        seatId: s._id,
+        price: priceByType(s.seatType),
+        seatType: s.seatType,
+        seatLabel: s.seatNumber,
+        code: genTicketCode(s._id),
+        status: "active",
+      })),
+      { session, ordered: true }
+    );
+
+    booking.tickets = tickets.map(t => t._id);
+    await booking.save({ session });
+
+    await session.commitTransaction();
+    return responseHandler.created(res, {
+      message: "Đặt vé thành công! (đang chờ thanh toán)",
+      booking,
+    });
+  } catch (err) {
+    await session.abortTransaction();
+    if (err?.code === 11000) {
+      return responseHandler.conflict(res, "Một số ghế đã được người khác đặt.");
+    }
+    console.error("Error creating booking:", err);
+    return responseHandler.error(res, err.message);
+  } finally {
+    session.endSession();
+  }
 };
 
 export const updateBooking = async (req, res) => {
@@ -212,9 +241,90 @@ export const deleteBooking = async (req, res) => {
     }
 };
 
+export const confirmBookingFromHold = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { showId } = req.body;
+
+    if (!showId || !mongoose.isValidObjectId(showId)) {
+      return responseHandler.badRequest(res, "Thiếu hoặc sai showId.");
+    }
+
+    const hold = await SeatHold.findOne({ showId, userId });
+    if (!hold) return responseHandler.badRequest(res, "Không tìm thấy hold.");
+    if (!hold.seatIds?.length) return responseHandler.badRequest(res, "Hold không có ghế.");
+    if (hold.expiresAt <= new Date()) return responseHandler.badRequest(res, "Hold đã hết hạn.");
+
+    // Khoá ghế (idempotent)
+    await SeatReservation.bulkWrite(
+      hold.seatIds.map((seatId) => ({
+        updateOne: {
+          filter: { showId, seatId },
+          update: { $setOnInsert: { showId, seatId } },
+          upsert: true,
+        },
+      })),
+      { ordered: false }
+    );
+
+    // Lấy ghế để tính tiền + xuất vé
+    const seats = await Seat.find({ _id: { $in: hold.seatIds } })
+      .select("_id seatType seatNumber");
+    if (seats.length !== hold.seatIds.length) {
+      return responseHandler.badRequest(res, "Một số ghế không còn hợp lệ.");
+    }
+
+    const totalPrice = seats.reduce((s, g) => s + priceByType(g.seatType), 0);
+
+    // Tạo booking (paid)
+    const booking = await Booking.create({
+      userId,
+      showId,
+      seatIds: seats.map(s => s._id),
+      totalPrice,
+      status: "paid",
+    });
+
+    // Xuất vé
+    const codePrefix = `T${Date.now()}`;
+    const tickets = await Ticket.insertMany(
+      seats.map((g, i) => ({
+        bookingId: booking._id,
+        ownerId: userId,
+        showId,
+        seatId: g._id,
+        seatLabel: g.seatNumber,
+        seatType: g.seatType,
+        price: priceByType(g.seatType),
+        code: `${codePrefix}${String(i + 1).padStart(2, "0")}`,
+        status: "active",
+      })),
+      { ordered: true }
+    );
+
+    booking.tickets = tickets.map(t => t._id);
+    await booking.save();
+
+    // Xoá hold sau khi thành công
+    await SeatHold.deleteOne({ _id: hold._id });
+
+    return responseHandler.created(res, { message: "Thanh toán thành công, đã xuất vé.", booking });
+  } catch (err) {
+    console.error("confirmBookingFromHold error (no-tx):", err?.name, err?.message, err?.code);
+    if (err?.code === 11000) {
+      return responseHandler.conflict(res, "Một số ghế vừa bị người khác giữ/bán.");
+    }
+    if (err?.name === "CastError" || err?.name === "ValidationError") {
+      return responseHandler.badRequest(res, err.message);
+    }
+    return responseHandler.error(res, err.message);
+  }
+};
+
 export default {
     createBooking,
     updateBooking,
     deleteBooking,
-    getBookingOfUser
+    getBookingOfUser,
+    confirmBookingFromHold,
 };

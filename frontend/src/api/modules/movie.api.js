@@ -18,11 +18,11 @@ export const movieApi = {
 	getMoviesOfTheater: (theaterId) =>
 		publicClient
 			.get(movieEndpoints.getMoviesOfTheater(theaterId))
-			.then((res) => res.data.movies),
+			.then((res) => res.data?.movies),
 	getMovieById: (id) =>
 		publicClient
 			.get(movieEndpoints.getMovieById(id))
-			.then((res) => res.data),
+			.then((res) => res.data?.movie),
 	createMovie: (data) =>
 		configuredPrivateClient
 			.post(movieEndpoints.createMovie, data)
