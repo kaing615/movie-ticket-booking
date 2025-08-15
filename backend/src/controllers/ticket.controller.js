@@ -63,6 +63,7 @@ export const markTicketAsUsed = async (req, res) => {
         }
 
         ticket.status = "used";
+        ticket.usedAt = new Date();
         await ticket.save();
 
         // Cập nhật booking để cho phép review

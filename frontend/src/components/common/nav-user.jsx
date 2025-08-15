@@ -79,9 +79,9 @@ export function NavUser() {
             <IconUserCircle className="mr-2" />
             Tài khoản
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(`/my-tickets`)}>
             <IconCreditCard className="mr-2" />
-            Hóa đơn
+            Vé
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
             <IconNotification className="mr-2" />
