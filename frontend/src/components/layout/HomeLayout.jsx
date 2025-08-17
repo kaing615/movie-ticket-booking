@@ -194,7 +194,7 @@ const HomeLayout = () => {
                 src={btnTicket}
                 alt="Ticket"
                 className="w-[80px] lg:w-[112px] cursor-pointer mx-2 sm:mx-10"
-                onClick={() => navigate(CUSTOMER_PATH.BOOKING)}
+                onClick={() => navigate(`${CUSTOMER_PATH.BOOKING}`)}
               />
               {user ? (
                 <NavUser user={user} />

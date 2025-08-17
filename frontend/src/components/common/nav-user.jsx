@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_PATH, PATH } from "../../routes/path";
 import { useSelector } from "react-redux";
 
+
 export function NavUser() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -79,9 +80,9 @@ export function NavUser() {
                         <IconUserCircle className="mr-2" />
                         Tài khoản
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => navigate(`/my-tickets`)}>
                         <IconCreditCard className="mr-2" />
-                        Hóa đơn
+                        Vé
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer">
                         <IconNotification className="mr-2" />
