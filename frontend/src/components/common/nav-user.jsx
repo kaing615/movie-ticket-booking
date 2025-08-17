@@ -1,13 +1,13 @@
 import { IconCreditCard, IconLogout, IconNotification, IconUserCircle } from "@tabler/icons-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../redux/features/user.slice";
@@ -15,33 +15,34 @@ import { useNavigate } from "react-router-dom";
 import { CUSTOMER_PATH, PATH } from "../../routes/path";
 import { useSelector } from "react-redux";
 
+
 export function NavUser() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
 
-  // Hàm lấy 2 chữ cái đầu từ hoTen
-  const getInitials = (name) => {
-    if (!name) return "CN"; // Giá trị mặc định nếu name rỗng hoặc null
-    const words = name.trim().split(" ");
-    if (words.length === 1) {
-      // Nếu chỉ có 1 từ, lấy 2 chữ cái đầu
-      return words[0].slice(0, 2).toUpperCase();
-    }
-    // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
-    const firstInitial = words[0][0] || "";
-    const lastInitial = words[words.length - 1][0] || "";
-    return (firstInitial + lastInitial).toUpperCase();
-  };
+    // Hàm lấy 2 chữ cái đầu từ hoTen
+    const getInitials = (name) => {
+        if (!name) return "CN"; // Giá trị mặc định nếu name rỗng hoặc null
+        const words = name.trim().split(" ");
+        if (words.length === 1) {
+            // Nếu chỉ có 1 từ, lấy 2 chữ cái đầu
+            return words[0].slice(0, 2).toUpperCase();
+        }
+        // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+        const firstInitial = words[0][0] || "";
+        const lastInitial = words[words.length - 1][0] || "";
+        return (firstInitial + lastInitial).toUpperCase();
+    };
 
-  const handleLogout = () => {
-    // Xóa user khỏi localStorage
-    localStorage.removeItem("user");
-    // Xóa user khỏi Redux store
-    dispatch(clearUser());
-    // Chuyển hướng về trang chủ
-    navigate(CUSTOMER_PATH.HOME);
-  };
+    const handleLogout = () => {
+        // Xóa user khỏi localStorage
+        localStorage.removeItem("user");
+        // Xóa user khỏi Redux store
+        dispatch(clearUser());
+        // Chuyển hướng về trang chủ
+        navigate(CUSTOMER_PATH.HOME);
+    };
 
   return (
     <DropdownMenu>

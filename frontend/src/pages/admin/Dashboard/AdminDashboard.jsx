@@ -67,13 +67,13 @@ const AdminDashboard = () => {
 
     return (
         <>
-            <div className="flex items-center justify-between w-full h-25 py-3 px-4">
+            <div className="flex items-center justify-between w-full h-25 px-4">
                 <div className="flex flex-col items-between justify-between">
-                    <p className="font-semibold text-4xl m-0 mt-2">Welcome back</p>
-                    <p className="text-base text-gray-600 mt-1">Track users, revenues, and stay on top of finances — all in one place.</p>
+                    <span className="font-semibold text-4xl m-0">Welcome back</span>
+                    <span className="text-base text-gray-600 mt-1">Track users, revenues, and stay on top of finances — all in one place.</span>
                 </div>
                 <div className="w-15% flex items-center justify-between">
-                    <p className="m-0 mr-2 text-gray-600">From:</p>
+                    <span className="mb-0 pr-2 text-gray-600">From:</span>
                     <DateSelection onSelection={setCurrentDateSelection} value={currentDateSelection}></DateSelection>
                 </div>
             </div>
