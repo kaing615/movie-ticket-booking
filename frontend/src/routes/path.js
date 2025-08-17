@@ -22,6 +22,7 @@ export const CUSTOMER_PATH = {
 	MOVIES: "movies",
 	THEATER_SYSTEMS: "theater-systems",
 	THEATER: "theater",
+	SUPPORT: "support",
 };
 
 export const ADMIN_PATH = {
