@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { useDispatch } from "react-redux";
-import { clearUser } from "../../redux/features/user.slice";
+import { logout } from "../../redux/features/auth.slice";
 import { useNavigate } from "react-router-dom";
 import { CUSTOMER_PATH, PATH } from "../../routes/path";
 import { useSelector } from "react-redux";
@@ -36,12 +36,7 @@ export function NavUser() {
     };
 
     const handleLogout = () => {
-        // Xóa user khỏi localStorage
-        localStorage.removeItem("user");
-        // Xóa user khỏi Redux store
-        dispatch(clearUser());
-        // Chuyển hướng về trang chủ
-        navigate(CUSTOMER_PATH.HOME);
+        dispatch(logout());
     };
 
     return (

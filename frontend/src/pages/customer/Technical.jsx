@@ -13,7 +13,7 @@ const TechnicalSupportPage = () => {
         mutationFn: supportApi.createSupport,
         onSuccess: () => {
             messageApi.success('Your ticket has been submitted successfully!');
-            queryClientInstance.invalidateQueries(['supportTickets']); // Invalidate admin view
+            queryClientInstance.invalidateQueries(['supportTickets']);
             form.resetFields();
         },
         onError: (err) => {
