@@ -1,48 +1,49 @@
 import {
-  PATH,
-  AUTH_PATH,
-  ADMIN_PATH,
-  MANAGER_PATH,
-  CUSTOMER_PATH,
+    PATH,
+    AUTH_PATH,
+    ADMIN_PATH,
+    MANAGER_PATH,
+    CUSTOMER_PATH,
 } from "./path";
 import { useRoutes, Navigate } from "react-router-dom";
 
-//Admin pages
+// Admin pages
 import AdminLayout from "../pages/admin/Layout/AdminLayout.jsx";
 import AdminDashboard from "../pages/admin/Dashboard/AdminDashboard.jsx";
 import UserManagement from "../pages/admin/UserManagement.jsx";
 import TheaterManagement from "../pages/admin/Theaters/Theater.jsx";
 import MovieManagement from "../pages/admin/Movies/Movies.jsx";
+import ShowManagement from "../pages/admin/ShowManagement.jsx";
 
-//Manager pages
+// Manager pages
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
 import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 import TheaterDashboard from "../pages/manager/TheaterDashboard.jsx";
 import RoomsDashboard from "../pages/manager/RoomsDashboard.jsx";
 
-//Customer pages
+// Customer pages
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
 import Booking from "../pages/customer/Booking.jsx";
 import Movies from "../pages/customer/Movies.jsx";
 import HomePage from "../pages/customer/HomePage.jsx";
 import SeatSelection from "../pages/customer/SeatSelection.jsx";
 import MyTickets from "../pages/customer/MyTickets.jsx";
+import TechnicalSupportPage from "../pages/customer/Technical.jsx";
+import TheaterSystem from "../pages/customer/TheaterSystem.jsx";
+import Theater from "../pages/customer/Theater.jsx";
 
-//Layouts
+// Layouts
 import HomeLayout from "../components/layout/HomeLayout";
 import AuthLayout from "../components/layout/AuthLayout";
 
-//Auth pages
+// Auth pages
 import SignupPage from "../pages/auth/SignupPage";
 import SigninPage from "../pages/auth/SigninPage";
 import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 
-//General pages
+// General pages
 import ProfilePage from "../pages/Profile.jsx";
 import NotFound from "../pages/NotFound";
-import ShowManagement from "../pages/admin/ShowManagement.jsx";
-import TheaterSystem from "../pages/customer/TheaterSystem.jsx";
-import Theater from "../pages/customer/Theater.jsx";
 
 const useRouterElements = () => {
   const elements = useRoutes([
@@ -77,6 +78,10 @@ const useRouterElements = () => {
         {
           path: `${CUSTOMER_PATH.BOOKING}/show/:showId`,
           element: <SeatSelection />,
+        },
+        {
+          path: `${CUSTOMER_PATH.SUPPORT}`,
+          element: <TechnicalSupportPage />,
         },
         {
           path: "/my-tickets",
@@ -132,7 +137,7 @@ const useRouterElements = () => {
         },
         {
           path: MANAGER_PATH.ROOMS,
-          element: <RoomsDashboard />
+          element: <RoomsDashboard />, // Manager rooms dashboard
         },
         {
           path: MANAGER_PATH.THEATERDASHBOARD,

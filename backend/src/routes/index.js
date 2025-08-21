@@ -12,6 +12,7 @@ import reviewRoute from "./review.route.js";
 import bookingRoute from "./booking.route.js";
 import ticketRoute from "./ticket.route.js";
 import seatRoute from "./seat.route.js";
+import supportRoute from "./support.route.js";
 
 import adminRoutes from "../routes/admin/admin.route.js";
 
@@ -26,6 +27,7 @@ router.use("/review", reviewRoute);
 router.use("/booking", bookingRoute);
 router.use("/ticket", ticketRoute);
 router.use("/seat", seatRoute);
+router.use("/support", supportRoute);
 
 router.use(token.auth);
 
