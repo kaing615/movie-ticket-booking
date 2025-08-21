@@ -151,7 +151,10 @@ const seedDatabase = async () => {
 				await Seat.create({
 					roomId: room1Downtown._id,
 					seatNumber: `A${i}`,
-					seatType: "standard",
+					seatType: "Tiêu chuẩn",
+					row: "A",
+					isDisabled: false,
+					isDeleted: false,
 				})
 			);
 		}
@@ -161,6 +164,9 @@ const seedDatabase = async () => {
 					roomId: room1Downtown._id,
 					seatNumber: `VIP${i}`,
 					seatType: "VIP",
+					row: "A",
+					isDisabled: false,
+					isDeleted: false,
 				})
 			);
 		}
@@ -171,7 +177,10 @@ const seedDatabase = async () => {
 				await Seat.create({
 					roomId: room2Downtown._id,
 					seatNumber: `B${i}`,
-					seatType: "standard",
+					seatType: "Tiêu chuẩn",
+					row: "B",
+					isDisabled: false,
+					isDeleted: false,
 				})
 			);
 		}
@@ -182,7 +191,10 @@ const seedDatabase = async () => {
 				await Seat.create({
 					roomId: room1Uptown._id,
 					seatNumber: `C${i}`,
-					seatType: "standard",
+					seatType: "Tiêu chuẩn",
+					row: "C",
+					isDisabled: false,
+					isDeleted: false,
 				})
 			);
 		}
@@ -201,7 +213,8 @@ const seedDatabase = async () => {
 			banner: "https://placehold.co/800x400/000/FFF?text=Dune+2+Banner",
 			movieRating: "T13",
 			status: "showing",
-			director: "Denis Villeneuve",
+			producer: "Legendary Pictures",
+			actors: ["Timothée Chalamet", "Zendaya", "Rebecca Ferguson"],
 			trailer: "https://www.youtube.com/embed/SomeDuneTrailer",
 			allowedShowStart: new Date("2024-02-28T00:00:00Z"),
 		});
@@ -218,7 +231,8 @@ const seedDatabase = async () => {
 			banner: "https://placehold.co/800x400/000/FFF?text=KFP4+Banner",
 			movieRating: "P",
 			status: "showing",
-			director: "Mike Mitchell",
+			producer: "DreamWorks Animation",
+			actors: ["Jack Black", "Awkwafina", "Viola Davis"],
 			trailer: "https://www.youtube.com/embed/SomeKFP4Trailer",
 			allowedShowStart: new Date("2024-03-05T00:00:00Z"),
 		});
@@ -235,7 +249,8 @@ const seedDatabase = async () => {
 			banner: "https://placehold.co/800x400/000/FFF?text=Creator+Banner",
 			movieRating: "T16",
 			status: "ended",
-			director: "Gareth Edwards",
+			producer: "20th Century Studios",
+			actors: ["John David Washington", "Gemma Chan", "Ken Watanabe"],
 			trailer: "https://www.youtube.com/embed/SomeCreatorTrailer",
 			allowedShowStart: new Date("2023-09-28T00:00:00Z"),
 		});
@@ -252,7 +267,8 @@ const seedDatabase = async () => {
 			banner: "https://placehold.co/800x400/000/FFF?text=IO2+Banner",
 			movieRating: "P",
 			status: "coming",
-			director: "Kelsey Mann",
+			producer: "Pixar Animation Studios",
+			actors: ["Amy Poehler", "Phyllis Smith", "Lewis Black"],
 			trailer: "https://www.youtube.com/embed/SomeIO2Trailer",
 			allowedShowStart: new Date("2024-06-10T00:00:00Z"),
 		});
@@ -345,6 +361,7 @@ const seedDatabase = async () => {
 			showId: show1_downtown_movie1._id,
 			price: 10.0,
 			seatId: seatsRoom101[0]._id,
+			code: `TICKET-${booking1._id}-${seatsRoom101[0]._id}`,
 		});
 		const ticket2_b1 = await Ticket.create({
 			bookingId: booking1._id,
@@ -352,6 +369,7 @@ const seedDatabase = async () => {
 			showId: show1_downtown_movie1._id,
 			price: 10.0,
 			seatId: seatsRoom101[1]._id,
+			code: `TICKET-${booking1._id}-${seatsRoom101[1]._id}`,
 		});
 		booking1.tickets.push(ticket1_b1._id, ticket2_b1._id);
 		await booking1.save();
@@ -362,6 +380,7 @@ const seedDatabase = async () => {
 			showId: show2_downtown_movie2._id,
 			price: 10.0,
 			seatId: seatsRoom101[5]._id,
+			code: `TICKET-${booking2._id}-${seatsRoom101[5]._id}`,
 		});
 		const ticket2_b2 = await Ticket.create({
 			bookingId: booking2._id,
@@ -369,6 +388,7 @@ const seedDatabase = async () => {
 			showId: show2_downtown_movie2._id,
 			price: 10.0,
 			seatId: seatsRoom101[6]._id,
+			code: `TICKET-${booking2._id}-${seatsRoom101[6]._id}`,
 		});
 		const ticket3_b2 = await Ticket.create({
 			bookingId: booking2._id,
@@ -376,6 +396,7 @@ const seedDatabase = async () => {
 			showId: show2_downtown_movie2._id,
 			price: 10.0,
 			seatId: seatsRoom101[7]._id,
+			code: `TICKET-${booking2._id}-${seatsRoom101[7]._id}`,
 		});
 		booking2.tickets.push(ticket1_b2._id, ticket2_b2._id, ticket3_b2._id);
 		await booking2.save();
@@ -386,6 +407,7 @@ const seedDatabase = async () => {
 			showId: show4_uptown_movie2._id,
 			price: 12.5,
 			seatId: seatsGrandHallA[0]._id,
+			code: `TICKET-${booking3._id}-${seatsGrandHallA[0]._id}`,
 		});
 		booking3.tickets.push(ticket1_b3._id);
 		await booking3.save();

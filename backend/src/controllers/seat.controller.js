@@ -3,12 +3,13 @@ import Seat from "../models/seat.model.js";
 
 export const createSeat = async (req, res) => {
     try {
-        const { roomId, seatNumber, seatType } = req.body;
+        const { roomId, seatNumber, seatType, row } = req.body;
 
         // Check if seat already exists in the room
         const existingSeat = await Seat.findOne({ 
             roomId, 
             seatNumber,
+            row,
             isDeleted: false 
         });
 
@@ -19,7 +20,8 @@ export const createSeat = async (req, res) => {
         const seat = new Seat({
             roomId,
             seatNumber,
-            seatType
+            seatType,
+            row
         });
 
         await seat.save();
@@ -36,7 +38,7 @@ export const createSeat = async (req, res) => {
 
 export const updateSeat = async (req, res) => {
     try {
-        const { seatType, isDisabled } = req.body;
+        const { seatType, isDisabled, row, seatNumber } = req.body;
         const seatId = req.params.id;
 
         const seat = await Seat.findById(seatId);
@@ -44,8 +46,26 @@ export const updateSeat = async (req, res) => {
             return responseHandler.notFound(res, "Không tìm thấy ghế!");
         }
 
+        // Kiểm tra xem ghế mới có trùng với ghế khác không
+        if (row !== undefined && seatNumber !== undefined) {
+            const existingSeat = await Seat.findOne({
+                roomId: seat.roomId,
+                row,
+                seatNumber,
+                _id: { $ne: seatId }, // Không tính ghế hiện tại
+                isDeleted: false
+            });
+
+            if (existingSeat) {
+                return responseHandler.badRequest(res, "Vị trí ghế này đã tồn tại trong phòng!");
+            }
+        }
+
+        // Cập nhật thông tin ghế
         if (seatType) seat.seatType = seatType;
         if (typeof isDisabled === 'boolean') seat.isDisabled = isDisabled;
+        if (row !== undefined) seat.row = row;
+        if (seatNumber !== undefined) seat.seatNumber = seatNumber;
 
         await seat.save();
 
