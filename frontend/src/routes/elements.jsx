@@ -18,6 +18,7 @@ import MovieManagement from "../pages/admin/Movies/Movies.jsx";
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
 import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 import TheaterDashboard from "../pages/manager/TheaterDashboard.jsx";
+import RoomsDashboard from "../pages/manager/RoomsDashboard.jsx";
 
 //Customer pages
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
@@ -128,6 +129,10 @@ const useRouterElements = () => {
         {
           path: MANAGER_PATH.DASHBOARD,
           element: <ManagerDashboard />,
+        },
+        {
+          path: MANAGER_PATH.ROOMS,
+          element: <RoomsDashboard />
         },
         {
           path: MANAGER_PATH.THEATERDASHBOARD,

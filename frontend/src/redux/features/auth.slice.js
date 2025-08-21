@@ -33,14 +33,20 @@ const authSlice = createSlice({
 	},
 	reducers: {
 		logout: (state) => {
-			state.user = null;
-			state.token = null;
-			state.isAuthenticated = false;
-			state.status = "idle";
-			state.error = null;
-			localStorage.removeItem("user");
-			localStorage.removeItem("actkn");
-			window.location.replace("/auth/signin");
+				state.user = null;
+				state.token = null;
+				state.isAuthenticated = false;
+				state.status = "idle";
+				state.error = null;
+				try {
+					localStorage.removeItem("user");
+					localStorage.removeItem("actkn");
+				} catch (e) {}
+				// Xóa user ở Redux user.slice nếu có
+				if (window.store) {
+					window.store.dispatch({ type: "user/clearUser" });
+				}
+				window.location.replace("/auth/signin");
 		},
 
 		initializeAuth: (state) => {

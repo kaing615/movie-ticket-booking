@@ -17,8 +17,8 @@ const MENU_ITEMS = [
         icon: <DashboardOutlined className="text-xl" />
     },
     {
-        path: "/manager/users",
-        label: "Users",
+        path: "/manager/rooms",
+        label: "Rooms",
         icon: <UserOutlined className="text-xl" />
     },
     {
