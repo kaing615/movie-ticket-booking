@@ -5,7 +5,9 @@ import {
     MANAGER_PATH,
     CUSTOMER_PATH,
 } from "./path";
-import { useRoutes, Navigate } from "react-router-dom";
+import { useRoutes, Navigate, Outlet, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { ROLE } from "../constants/role.js";
 
 // Admin pages
 import AdminLayout from "../pages/admin/Layout/AdminLayout.jsx";
@@ -45,12 +47,30 @@ import VerifyMailPage from "../pages/auth/VerifyEmailPage";
 import ProfilePage from "../pages/Profile.jsx";
 import NotFound from "../pages/NotFound";
 
+function useAuth() {
+  const { isAuthenticated, user, status } = useSelector((s) => s.auth);
+  return {
+    isAuthenticated,
+    role: user?.role ?? null,
+    loading: status === "loading" || status === "initializing",
+  };
+}
+
+function RoleRedirect({
+  fallback = `${PATH.CUSTOMER}${CUSTOMER_PATH.HOME || ""}`,
+}) {
+  const { isAuthenticated, role } = useAuth();
+  if (!isAuthenticated || !role) return <Navigate to={fallback} replace />;
+
+  if (role === ROLE.ADMIN) return <Navigate to={`${PATH.ADMIN}`} replace />;
+  if (role === ROLE.THEATERMANAGER)
+    return <Navigate to={`${PATH.MANAGER}`} replace />;
+  return <Navigate to={`${PATH.CUSTOMER}`} replace />;
+}
+
 const useRouterElements = () => {
   const elements = useRoutes([
-    {
-      path: "/",
-      element: <Navigate to={`${CUSTOMER_PATH.HOME}`} replace />,
-    },
+    { path: "/", element: <RoleRedirect /> },
     {
       path: PATH.CUSTOMER,
       element: <HomeLayout />,
