@@ -9,7 +9,7 @@ const tokenDecode = (req) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (e) {
-    console.error("JWT verify failed:", e.name); // TokenExpiredError, JsonWebTokenError,...
+    console.error("JWT verify failed:", e.name); 
     return false;
   }
 };

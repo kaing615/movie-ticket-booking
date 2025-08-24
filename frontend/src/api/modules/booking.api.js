@@ -15,7 +15,10 @@ export const bookingApi = {
   createBooking: (data) => configuredPrivateClient.post(bookingEndpoints.createBooking, data).then((r) => r.data),
   updateBooking: (id, data) => configuredPrivateClient.put(bookingEndpoints.updateBooking(id), data).then((r) => r.data),
   deleteBooking: (id) => configuredPrivateClient.delete(bookingEndpoints.deleteBooking(id)).then((r) => r.data),
-
   confirmFromHold: (showId) =>
     configuredPrivateClient.post(`booking/confirm`, { showId }).then(pick),
+  getRevenueStats: (params) =>
+    configuredPrivateClient
+      .get("booking/revenue", { params })
+      .then((r) => r.data),
 };

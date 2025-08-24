@@ -20,7 +20,7 @@ const MENU_ITEMS = [
   { path: "/manager/dashboard", label: "Dashboard", icon: <DashboardOutlined className="text-xl" /> },
   { path: "/manager/rooms", label: "Rooms", icon: <UserOutlined className="text-xl" /> },
   { path: "/manager/theater-dashboard", label: "Theaters", icon: <VideoCameraOutlined className="text-xl" /> },
-  { path: "/manager/movies", label: "Movies", icon: <PlayCircleOutlined className="text-xl" /> },
+  { path: "/manager/revenue", label: "Revenue", icon: <PlayCircleOutlined className="text-xl" /> },
 ];
 
 const ManagerLayout = () => {

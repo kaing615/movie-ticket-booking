@@ -156,5 +156,5 @@ export default {
     getUserTickets,
     markTicketAsUsed,
     cancelTicket,
-    refundTicket
+    refundTicket,
 };

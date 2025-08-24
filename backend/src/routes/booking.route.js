@@ -8,6 +8,12 @@ const router = express.Router();
 
 router.use(tokenMiddleware.auth);
 
+router.get(
+  "/revenue",
+  authorizeRoles(["admin", "theater-manager"]),
+  bookingController.getRevenueStats
+);
+
 router.get("/me", bookingController.getBookingOfUser);
 router.post("/", bookingController.createBooking);
 
