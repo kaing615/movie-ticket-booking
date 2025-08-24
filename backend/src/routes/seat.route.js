@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/room/:roomId", seatController.getSeatsByRoom);
 router.get("/:id", seatController.getSeatById);
+router.get("/show/:showId", seatController.getSeatsOfShow);
 
 // Protect all routes - require authentication
 router.use(tokenMiddleware.auth);

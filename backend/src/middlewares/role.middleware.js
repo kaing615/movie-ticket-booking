@@ -1,20 +1,13 @@
 import responseHandler from "../handlers/response.handler.js";
-/**
- * Middleware to authorize user roles.
- *
- * @param {string[]} allowedRoles - Array of roles that are allowed to access the route.
- *
- * @returns {Function} Middleware function that checks if the user's role is authorized.
- * If the user's role is not in the allowedRoles, it responds with unauthorized status.
- */
 
 const authorizeRoles = (allowedRoles) => {
-	return (req, res, next) => {
-		const userrole = req.user?.role;
-		if (!userrole || !allowedRoles.includes(userrole)) {
-			return responseHandler.unauthorized(res);
-		}
-		next();
-	};
+  return (req, res, next) => {
+    const role = req.user?.role;
+    if (!role) return responseHandler.unauthorized(res);
+    if (!allowedRoles.includes(role)) {
+      return responseHandler.forbidden(res, "Forbidden");
+    }
+    next();
+  };
 };
 export default authorizeRoles;

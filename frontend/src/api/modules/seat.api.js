@@ -3,6 +3,7 @@ import { configuredPrivateClient } from "../clients/configuredClient.js";
 
 export const seatEndpoints = {
   getSeatsByRoom: (roomId) => `/seat/room/${roomId}`,
+  getSeatsOfShow: (showId) => `/seat/show/${showId}`,
   getSeatById: (seatId) => `/seat/${seatId}`,
   createSeat: "/seat",
   updateSeat: (seatId) => `/seat/${seatId}`,
@@ -18,6 +19,18 @@ export const seatApi = {
       return response.data;
     } catch (error) {
       console.error("Error fetching seats for room:", error);
+      throw error;
+    }
+  },
+
+  getSeatsOfShow: async (showId) => {
+    try {
+      const response = await configuredPrivateClient.get(
+        seatEndpoints.getSeatsOfShow(showId)
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching seats for show:", error);
       throw error;
     }
   },
