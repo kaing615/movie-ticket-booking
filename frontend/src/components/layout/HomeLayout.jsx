@@ -90,7 +90,7 @@ const HomeLayout = () => {
     }, []);
 
     const handleLogoClick = () => {
-        navigate(PATH.CUSTOMER);
+        navigate(`home`);
     };
 
     const handleLogin = () => {
@@ -187,7 +187,7 @@ const HomeLayout = () => {
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="px-3 cursor-pointer">
-                                        Chăm sóc khách hàng
+                                        CSKH
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[200px] gap-4">

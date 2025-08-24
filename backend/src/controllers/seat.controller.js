@@ -1,5 +1,6 @@
 import responseHandler from "../handlers/response.handler.js";
 import Seat from "../models/seat.model.js";
+import Show from "../models/show.model.js";
 
 export const createSeat = async (req, res) => {
     try {
@@ -133,10 +134,37 @@ export const getSeatById = async (req, res) => {
     }
 };
 
+export const getSeatsOfShow = async (req, res) => {
+  try {
+    const { showId } = req.params;
+    const show = await Show.findById(showId);
+    if (!show) return responseHandler.notFound(res, "Không tìm thấy suất chiếu");
+
+    const seats = await Seat.find({
+      roomId: show.roomId,
+      isDeleted: false
+    }).select("_id row seatNumber seatType isDisabled");
+
+    const sold = seats.filter(seat => seat.isSold).map(seat => seat._id);
+    const held = seats.filter(seat => seat.isHeld).map(seat => seat._id);
+
+    responseHandler.ok(res, {
+      seats,
+      sold,
+      held,
+      serverTime: new Date()
+    });
+  } catch (err) {
+    console.error(err);
+    responseHandler.error(res);
+  }
+};
+
 export default {
     createSeat,
     updateSeat,
     deleteSeat,
+    getSeatsOfShow,
     getSeatsByRoom,
     getSeatById
 };

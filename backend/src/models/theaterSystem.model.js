@@ -10,6 +10,8 @@ const theaterSystemSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        trim: true,
+        set: v => String(v || "").toUpperCase()
     },
     logo: {
         type: String,
