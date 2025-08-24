@@ -9,7 +9,6 @@ const router = express.Router();
 router.use(tokenMiddleware.auth);
 
 router.get("/me", ticketController.getUserTickets);
-
 router.get("/:id", ensureTicketOwner, ticketController.getTicketById);
 
 router.put("/:id/use",
