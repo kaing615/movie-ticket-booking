@@ -8,7 +8,7 @@ const bookingSchema = new mongoose.Schema({
     totalPrice: { type: Number,  required: true },
     status: {
       type: String,
-      enum: ["pending", "paid", "cancelled", "expired", "refunded"],
+      enum: ["pending", "paid", "cancelled", "expired", "refund", "refunded"],
       default: "pending",
     },
     theaterId: { type: mongoose.Schema.Types.ObjectId, ref: "Theater", index: true }, 

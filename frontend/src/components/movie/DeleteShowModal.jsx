@@ -5,6 +5,7 @@ import { showApi } from '../../api/modules/show.api.js';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const DeleteShowModal = ({ isOpen, onClose, show }) => {
+    const [messageApi, contextHolder] = message.useMessage();
     const queryClient = useQueryClient();
 
     const deleteShowMutation = useMutation({
@@ -15,24 +16,26 @@ const DeleteShowModal = ({ isOpen, onClose, show }) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['theaterShows']);
-            message.success('Xóa lịch chiếu thành công!');
+            messageApi.success('Xóa lịch chiếu thành công!');
             onClose();
         },
         onError: (error) => {
             console.error('Delete show error:', error);
-            message.error('Có lỗi xảy ra khi xóa lịch chiếu!');
+            messageApi.error('Có lỗi xảy ra khi xóa lịch chiếu!');
         }
     });
 
     const handleOk = async () => {
         if (!show?._id) {
-            message.error('Không tìm thấy ID lịch chiếu!');
+            messageApi.error('Không tìm thấy ID lịch chiếu!');
             return;
         }
         await deleteShowMutation.mutateAsync(show._id);
     };
 
     return (
+        <>
+        {  contextHolder}
         <Modal
             title={
                 <div className="flex items-center gap-2 text-xl font-bold text-red-500">
@@ -73,6 +76,7 @@ const DeleteShowModal = ({ isOpen, onClose, show }) => {
                 </div>
             </div>
         </Modal>
+        </>
     );
 };
 

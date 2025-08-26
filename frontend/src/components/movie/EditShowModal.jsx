@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import dayjs from 'dayjs';
 
 const EditShowModal = ({ isOpen, onClose, show }) => {
+    const [messageApi, contextHolder] = message.useMessage();
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
     const { user } = useSelector((state) => state.auth);
@@ -67,13 +68,13 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['theaterShows']);
-            message.success('Cập nhật lịch chiếu thành công!');
+            messageApi.success('Cập nhật lịch chiếu thành công!');
             onClose();
             form.resetFields();
         },
         onError: (error) => {
             console.error('Update show error:', error);
-            message.error('Có lỗi xảy ra khi cập nhật lịch chiếu!');
+            messageApi.error('Có lỗi xảy ra khi cập nhật lịch chiếu!');
         }
     });
 
@@ -83,101 +84,105 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
             await editShowMutation.mutateAsync(values);
         } catch (error) {
             console.error('Form validation failed:', error);
+            messageApi.error('Vui lòng kiểm tra lại thông tin nhập vào!');
         }
     };
 
     return (
-        <Modal
-            title={
-                <div className="text-xl font-bold text-blue-600">
-                    Cập nhật lịch chiếu - {show?.movieId?.movieName}
-                </div>
-            }
-            open={isOpen}
-            onCancel={onClose}
-            onOk={handleOk}
-            okText="Cập nhật"
-            cancelText="Hủy bỏ"
-            okButtonProps={{
-                className: "bg-blue-500 hover:bg-blue-600 text-white border-none",
-                loading: editShowMutation.isLoading
-            }}
-            cancelButtonProps={{
-                className: "border-gray-300 hover:border-gray-400"
-            }}
-            centered
-            maskClosable={false}
-            className="select-none"
-            width={500}
-        >
-            <Form
-                form={form}
-                layout="vertical"
-                className="mt-4"
-            >
-                <div className="space-y-4">
-                    <Form.Item
-                        name="roomId"
-                        label="Phòng chiếu"
-                        rules={[{ required: true, message: 'Vui lòng chọn phòng!' }]}
-                    >
-                        <Select 
-                            placeholder="Chọn phòng" 
-                            className="w-full"
-                            loading={isLoading}
-                        >
-                            {rooms?.map(room => (
-                                <Select.Option key={room._id} value={room._id}>
-                                    Phòng {room.roomNumber}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        name="date"
-                        label="Ngày chiếu"
-                        rules={[{ required: true, message: 'Vui lòng chọn ngày chiếu!' }]}
-                    >
-                        <DatePicker 
-                            className="w-full" 
-                            format="DD/MM/YYYY"
-                            disabledDate={current => current && current < dayjs().startOf('day')}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="time"
-                        label="Giờ chiếu"
-                        rules={[{ required: true, message: 'Vui lòng chọn giờ chiếu!' }]}
-                    >
-                        <TimePicker 
-                            className="w-full" 
-                            format="HH:mm"
-                            minuteStep={5}
-                        />
-                    </Form.Item>
-
-                    <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-2">
-                        <p className="text-gray-600">
-                            Rạp: <span className="font-semibold text-blue-600">
-                                {show?.theaterId?.theaterName}
-                            </span>
-                        </p>
-                        <p className="text-gray-600">
-                            Phim: <span className="font-semibold text-blue-600">
-                                {show?.movieId?.movieName}
-                            </span>
-                        </p>
-                        <p className="text-gray-600">
-                            Thời lượng: <span className="font-semibold text-blue-600">
-                                {show?.movieId?.duration} phút
-                            </span>
-                        </p>
+        <>
+        {  contextHolder}
+            <Modal
+                title={
+                    <div className="text-xl font-bold text-blue-600">
+                        Cập nhật lịch chiếu - {show?.movieId?.movieName}
                     </div>
-                </div>
-            </Form>
-        </Modal>
+                }
+                open={isOpen}
+                onCancel={onClose}
+                onOk={handleOk}
+                okText="Cập nhật"
+                cancelText="Hủy bỏ"
+                okButtonProps={{
+                    className: "bg-blue-500 hover:bg-blue-600 text-white border-none",
+                    loading: editShowMutation.isLoading
+                }}
+                cancelButtonProps={{
+                    className: "border-gray-300 hover:border-gray-400"
+                }}
+                centered
+                maskClosable={false}
+                className="select-none"
+                width={500}
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    className="mt-4"
+                >
+                    <div className="space-y-4">
+                        <Form.Item
+                            name="roomId"
+                            label="Phòng chiếu"
+                            rules={[{ required: true, message: 'Vui lòng chọn phòng!' }]}
+                        >
+                            <Select 
+                                placeholder="Chọn phòng" 
+                                className="w-full"
+                                loading={isLoading}
+                            >
+                                {rooms?.map(room => (
+                                    <Select.Option key={room._id} value={room._id}>
+                                        Phòng {room.roomNumber}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            name="date"
+                            label="Ngày chiếu"
+                            rules={[{ required: true, message: 'Vui lòng chọn ngày chiếu!' }]}
+                        >
+                            <DatePicker 
+                                className="w-full" 
+                                format="DD/MM/YYYY"
+                                disabledDate={current => current && current < dayjs().startOf('day')}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="time"
+                            label="Giờ chiếu"
+                            rules={[{ required: true, message: 'Vui lòng chọn giờ chiếu!' }]}
+                        >
+                            <TimePicker 
+                                className="w-full" 
+                                format="HH:mm"
+                                minuteStep={5}
+                            />
+                        </Form.Item>
+
+                        <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-2">
+                            <p className="text-gray-600">
+                                Rạp: <span className="font-semibold text-blue-600">
+                                    {show?.theaterId?.theaterName}
+                                </span>
+                            </p>
+                            <p className="text-gray-600">
+                                Phim: <span className="font-semibold text-blue-600">
+                                    {show?.movieId?.movieName}
+                                </span>
+                            </p>
+                            <p className="text-gray-600">
+                                Thời lượng: <span className="font-semibold text-blue-600">
+                                    {show?.movieId?.duration} phút
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </Form>
+            </Modal>
+        </>
     );
 };
 
