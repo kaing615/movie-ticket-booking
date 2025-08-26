@@ -60,6 +60,7 @@ const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows })
     });
 
     const handleOk = React.useCallback(async () => {
+        
         console.log('handleOk called, movieId:', movieId);
         
         if (!movieId) {
@@ -111,7 +112,7 @@ const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows })
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <p className="text-yellow-700 flex items-center gap-2">
                         <ExclamationCircleOutlined className="text-yellow-500" />
-                        Lưu ý: Tất cả lịch chiếu của phim sẽ bị xóa vĩnh viễn và không thể khôi phục.
+                        Lưu ý: Tất cả lịch chiếu của phim sẽ bị xóa và không thể khôi phục.
                     </p>
                 </div>
             </div>

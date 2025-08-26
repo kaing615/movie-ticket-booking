@@ -15,6 +15,7 @@ const ManagerDashboard = () => {
     const [selectedMovie, setSelectedMovie] = React.useState(null);
     const queryClient = useQueryClient();
     const { user } = useSelector((state) => state.auth);
+    const [scheduleForm] = Form.useForm();
     const [deleteMovieModal, setDeleteMovieModal] = React.useState({
         isOpen: false,
         movieId: null,
@@ -90,7 +91,7 @@ const ManagerDashboard = () => {
         onSuccess: (data) => {
             queryClient.invalidateQueries(["theaterShows"]);
             setShowScheduleModal(false);
-            
+            scheduleForm.resetFields();
             const isNewMovie = !theaterShows?.some(
                 show => show.movieId._id === selectedMovie._id
             );
@@ -175,7 +176,7 @@ const ManagerDashboard = () => {
             key: "action",
             render: (_, record) => (
                 console.log("Rendering action for movie:", record),
-                <div className="flex space-x-3">
+                <div className="flex gap-x-3">
                     <ActionButton movie={record} />
                     <Button
                     icon={<DeleteOutlined />}
@@ -333,6 +334,7 @@ const ManagerDashboard = () => {
                 className="rounded-xl overflow-hidden"
             >
                 <Form
+                    form={scheduleForm}
                     onFinish={handleAddSchedule}
                     layout="vertical"
                     className="p-6"

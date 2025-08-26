@@ -54,20 +54,21 @@ export const getBookingOfUser = async (req, res) => {
         // Format lại dữ liệu trước khi trả về
         const formattedBookings = bookings.map(booking => {
             const bookingObj = booking.toObject();
+            console.log("Booking fetched:", bookingObj);
             return {
                 ...bookingObj,
                 movieInfo: {
-                    name: booking.showId.movieId.movieName,
-                    duration: booking.showId.movieId.duration,
-                    poster: booking.showId.movieId.poster
+                    name: booking.showId?.movieId.movieName,
+                    duration: booking.showId?.movieId.duration,
+                    poster: booking.showId?.movieId.poster
                 },
                 showInfo: {
-                    startTime: booking.showId.startTime,
-                    endTime: booking.showId.endTime
+                    startTime: booking.showId?.startTime,
+                    endTime: booking.showId?.endTime
                 },
                 theaterInfo: {
-                    theaterName: booking.showId.roomId.theaterId.theaterName,
-                    roomNumber: booking.showId.roomId.roomNumber
+                    theaterName: booking.showId?.roomId.theaterId.theaterName,
+                    roomNumber: booking.showId?.roomId.roomNumber
                 },
                 seats: booking.seatIds.map(seat => ({
                     seatNumber: seat.seatNumber,

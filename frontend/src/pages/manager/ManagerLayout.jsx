@@ -18,7 +18,7 @@ const MENU_ITEMS = [
     },
     {
         path: "/manager/users",
-        label: "Users",
+        label: "Tickets",
         icon: <UserOutlined className="text-xl" />
     },
     {

@@ -48,6 +48,8 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
 
     const editShowMutation = useMutation({
         mutationFn: async (values) => {
+            console.log('Form values:', values);
+            console.log("Room: ", values.show?.roomId?.roomNumber);
             const startTime = new Date(values.date);
             startTime.setHours(values.time.hour(), values.time.minute());
             
@@ -73,7 +75,23 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
         },
         onError: (error) => {
             console.error('Update show error:', error);
-            message.error('Có lỗi xảy ra khi cập nhật lịch chiếu!');
+            let msg;
+
+            if (error?.response?.data?.message) {
+                // Trường hợp axios có response từ backend
+                msg = error.response.data.message;
+            } else if (error?.message) {
+                // Trường hợp throw Error trong frontend/backend
+                msg = error.message;
+            } else if (error?.status && error?.message) {
+                // Trường hợp bạn return object {success, status, message}
+                msg = error.message;
+            } else {
+                msg = "Có lỗi xảy ra khi cập nhật lịch chiếu!";
+            }
+
+            console.log('Error message to show:', msg);
+            message.error(msg);
         }
     });
 
@@ -82,7 +100,16 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
             const values = await form.validateFields();
             await editShowMutation.mutateAsync(values);
         } catch (error) {
-            console.error('Form validation failed:', error);
+            // Nếu là lỗi validate của antd form
+            if (error && error.errorFields) {
+                // Scroll đến field đầu tiên bị lỗi
+                form.scrollToField(error.errorFields[0].name);
+                // Hiện thông báo lỗi tổng quát
+                message.error(error.errorFields[0].errors[0] || "Vui lòng điền đầy đủ thông tin!");
+            } else {
+                // Lỗi khác
+                message.error("Có lỗi xảy ra khi kiểm tra dữ liệu!");
+            }
         }
     };
 
