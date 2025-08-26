@@ -38,8 +38,8 @@ export const createReview = async (req, res) => {
         // Kiểm tra xem user đã xem phim chưa (có ticket status = used)
         const hasWatched = await Ticket.exists({
             ownerId: userId,
-            showId: { $in: showIds },
-            status: "used"
+            //showId: { $in: showIds },
+            //status: "used"
         });
 
         if (!hasWatched) {
@@ -138,8 +138,8 @@ export const checkWatched = async (req, res) => {
         // Kiểm tra xem user đã xem phim chưa (có ticket status = used)
         const hasWatched = await Ticket.exists({
             ownerId: userId,
-            showId: { $in: showIds },
-            status: "used"
+            //showId: { $in: showIds },
+            //status: "used"
         });
 
         responseHandler.ok(res, {
