@@ -7,7 +7,6 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 const DeleteShowModal = ({ isOpen, onClose, show }) => {
     const [messageApi, contextHolder] = message.useMessage();
     const queryClient = useQueryClient();
-
     const deleteShowMutation = useMutation({
         mutationFn: async (showId) => {
             console.log('Deleting show:', showId);
@@ -35,47 +34,47 @@ const DeleteShowModal = ({ isOpen, onClose, show }) => {
 
     return (
         <>
-        {  contextHolder}
-        <Modal
-            title={
-                <div className="flex items-center gap-2 text-xl font-bold text-red-500">
-                    <ExclamationCircleOutlined className="text-2xl" />
-                    Xác nhận xóa lịch chiếu
-                </div>
-            }
-            open={isOpen}
-            onCancel={onClose}
-            okText="Xóa"
-            cancelText="Hủy bỏ"
-            okButtonProps={{ 
-                danger: true,
-                loading: deleteShowMutation.isLoading,
-                className: "bg-red-500 hover:bg-red-600 text-white font-semibold px-6"
-            }}
-            cancelButtonProps={{
-                className: "border-gray-300 hover:border-gray-400 font-semibold px-6"
-            }}
-            onOk={handleOk}
-            className="select-none"
-            maskClosable={false}
-            centered
-        >
-            <div className="py-4 space-y-4">
-                <p className="text-lg">
-                    Bạn có chắc chắn muốn xóa lịch chiếu phim "
-                    <span className="font-semibold text-orange-500">
-                        {show?.movieId?.movieName}
-                    </span>
-                    "?
-                </p>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p className="text-yellow-700 flex items-center gap-2">
-                        <ExclamationCircleOutlined className="text-yellow-500" />
-                        Lịch chiếu đã xóa không thể khôi phục.
+            {contextHolder}
+            <Modal
+                title={
+                    <div className="flex items-center gap-2 text-xl font-bold text-red-500">
+                        <ExclamationCircleOutlined className="text-2xl" />
+                        Xác nhận xóa lịch chiếu
+                    </div>
+                }
+                open={isOpen}
+                onCancel={onClose}
+                okText="Xóa"
+                cancelText="Hủy bỏ"
+                okButtonProps={{
+                    danger: true,
+                    loading: deleteShowMutation.isLoading,
+                    className: "bg-red-500 hover:bg-red-600 text-white font-semibold px-6"
+                }}
+                cancelButtonProps={{
+                    className: "border-gray-300 hover:border-gray-400 font-semibold px-6"
+                }}
+                onOk={handleOk}
+                className="select-none"
+                maskClosable={false}
+                centered
+            >
+                <div className="py-4 space-y-4">
+                    <p className="text-lg">
+                        Bạn có chắc chắn muốn xóa lịch chiếu phim "
+                        <span className="font-semibold text-orange-500">
+                            {show?.movieId?.movieName}
+                        </span>
+                        "?
                     </p>
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-700 flex items-center gap-2">
+                            <ExclamationCircleOutlined className="text-yellow-500" />
+                            Lịch chiếu đã xóa không thể khôi phục.
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </Modal>
+            </Modal>
         </>
     );
 };

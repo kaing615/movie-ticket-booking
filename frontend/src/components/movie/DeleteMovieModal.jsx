@@ -7,26 +7,25 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows }) => {
     const [messageApi, contextHolder] = message.useMessage();
     const queryClient = useQueryClient();
-
-    console.log('DeleteMovieModal rendered with:', { 
-        movieId, 
-        movieName, 
-        showsCount: theaterShows?.length 
+    console.log('DeleteMovieModal rendered with:', {
+        movieId,
+        movieName,
+        showsCount: theaterShows?.length
     });
 
     const removeMovieMutation = useMutation({
         mutationFn: async (id) => {
             console.log('mutationFn called with id:', id);
-            
+
             if (!id) {
                 console.error('No movie ID provided to mutationFn');
                 throw new Error('No movie ID provided');
             }
 
-            const relevantShows = theaterShows?.filter(show => 
+            const relevantShows = theaterShows?.filter(show =>
                 show.movieId._id === id || show.movieId === id
             );
-            
+
             console.log('Found shows to delete:', relevantShows);
 
             if (!relevantShows?.length) {
@@ -62,7 +61,7 @@ const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows })
 
     const handleOk = React.useCallback(async () => {
         console.log('handleOk called, movieId:', movieId);
-        
+
         if (!movieId) {
             console.error('No movieId available in handleOk');
             messageApi.error("Không tìm thấy ID phim!");
@@ -92,7 +91,7 @@ const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows })
                 onCancel={onClose}
                 okText="Xóa phim"
                 cancelText="Hủy bỏ"
-                okButtonProps={{ 
+                okButtonProps={{
                     danger: true,
                     loading: removeMovieMutation.isLoading,
                     className: "bg-red-500 hover:bg-red-600 text-white font-semibold px-6"

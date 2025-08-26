@@ -12,7 +12,7 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
     const { user } = useSelector((state) => state.auth);
-     const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ["theater-rooms", user?._id],
         queryFn: async () => {
             const theater = await theaterApi.getTheaterByManagerId(user?._id);
@@ -26,7 +26,7 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
     });
 
     const { theater, rooms } = data || {};
-    
+
     // Initialize form with show data
     React.useEffect(() => {
         console.log('Show data:', {
@@ -51,7 +51,7 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
         mutationFn: async (values) => {
             const startTime = new Date(values.date);
             startTime.setHours(values.time.hour(), values.time.minute());
-            
+
             const endTime = new Date(startTime);
             const duration = show.movieId.duration || 120;
             endTime.setMinutes(endTime.getMinutes() + duration);
@@ -90,7 +90,7 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
 
     return (
         <>
-        {  contextHolder}
+            {contextHolder}
             <Modal
                 title={
                     <div className="text-xl font-bold text-blue-600">
@@ -125,8 +125,8 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
                             label="Phòng chiếu"
                             rules={[{ required: true, message: 'Vui lòng chọn phòng!' }]}
                         >
-                            <Select 
-                                placeholder="Chọn phòng" 
+                            <Select
+                                placeholder="Chọn phòng"
                                 className="w-full"
                                 loading={isLoading}
                             >
@@ -143,8 +143,8 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
                             label="Ngày chiếu"
                             rules={[{ required: true, message: 'Vui lòng chọn ngày chiếu!' }]}
                         >
-                            <DatePicker 
-                                className="w-full" 
+                            <DatePicker
+                                className="w-full"
                                 format="DD/MM/YYYY"
                                 disabledDate={current => current && current < dayjs().startOf('day')}
                             />
@@ -155,8 +155,8 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
                             label="Giờ chiếu"
                             rules={[{ required: true, message: 'Vui lòng chọn giờ chiếu!' }]}
                         >
-                            <TimePicker 
-                                className="w-full" 
+                            <TimePicker
+                                className="w-full"
                                 format="HH:mm"
                                 minuteStep={5}
                             />
