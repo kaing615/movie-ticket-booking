@@ -5,7 +5,7 @@ import { EditOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { userApi } from "../../api/modules/user.api.js";
 import { bookingApi } from "../../api/modules/booking.api.js";
-import { logout, updateUser } from "../redux/features/auth.slice.js";
+import { logout, updateUser } from "../../redux/features/auth.slice.js";
 const BookingHistory = () => {
     const { Panel } = Collapse;
     
