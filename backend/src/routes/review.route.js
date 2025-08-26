@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Lấy danh sách review (không cần đăng nhập)
 router.get("/:movieId", reviewController.getReviews);
+router.get("/", reviewController.getAllReviews);
 
 // Các route dưới đây yêu cầu đăng nhập
 router.use(tokenMiddleware.auth);

@@ -8,7 +8,7 @@ import Seat from "../models/seat.model.js";
 import Ticket from "../models/ticket.model.js";
 import SeatHold from "../models/seatHold.model.js";
 import SeatReservation from "../models/seatReservation.model.js";
-import bookingModel from "../models/booking.model.js";
+import Booking from "../models/booking.model.js";
 
 // Helper: Check quyền sở hữu của theater-manager với rạp
 const isTheaterManagerOf = async (userId, theaterId) => {
@@ -245,8 +245,8 @@ const deleteMovieFromTheater = async (req, res) => {
     }
 
     await Booking.updateMany(
-      { showId: showId, status: { $nin: ["refunded", "cancelled"] } },
-      { $set: { status: "refund", refundedAt: new Date() } }
+      { showId: showId },
+      { $set: { status: "refund" } }
     );
 
     const result = await Show.deleteOne({ _id: showId });
