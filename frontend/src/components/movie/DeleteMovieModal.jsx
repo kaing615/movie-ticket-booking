@@ -5,8 +5,8 @@ import { showApi } from '../../api/modules/show.api.js';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const DeleteMovieModal = ({ isOpen, onClose, movieId, movieName, theaterShows }) => {
-    const queryClient = useQueryClient();
     const [messageApi, contextHolder] = message.useMessage();
+    const queryClient = useQueryClient();
     console.log('DeleteMovieModal rendered with:', {
         movieId,
         movieName,

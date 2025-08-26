@@ -55,6 +55,33 @@ export const getBookingOfUser = async (req, res) => {
     // Format lại dữ liệu trước khi trả về
     const formattedBookings = bookings.map((booking) => {
       const bookingObj = booking.toObject();
+      // Nếu showId null -> show đã bị hủy
+      if (!booking.showId) {
+        return {
+          ...bookingObj,
+          movieInfo: {
+            name: "Suất chiếu đã bị hủy",
+            duration: null,
+            poster: null,
+          },
+          showInfo: {
+            startTime: null,
+            endTime: null,
+          },
+          theaterInfo: {
+            theaterName: null,
+            roomNumber: null,
+          },
+          seats: booking.seatIds.map((seat) => ({
+            seatNumber: seat.seatNumber,
+            seatType: seat.seatType,
+            row: seat.row,
+          })),
+          cancelledMessage:
+            "Suất chiếu của bạn đã bị hủy. Bạn sẽ được hoàn tiền, xin thành thật xin lỗi vì sự bất tiện này.",
+        };
+      }
+      
       return {
         ...bookingObj,
         movieInfo: {

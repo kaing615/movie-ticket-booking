@@ -12,6 +12,7 @@ import {
   MenuUnfoldOutlined,
   BellOutlined,
   SearchOutlined,
+  StarOutlined,
 } from "@ant-design/icons";
 import { Tooltip, Avatar, Breadcrumb, Input, Tag, Badge } from "antd";
 
@@ -21,6 +22,7 @@ const MENU_ITEMS = [
   { path: "/manager/rooms", label: "Rooms", icon: <UserOutlined className="text-xl" /> },
   { path: "/manager/theater-dashboard", label: "Theaters", icon: <VideoCameraOutlined className="text-xl" /> },
   { path: "/manager/revenue", label: "Revenue", icon: <PlayCircleOutlined className="text-xl" /> },
+  { path: "/manager/reviews", label: "Reviews", icon: <StarOutlined className="text-xl" /> },
 ];
 
 const ManagerLayout = () => {

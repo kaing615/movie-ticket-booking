@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { bookingApi } from "../../api/modules/booking.api";
 import ETicket from "./ETicket";
-
+import BookingHistory from "./BookingHistory";
 const MyTickets = () => {
   const { data: bookings = [], isLoading, isError } = useQuery({
     queryKey: ["my-tickets", "paid"],
@@ -28,19 +28,8 @@ const MyTickets = () => {
         </h1>
       </div>
 
-      {isLoading ? (
-        <div className="text-gray-500">Đang tải vé…</div>
-      ) : isError ? (
-        <div className="text-red-600">Không tải được vé. Thử lại sau.</div>
-      ) : items.length === 0 ? (
-        <div className="text-gray-500">Bạn chưa có vé nào.</div>
-      ) : (
-        <div className="grid gap-5 md:grid-cols-2">
-          {items.map(({ ticket, booking }) => (
-            <ETicket key={ticket._id} ticket={ticket} booking={booking} />
-          ))}
-        </div>
-      )}
+      <BookingHistory />
+      
     </div>
   );
 };

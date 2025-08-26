@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Input, Modal, message, Tooltip, Table, Tag, Collapse } from "antd";
 import { EditOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { userApi } from "../api/modules/user.api.js";
-import { bookingApi } from "../api/modules/booking.api.js";
-import { logout, updateUser } from "../redux/features/auth.slice.js";
+import { userApi } from "../../api/modules/user.api.js";
+import { bookingApi } from "../../api/modules/booking.api.js";
+import { logout, updateUser } from "../../redux/features/auth.slice.js";
 const BookingHistory = () => {
     const { Panel } = Collapse;
     
@@ -14,6 +14,7 @@ const BookingHistory = () => {
         queryFn: () => bookingApi.getMyBookings(),
     });
 
+    console.log('Fetched bookings:', bookings);
     const bookingColumns = [
         {
             title: 'Mã đặt vé',
@@ -39,7 +40,7 @@ const BookingHistory = () => {
             render: (theaterInfo) => (
                 <div>
                     <div>{theaterInfo.theaterName}</div>
-                    <div className="text-gray-500 text-sm">Phòng: {theaterInfo.roomNumber}</div>
+                    <div className="text-gray-500 text-sm">{theaterInfo?.roomNumber ?? "Đã hủy"}</div>
                 </div>
             )
         },
@@ -47,14 +48,19 @@ const BookingHistory = () => {
             title: 'Thời gian chiếu',
             dataIndex: 'showInfo',
             key: 'showTime',
-            render: (showInfo) => (
+            render: (showInfo) => {
+                if (!showInfo?.startTime || !showInfo?.endTime) {
+                return <span className="text-gray-400">Đã hủy</span>;
+                }
+                return (
                 <div>
                     <div>{new Date(showInfo.startTime).toLocaleString('vi-VN')}</div>
                     <div className="text-gray-500 text-sm">
-                        → {new Date(showInfo.endTime).toLocaleTimeString('vi-VN')}
+                    → {new Date(showInfo.endTime).toLocaleTimeString('vi-VN')}
                     </div>
                 </div>
-            )
+                );
+            }
         },
         {
             title: 'Ngày đặt',
@@ -81,6 +87,7 @@ const BookingHistory = () => {
                     paid: 'green',
                     cancelled: 'red',
                     expired: 'gray',
+                    refund: 'blue',
                     refunded: 'purple'
                 }[status];
                 const text = {
@@ -88,6 +95,7 @@ const BookingHistory = () => {
                     paid: 'Đã thanh toán',
                     cancelled: 'Đã hủy',
                     expired: 'Hết hạn',
+                    refund: 'Chờ hoàn tiền',    
                     refunded: 'Đã hoàn tiền'
                 }[status];
                 return <Tag color={color}>{text}</Tag>;

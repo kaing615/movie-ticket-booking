@@ -8,9 +8,9 @@ import { useSelector } from "react-redux";
 import dayjs from 'dayjs';
 
 const EditShowModal = ({ isOpen, onClose, show }) => {
+    const [messageApi, contextHolder] = message.useMessage();
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
-    const [messageApi, contextHolder] = message.useMessage();
     const { user } = useSelector((state) => state.auth);
     const { data, isLoading } = useQuery({
         queryKey: ["theater-rooms", user?._id],
@@ -84,6 +84,7 @@ const EditShowModal = ({ isOpen, onClose, show }) => {
             await editShowMutation.mutateAsync(values);
         } catch (error) {
             console.error('Form validation failed:', error);
+            messageApi.error('Vui lòng kiểm tra lại thông tin nhập vào!');
         }
     };
 

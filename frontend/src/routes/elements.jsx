@@ -23,6 +23,7 @@ import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 import TheaterDashboard from "../pages/manager/TheaterDashboard.jsx";
 import RoomsDashboard from "../pages/manager/RoomsDashboard.jsx";
 import RevenueDashboard from "../components/revenue/RevenueDashboard.jsx";
+import ReviewDashboard from "../pages/manager/ReviewDashboard.jsx";
 
 // Customer pages
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
@@ -168,6 +169,10 @@ const useRouterElements = () => {
           path: MANAGER_PATH.REVENUE,
           element: <RevenueDashboard />,
         },
+        {
+          path: MANAGER_PATH.REVIEW,
+          element: <ReviewDashboard />,
+        }
       ],
     },
     {

@@ -38,4 +38,5 @@ export const MANAGER_PATH = {
 	THEATERDASHBOARD: "theater-dashboard",
 	ROOMS: "rooms",
 	REVENUE: "revenue",
+	REVIEW: "reviews",
 };

@@ -6,7 +6,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { userApi } from "../api/modules/user.api.js";
 import {bookingApi} from "../api/modules/booking.api.js";
 import { logout, updateUser } from "../redux/features/auth.slice.js";
-import BookingHistory from "./BookingHistory.jsx";
+import BookingHistory from "./customer/BookingHistory.jsx";
 const fields = [
     { key: "email", label: "Email" },
     { key: "userName", label: "Tên người dùng" },

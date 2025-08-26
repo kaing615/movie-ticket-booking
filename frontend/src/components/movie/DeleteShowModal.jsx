@@ -5,8 +5,8 @@ import { showApi } from '../../api/modules/show.api.js';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const DeleteShowModal = ({ isOpen, onClose, show }) => {
-    const queryClient = useQueryClient();
     const [messageApi, contextHolder] = message.useMessage();
+    const queryClient = useQueryClient();
     const deleteShowMutation = useMutation({
         mutationFn: async (showId) => {
             console.log('Deleting show:', showId);
