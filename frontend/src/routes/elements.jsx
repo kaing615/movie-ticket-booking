@@ -16,14 +16,15 @@ import UserManagement from "../pages/admin/UserManagement.jsx";
 import TheaterManagement from "../pages/admin/Theaters/Theater.jsx";
 import MovieManagement from "../pages/admin/Movies/Movies.jsx";
 import ShowManagement from "../pages/admin/ShowManagement.jsx";
+import ReviewDashboard from "../pages/admin/ReviewDashboard.jsx";
 
 // Manager pages
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
 import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 import TheaterDashboard from "../pages/manager/TheaterDashboard.jsx";
 import RoomsDashboard from "../pages/manager/RoomsDashboard.jsx";
-import RevenueDashboard from "../components/revenue/RevenueDashboard.jsx";
-import ReviewDashboard from "../pages/manager/ReviewDashboard.jsx";
+import RevenueDashboard from "../components/revenue/RevenueDashboard1.jsx";
+
 
 // Customer pages
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
@@ -147,6 +148,10 @@ const useRouterElements = () => {
           path: ADMIN_PATH.THEATERS,
           element: <TheaterManagement />,
         },
+        {
+          path: ADMIN_PATH.REVIEWS,
+          element: <ReviewDashboard />,
+        }
       ],
     },
     {
@@ -169,10 +174,6 @@ const useRouterElements = () => {
           path: MANAGER_PATH.REVENUE,
           element: <RevenueDashboard />,
         },
-        {
-          path: MANAGER_PATH.REVIEW,
-          element: <ReviewDashboard />,
-        }
       ],
     },
     {

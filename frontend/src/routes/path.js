@@ -31,6 +31,7 @@ export const ADMIN_PATH = {
 	THEATERS: "theaters",
 	MOVIES: "movies",
 	SHOWS: "shows",
+	REVIEWS: "reviews",
 };
 
 export const MANAGER_PATH = {
@@ -38,5 +39,4 @@ export const MANAGER_PATH = {
 	THEATERDASHBOARD: "theater-dashboard",
 	ROOMS: "rooms",
 	REVENUE: "revenue",
-	REVIEW: "reviews",
 };

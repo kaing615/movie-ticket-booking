@@ -79,6 +79,20 @@ export const getReviews = async (req, res) => {
     }
 };
 
+export const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await Review.find({})
+            .populate("userId", "userName email")
+            .populate("movieId", "movieName");
+        responseHandler.ok(res, {
+            message: "Lấy tất cả đánh giá thành công!",
+            reviews,
+        });
+    } catch (err) {
+        responseHandler.error(res, err.message);
+    }
+};
+
 export const updateReview = async (req, res) => {
     try {
         const { rating, comment } = req.body;
@@ -154,6 +168,7 @@ export const checkWatched = async (req, res) => {
 export default {
     createReview,
     getReviews,
+    getAllReviews,
     updateReview,
     deleteReview,
     checkWatched
