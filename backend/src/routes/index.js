@@ -13,7 +13,7 @@ import bookingRoute from "./booking.route.js";
 import ticketRoute from "./ticket.route.js";
 import seatRoute from "./seat.route.js";
 import supportRoute from "./support.route.js";
-
+import uploadRoute from "./upload.js";
 import adminRoutes from "../routes/admin/admin.route.js";
 
 const router = express.Router();
@@ -28,6 +28,7 @@ router.use("/booking", bookingRoute);
 router.use("/ticket", ticketRoute);
 router.use("/seat", seatRoute);
 router.use("/support", supportRoute);
+router.use("/image", uploadRoute);
 
 router.use(token.auth);
 

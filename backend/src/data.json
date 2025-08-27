@@ -1,0 +1,1090 @@
+
+[
+{
+ 
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:14.356Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:14.356Z"
+  },
+  "__v": 0
+},
+{
+ 
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:24.618Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:24.618Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:30.932Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:30.932Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:36.413Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:36.413Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:41.969Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:41.969Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:48.151Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:48.151Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:55:55.210Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:55:55.210Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:12.479Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:12.479Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:19.020Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:19.020Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "A",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:24.214Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:24.214Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:45.426Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:45.426Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:45.427Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:45.427Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:56:54.525Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:56:54.525Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:04.746Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:04.746Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:10.448Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:10.448Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:16.836Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:16.836Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:22.396Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:22.396Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:29.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:29.923Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": true,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:36.737Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:42.856Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:57.089Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:57.089Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "B",
+  "createdAt": {
+    "$date": "2025-08-27T07:57:57.091Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:57:57.091Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:58:07.234Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:07.234Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:58:07.235Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:07.235Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:14.074Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:14.074Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:22.786Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:22.786Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:25.345Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:25.345Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:30.425Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:30.425Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:33.252Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:33.252Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:36.046Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:36.046Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:38.598Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:38.598Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:41.274Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:41.274Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:44.877Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:44.877Z"
+  },
+  "__v": 0
+},
+{
+ 
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "VIP",
+  "isDisabled": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2025-08-27T07:58:48.220Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:58:48.220Z"
+  },
+  "__v": 0
+},
+{
+ 
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:02.813Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:02.813Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:09.568Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:09.568Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:18.093Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:18.093Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:24.894Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:24.894Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:30.857Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:30.857Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:36.480Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:36.480Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:45.247Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:45.247Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "C",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:45.248Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:45.248Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:55.688Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:55.688Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T07:59:55.689Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T07:59:55.689Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:09.999Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:09.999Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:25.609Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:25.609Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:33.162Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:33.162Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:40.002Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:40.002Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:47.683Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:47.683Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:00:57.631Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:00:57.631Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:04.409Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:04.409Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "D",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:04.411Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:04.411Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "1",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:14.692Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:14.692Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "2",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:14.694Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:14.694Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "3",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:28.971Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:28.971Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "4",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:35.462Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:35.462Z"
+  },
+  "__v": 0
+},
+{
+ 
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "5",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:42.257Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:42.257Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "6",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:48.094Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:48.094Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "7",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:53.929Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:53.929Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "8",
+  "seatType": "Tiêu chuẩn",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:01:59.736Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:01:59.736Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "9",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:02:08.461Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:02:08.461Z"
+  },
+  "__v": 0
+},
+{
+
+  "roomId": {
+    "$oid": "66000000000000000000001a"
+  },
+  "seatNumber": "10",
+  "seatType": "Couple",
+  "isDisabled": false,
+  "isDeleted": false,
+  "row": "E",
+  "createdAt": {
+    "$date": "2025-08-27T08:02:08.461Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-27T08:02:08.461Z"
+  },
+  "__v": 0
+}]
