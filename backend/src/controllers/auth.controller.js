@@ -22,7 +22,7 @@ const generateToken = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
 export const sendVerificationEmail = async (email, verifyKey, userName) => {
 	const verifyLink = `${
 		process.env.FRONTEND_URL
-	}/auth/verify-email?verified=1&email=${encodeURIComponent(
+	}auth/verify-email?verified=1&email=${encodeURIComponent(
 		email
 	)}&verifyKey=${verifyKey}`;
 	const data = {
@@ -146,8 +146,8 @@ export const signUp = async (req, res) => {
 			verifyKeyExpires,
 		});
 
-		await sendVerificationEmail(user.email, user.verifyKey, user.userName);
 		await user.save();
+		await sendVerificationEmail(user.email, user.verifyKey, user.userName);
 
 		if (user.isVerified) {
 			const token = jwt.sign(
@@ -188,11 +188,9 @@ export const signIn = async (req, res) => {
 
 		const user = await User.findOne({ email });
 		const genericErrorMessage = "Email hoặc mật khẩu không đúng.";
-		// chống user enumeration
 
 		const DUMMY_HASH =
 			"$2a$10$ull7LxLFMg9MvAgkKYlWBuQ3yA57nLCbSAT6BPhEqMacBVDOa2Jby";
-		// chống timing attack
 		let isValidPassword = false;
 
 		if (user && user.isVerified) {

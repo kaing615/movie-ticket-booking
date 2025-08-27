@@ -9,12 +9,6 @@ const MovieCard = ({ movie }) => {
   const [showTrailer, setShowTrailer] = useState(false);
   const movieId = movie._id || movie.movieId || movie.id;
 
-  // Tính điểm đánh giá trung bình (nếu có)
-  const avgRating =
-    movie.ratingCount > 0
-      ? (movie.ratingScore / movie.ratingCount).toFixed(1)
-      : null;
-
   return (
     <>
       <div className="relative bg-[#161616] rounded-xl shadow-xl overflow-hidden flex flex-col transition-all group hover:shadow-2xl hover:-translate-y-2 border border-zinc-800">
@@ -48,12 +42,6 @@ const MovieCard = ({ movie }) => {
               Trailer
             </Button>
           </div>
-          {/* Rating */}
-          {avgRating && (
-            <span className="absolute top-3 right-3 bg-white/90 text-yellow-500 font-bold rounded px-2 py-0.5 text-xs z-20">
-              ★ {avgRating}/10
-            </span>
-          )}
           <img
             src={movie.poster}
             alt={movie.movieName}
