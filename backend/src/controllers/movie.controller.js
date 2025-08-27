@@ -2,10 +2,13 @@ import responseHandler from "../handlers/response.handler.js";
 import Movie from "../models/movie.model.js";
 
 const parseGenres = (genres) => {
-  if (Array.isArray(genres)) return genres;
-  if (typeof genres === "string")
-    return genres.split(",").map(g => g.trim()).filter(Boolean);
-  return [];
+	if (Array.isArray(genres)) return genres;
+	if (typeof genres === "string")
+		return genres
+			.split(",")
+			.map((g) => g.trim())
+			.filter(Boolean);
+	return [];
 };
 
 export const getMovies = async (req, res) => {
@@ -56,7 +59,7 @@ export const createMovie = async (req, res) => {
 			banner,
 			movieRating,
 			status,
-			director,
+			producer,
 			trailer,
 			allowedShowStart,
 		} = req.body;
@@ -72,7 +75,7 @@ export const createMovie = async (req, res) => {
 			banner,
 			movieRating,
 			status,
-			director,
+			producer,
 			trailer,
 			allowedShowStart,
 		});
@@ -99,6 +102,7 @@ export const deleteMovie = async (req, res) => {
 		await deletedMovie.save();
 		responseHandler.ok(res, { message: "Xóa phim thành công!" });
 	} catch (err) {
+		console.error("Error deleting movie:", err);
 		responseHandler.error(res, err.message);
 	}
 };
@@ -115,7 +119,7 @@ export const updateMovie = async (req, res) => {
 			banner,
 			movieRating,
 			status,
-			director,
+			producer,
 			trailer,
 			allowedShowStart,
 		} = req.body;
@@ -134,7 +138,7 @@ export const updateMovie = async (req, res) => {
 		if (banner) updatedMovie.banner = banner;
 		if (movieRating) updatedMovie.movieRating = movieRating;
 		if (status) updatedMovie.status = status;
-		if (director) updatedMovie.director = director;
+		if (producer) updatedMovie.producer = producer;
 		if (trailer) updatedMovie.trailer = trailer;
 		if (allowedShowStart) updatedMovie.allowedShowStart = allowedShowStart;
 

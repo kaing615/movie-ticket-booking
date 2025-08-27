@@ -290,11 +290,11 @@ function MovieAdminPanel() {
                             <Input placeholder="Enter movie name" className="rounded-md" />
                         </Form.Item>
                         <Form.Item
-                            name="director"
-                            label="Director"
-                            rules={[{ required: true, message: 'Please enter director name!' }]}
+                            name="producer"
+                            label="Producer"
+                            rules={[{ required: true, message: 'Please enter producer name!' }]}
                         >
-                            <Input placeholder="Enter director name" className="rounded-md" />
+                            <Input placeholder="Enter producer name" className="rounded-md" />
                         </Form.Item>
                         <Form.Item
                             name="duration"
