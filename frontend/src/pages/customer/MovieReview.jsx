@@ -25,6 +25,7 @@ const MovieReview = ({ movieId }) => {
         queryFn: () => reviewApi.checkWatched(movieId),
         enabled: !!movieId && !!user,
     });
+    console.log("Has watched movie:", hasWatched);
 
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");

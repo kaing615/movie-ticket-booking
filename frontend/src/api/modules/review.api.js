@@ -1,9 +1,11 @@
 import publicClient from "../clients/public.client";
 import { configuredPrivateClient } from "../clients/configuredClient.js";
 import { checkWatched } from "../../../../backend/src/controllers/review.controller.js";
+import { get } from "mongoose";
 
 export const reviewEndpoints = {
     getReviews: (movieId) => `/review/${movieId}`,
+    getAllReviews: () => `/review/`,
     createReview: (movieId) => `/review/create-review/${movieId}`,
     updateReview: (reviewId) => `/review/update-review/${reviewId}`,
     deleteReview: (reviewId) => `/review/${reviewId}`,
@@ -13,6 +15,10 @@ export const reviewEndpoints = {
 export const reviewApi = {
     getReviews: async (movieId) => {
         const response = await publicClient.get(reviewEndpoints.getReviews(movieId));
+        return response.data.reviews || response.data;
+    },
+    getAllReviews: async () => {
+        const response = await publicClient.get(reviewEndpoints.getAllReviews());
         return response.data.reviews || response.data;
     },
     checkWatched: async (movieId) => {

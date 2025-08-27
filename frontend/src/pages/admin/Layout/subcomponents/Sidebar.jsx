@@ -3,13 +3,15 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../../redux/features/auth.slice.js";
 import { LogOut, LayoutDashboard, Users, Building2, Film, CalendarClock, Menu } from "lucide-react"; // icon đẹp
-
+import  {StarOutlined } from "@ant-design/icons"; // icon antd
 const navLinks = [
     { to: "/admin/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/admin/users", label: "Users", icon: <Users size={18} /> },
     { to: "/admin/theaters", label: "Theaters", icon: <Building2 size={18} /> },
     { to: "/admin/movies", label: "Movies", icon: <Film size={18} /> },
     { to: "/admin/shows", label: "Shows", icon: <CalendarClock size={18} /> },
+    { to: "/admin/reviews", label: "Reviews", icon: <StarOutlined className="text-xl" /> },
+
 ];
 
 const AdminSidebar = () => {

@@ -1,13 +1,14 @@
 import {
-    PATH,
-    AUTH_PATH,
-    ADMIN_PATH,
-    MANAGER_PATH,
-    CUSTOMER_PATH,
+  PATH,
+  AUTH_PATH,
+  ADMIN_PATH,
+  MANAGER_PATH,
+  CUSTOMER_PATH,
 } from "./path";
 import { useRoutes, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ROLE } from "../constants/role.js";
+import RequireAuth from "./RequireAuth.jsx";
 
 // Admin pages
 import AdminLayout from "../pages/admin/Layout/AdminLayout.jsx";
@@ -16,13 +17,14 @@ import UserManagement from "../pages/admin/UserManagement.jsx";
 import TheaterManagement from "../pages/admin/Theaters/Theater.jsx";
 import MovieManagement from "../pages/admin/Movies/Movies.jsx";
 import ShowManagement from "../pages/admin/ShowManagement.jsx";
+import ReviewDashboard from "../pages/admin/ReviewDashboard.jsx";
 
 // Manager pages
 import ManagerLayout from "../pages/manager/ManagerLayout.jsx";
 import ManagerDashboard from "../pages/manager/ManagerDashboard.jsx";
 import TheaterDashboard from "../pages/manager/TheaterDashboard.jsx";
 import RoomsDashboard from "../pages/manager/RoomsDashboard.jsx";
-import RevenueDashboard from "../components/revenue/RevenueDashboard.jsx";
+import RevenueDashboard from "../components/revenue/RevenueDashboard1.jsx";
 
 // Customer pages
 import MovieDetails from "../pages/customer/MovieDetails.jsx";
@@ -76,49 +78,34 @@ const useRouterElements = () => {
       path: PATH.CUSTOMER,
       element: <HomeLayout />,
       children: [
-        {
-          path: CUSTOMER_PATH.HOME,
-          element: <HomePage />,
-        },
-        {
-          path: CUSTOMER_PATH.PROFILE,
-          element: <ProfilePage />,
-        },
+        // --- PUBLIC ---
+        { path: CUSTOMER_PATH.HOME, element: <HomePage /> },
         {
           path: `${CUSTOMER_PATH.MOVIE_DETAILS}/:id`,
           element: <MovieDetails />,
         },
-        {
-          path: `${CUSTOMER_PATH.BOOKING}`,
-          element: <Booking />,
-        },
-        {
-          path: `${CUSTOMER_PATH.BOOKING}/:movieId`,
-          element: <Booking />,
-        },
-        {
-          path: `${CUSTOMER_PATH.BOOKING}/show/:showId`,
-          element: <SeatSelection />,
-        },
-        {
-          path: `${CUSTOMER_PATH.SUPPORT}`,
-          element: <TechnicalSupportPage />,
-        },
-        {
-          path: "/my-tickets",
-          element: <MyTickets />,
-        },
+        { path: `${CUSTOMER_PATH.MOVIES}/:status?`, element: <Movies /> },
         {
           path: `${CUSTOMER_PATH.THEATER_SYSTEMS}/:id`,
           element: <TheaterSystem />,
         },
+        { path: `${CUSTOMER_PATH.THEATER}/:theaterId`, element: <Theater /> },
+        { path: `${CUSTOMER_PATH.SUPPORT}`, element: <TechnicalSupportPage /> },
+
+        // --- PRIVATE (cần đăng nhập) ---
         {
-          path: `${CUSTOMER_PATH.THEATER}/:theaterId`,
-          element: <Theater />,
-        },
-        {
-          path: `${CUSTOMER_PATH.MOVIES}/:status?`,
-          element: <Movies />,
+          element: <RequireAuth />,
+          children: [
+            { path: CUSTOMER_PATH.PROFILE, element: <ProfilePage /> },
+            { path: `${CUSTOMER_PATH.BOOKING}`, element: <Booking /> },
+            { path: `${CUSTOMER_PATH.BOOKING}/:movieId`, element: <Booking /> },
+            {
+              path: `${CUSTOMER_PATH.BOOKING}/show/:showId`,
+              element: <SeatSelection />,
+            },
+            // chú ý: nếu muốn nằm dưới /customer, đừng dùng "/" ở đầu
+            { path: `my-tickets`, element: <MyTickets /> },
+          ],
         },
       ],
     },
@@ -145,6 +132,10 @@ const useRouterElements = () => {
         {
           path: ADMIN_PATH.THEATERS,
           element: <TheaterManagement />,
+        },
+        {
+          path: ADMIN_PATH.REVIEWS,
+          element: <ReviewDashboard />,
         },
       ],
     },

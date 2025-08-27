@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     Table,
     Button,
@@ -15,20 +15,18 @@ import {
     Alert,
     Tag,
     Upload,
-} from 'antd';
+} from "antd";
 import {
     EditOutlined,
     DeleteOutlined,
     PlusOutlined,
     UploadOutlined,
-} from '@ant-design/icons';
-import dayjs from 'dayjs';
-import { movieApi } from '../../../api/modules/movie.api'; // Adjust the import path as needed
+} from "@ant-design/icons";
+import dayjs from "dayjs";
+import { movieApi } from "../../../api/modules/movie.api"; // Adjust the import path as needed
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-
 
 // MovieAdminPanel component
 function MovieAdminPanel() {
@@ -38,8 +36,13 @@ function MovieAdminPanel() {
     const [form] = Form.useForm();
 
     // Fetch movies using useQuery
-    const { data: movies, isLoading, isError, error } = useQuery({
-        queryKey: ['movies'],
+    const {
+        data: movies,
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ["movies"],
         queryFn: movieApi.getMovies,
     });
 
@@ -47,8 +50,8 @@ function MovieAdminPanel() {
     const createMovieMutation = useMutation({
         mutationFn: movieApi.createMovie,
         onSuccess: () => {
-            queryClient.invalidateQueries(['movies']); // Invalidate cache to refetch movies
-            message.success('Movie created successfully!');
+            queryClient.invalidateQueries(["movies"]); // Invalidate cache to refetch movies
+            message.success("Movie created successfully!");
             setIsModalVisible(false);
             form.resetFields();
         },
@@ -62,8 +65,8 @@ function MovieAdminPanel() {
     const updateMovieMutation = useMutation({
         mutationFn: ({ id, data }) => movieApi.updateMovie(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries(['movies']); // Invalidate cache to refetch movies
-            message.success('Movie updated successfully!');
+            queryClient.invalidateQueries(["movies"]); // Invalidate cache to refetch movies
+            message.success("Movie updated successfully!");
             setIsModalVisible(false);
             form.resetFields();
             setEditingMovie(null);
@@ -78,8 +81,8 @@ function MovieAdminPanel() {
     const deleteMovieMutation = useMutation({
         mutationFn: movieApi.deleteMovie,
         onSuccess: () => {
-            queryClient.invalidateQueries(['movies']); // Invalidate cache to refetch movies
-            message.success('Movie deleted successfully!');
+            queryClient.invalidateQueries(["movies"]); // Invalidate cache to refetch movies
+            message.success("Movie deleted successfully!");
         },
         onError: (err) => {
             message.error(`Failed to delete movie: ${err.message}`);
@@ -94,9 +97,20 @@ function MovieAdminPanel() {
             form.setFieldsValue({
                 ...movie,
                 releaseDate: movie.releaseDate ? dayjs(movie.releaseDate) : null,
-                allowedShowStart: movie.allowedShowStart ? dayjs(movie.allowedShowStart) : null,
+                allowedShowStart: movie.allowedShowStart
+                    ? dayjs(movie.allowedShowStart)
+                    : null,
                 // For genres, ensure it's an array of strings
-                genres: Array.isArray(movie.genres) ? movie.genres : (movie.genres ? [movie.genres] : []),
+                genres: Array.isArray(movie.genres)
+                    ? movie.genres
+                    : movie.genres
+                        ? [movie.genres]
+                        : [],
+                actors: Array.isArray(movie.actors)
+                    ? movie.actors
+                    : movie.actors
+                        ? [movie.actors]
+                        : [],
             });
         } else {
             form.resetFields();
@@ -109,18 +123,36 @@ function MovieAdminPanel() {
         try {
             const values = await form.validateFields();
             const movieData = {
-                ...values,
-                releaseDate: values.releaseDate ? values.releaseDate.toISOString() : null,
-                allowedShowStart: values.allowedShowStart ? values.allowedShowStart.toISOString() : null,
+                movieName: values.movieName?.trim(),
+                description: values.description?.trim(),
+                genres: Array.isArray(values.genres) ? values.genres : [],
+                duration: values.duration != null ? Number(values.duration) : undefined,
+                releaseDate: values.releaseDate
+                    ? values.releaseDate.toISOString()
+                    : null,
+                country: values.country?.trim(),
+                poster: values.poster?.trim(),
+                banner: values.banner?.trim(),
+                movieRating: values.movieRating,
+                status: values.status,
+                producer: values.producer?.trim(),
+                actors: Array.isArray(values.actors) ? values.actors : [],
+                trailer: values.trailer?.trim(),
+                allowedShowStart: values.allowedShowStart
+                    ? values.allowedShowStart.toISOString()
+                    : null,
             };
 
             if (editingMovie) {
-                updateMovieMutation.mutate({ id: editingMovie.movieId, data: movieData });
+                updateMovieMutation.mutate({
+                    id: editingMovie.movieId,
+                    data: movieData,
+                });
             } else {
                 createMovieMutation.mutate(movieData);
             }
         } catch (info) {
-            console.log('Validate Failed:', info);
+            console.log("Validate Failed:", info);
         }
     };
 
@@ -134,58 +166,60 @@ function MovieAdminPanel() {
     // Table columns definition
     const columns = [
         {
-            title: 'Movie Name',
-            dataIndex: 'movieName',
-            key: 'movieName',
+            title: "Movie Name",
+            dataIndex: "movieName",
+            key: "movieName",
             sorter: (a, b) => a.movieName.localeCompare(b.movieName),
-            className: 'font-semibold',
+            className: "font-semibold",
         },
         {
-            title: 'Genres',
-            dataIndex: 'genres',
-            key: 'genres',
+            title: "Genres",
+            dataIndex: "genres",
+            key: "genres",
             render: (genres) => (
                 <Space wrap>
                     {genres?.map((genre) => (
-                        <Tag color="blue" key={genre}>{genre}</Tag>
+                        <Tag color="blue" key={genre}>
+                            {genre}
+                        </Tag>
                     ))}
                 </Space>
             ),
         },
         {
-            title: 'Duration (min)',
-            dataIndex: 'duration',
-            key: 'duration',
+            title: "Duration (min)",
+            dataIndex: "duration",
+            key: "duration",
             sorter: (a, b) => a.duration - b.duration,
         },
         {
-            title: 'Release Date',
-            dataIndex: 'releaseDate',
-            key: 'releaseDate',
-            render: (date) => dayjs(date).format('YYYY-MM-DD'),
+            title: "Release Date",
+            dataIndex: "releaseDate",
+            key: "releaseDate",
+            render: (date) => dayjs(date).format("YYYY-MM-DD"),
             sorter: (a, b) => new Date(a.releaseDate) - new Date(b.releaseDate),
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
             render: (status) => {
-                let color = '';
-                if (status === 'coming') color = 'gold';
-                else if (status === 'showing') color = 'green';
-                else if (status === 'ended') color = 'red';
+                let color = "";
+                if (status === "coming") color = "gold";
+                else if (status === "showing") color = "green";
+                else if (status === "ended") color = "red";
                 return <Tag color={color}>{status.toUpperCase()}</Tag>;
             },
             filters: [
-                { text: 'Coming', value: 'coming' },
-                { text: 'Showing', value: 'showing' },
-                { text: 'Ended', value: 'ended' },
+                { text: "Coming", value: "coming" },
+                { text: "Showing", value: "showing" },
+                { text: "Ended", value: "ended" },
             ],
             onFilter: (value, record) => record.status.indexOf(value) === 0,
         },
         {
-            title: 'Actions',
-            key: 'actions',
+            title: "Actions",
+            key: "actions",
             render: (_, record) => (
                 <Space size="middle">
                     <Button
@@ -201,11 +235,7 @@ function MovieAdminPanel() {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button
-                            icon={<DeleteOutlined />}
-                            danger
-                            className="rounded-md"
-                        >
+                        <Button icon={<DeleteOutlined />} danger className="rounded-md">
                             Delete
                         </Button>
                     </Popconfirm>
@@ -238,7 +268,9 @@ function MovieAdminPanel() {
 
     return (
         <div className="container mx-auto pt-6 pl-4">
-            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Movie Admin Panel</h1>
+            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+                Movie Admin Panel
+            </h1>
 
             <div className="mb-6 flex justify-end">
                 <Button

@@ -1,6 +1,6 @@
 // src/components/customer/ETicket.jsx
 import React from "react";
-import { QRCodeCanvas } from "qrcode.react"; // npm i qrcode.react
+import { QRCodeCanvas } from "qrcode.react";
 import { CheckCircle2 } from "lucide-react";
 
 const fmtTime = (d) =>
@@ -20,7 +20,6 @@ const statusColor = (s) =>
     : "bg-amber-50 text-amber-700 border-amber-200";
 
 export default function ETicket({ ticket, booking }) {
-  // booking được lấy từ /booking/me (đã format sẵn)
   const movie = booking?.movieInfo;
   const show = booking?.showInfo;
   const theater = booking?.theaterInfo;
@@ -31,8 +30,7 @@ export default function ETicket({ ticket, booking }) {
   const price = ticket?.price;
 
   return (
-    <div className="relative bg-white border rounded-2xl shadow-sm overflow-hidden">
-      {/* Header */}
+    <div className="relative bg-white border rounded-2xl shadow-sm overflow-hidden w-[520px] min-w-[520px]">
       <div className="flex items-center justify-between px-4 py-2 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="flex items-center gap-2">
           <span className="w-1 h-5 bg-blue-700 rounded" />
@@ -49,9 +47,9 @@ export default function ETicket({ ticket, booking }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-[140px_1fr_128px] gap-0">
-        {/* Poster */}
-        <div className="bg-gray-100">
+      {/* giữ layout rộng, không bị bóp */}
+      <div className="grid grid-cols-[160px_1fr_140px]">
+        <div className="bg-gray-100 min-h-[240px]">
           <img
             src={movie?.poster}
             alt={movie?.name}
@@ -59,7 +57,6 @@ export default function ETicket({ ticket, booking }) {
           />
         </div>
 
-        {/* Info */}
         <div className="p-4 grid grid-cols-2 gap-3">
           <div className="col-span-2">
             <div className="text-lg font-bold text-gray-900 line-clamp-2">
@@ -97,10 +94,9 @@ export default function ETicket({ ticket, booking }) {
           </div>
         </div>
 
-        {/* QR */}
         <div className="p-3 flex flex-col items-center justify-center bg-white">
           <div className="rounded-xl border shadow-sm p-2 bg-white">
-            <QRCodeCanvas value={code} size={96} includeMargin />
+            <QRCodeCanvas value={code} size={112} includeMargin />
           </div>
           <div className="mt-2 text-[11px] text-gray-500 text-center leading-4">
             Quét mã tại quầy để vào rạp
@@ -108,12 +104,10 @@ export default function ETicket({ ticket, booking }) {
         </div>
       </div>
 
-      {/* Đường đục lỗ kiểu vé giấy */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-[140px] right-[128px] h-0 border-t border-dashed border-gray-300" />
+      <div className="absolute top-1/2 -translate-y-1/2 left-[160px] right-[140px] h-0 border-t border-dashed border-gray-300" />
       <div className="absolute top-1/2 -translate-y-1/2 -left-2 w-4 h-4 bg-white rounded-full shadow-inner border" />
       <div className="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-4 bg-white rounded-full shadow-inner border" />
 
-      {/* Footer */}
       {ticket?.status === "active" && (
         <div className="px-4 py-2 border-t bg-white text-xs text-emerald-700 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />

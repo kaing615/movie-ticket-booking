@@ -141,22 +141,6 @@ const HomeLayout = () => {
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="px-3 cursor-pointer">
-                                        Sự Kiện
-                                    </NavigationMenuTrigger>
-                                    <NavigationMenuContent>
-                                        <ul className="grid w-[200px] gap-4">
-                                            <li>
-                                                <NavigationMenuLink asChild>
-                                                    <Link href="#" className="hover:text-[#F26B38]">
-                                                        Ưu Đãi
-                                                    </Link>
-                                                </NavigationMenuLink>
-                                            </li>
-                                        </ul>
-                                    </NavigationMenuContent>
-                                </NavigationMenuItem>
-                                <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="px-3 cursor-pointer">
                                         Hệ Thống Rạp
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent>
