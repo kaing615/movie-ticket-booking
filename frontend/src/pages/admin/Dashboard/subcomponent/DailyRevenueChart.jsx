@@ -48,7 +48,8 @@ const DailyRevenueChart = ({ data }) => {
 
     return (
         <div className='flex flex-col items-center border-t border-gray-300 ml-4 mt-7'>
-            <h2 className='text-gray-800 p-4'>Overall Total Revenue: ${overallRevenue}</h2>
+            <h2 className='text-gray-800 p-4'>Overall Total Revenue:{" "}
+                                {overallRevenue?.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h2>
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={chartData}

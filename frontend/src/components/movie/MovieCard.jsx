@@ -12,7 +12,7 @@ const MovieCard = ({ movie }) => {
   // Tính điểm đánh giá trung bình (nếu có)
   const avgRating =
     movie.ratingCount > 0
-      ? (movie.ratingScore / movie.ratingCount).toFixed(1)
+      ? (movie.ratingScore).toFixed(1)
       : null;
 
   return (
