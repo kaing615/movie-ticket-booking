@@ -18,6 +18,7 @@ import {
 import { theaterSystemApi } from "../../api/modules/theaterSystem.api";
 import { theaterApi } from "../../api/modules/theater.api";
 import { showApi } from "../../api/modules/show.api";
+import { reviewApi } from "../../api/modules/review.api";
 import { Button } from "../../components/common/button";
 import { CUSTOMER_PATH } from "../../routes/path";
 
@@ -69,12 +70,19 @@ const MovieDetails = () => {
 
   const { data: shows = [], isLoading: isShowsLoading } = useQuery({
     queryKey: ["shows-by-movie", id],
-    queryFn: () => showApi.getShowsByMovie(id, { upcoming: true, graceMin: 2, sort: "asc" }),
+    queryFn: () =>
+      showApi.getShowsByMovie(id, { upcoming: true, graceMin: 2, sort: "asc" }),
     enabled: !!id,
     refetchInterval: 5 * 60 * 1000,
     refetchOnWindowFocus: true,
   });
   console.log("Shows from API:", shows);
+
+  const { data: movieReviews = [] } = useQuery({
+    queryKey: ["reviews-by-movie", id],
+    queryFn: () => reviewApi.getReviews(id), // API trả mảng review của phim
+    enabled: !!id,
+  });
 
   // Bộ lọc ngày (dựa trên shows trả về)
   const uniqueDates = useMemo(() => {
@@ -175,6 +183,13 @@ const MovieDetails = () => {
     return d === 0 || d === 6; // CN hoặc Th7
   };
 
+  const ratingCount = movieReviews.length;
+  const ratingAvg = useMemo(() => {
+    if (!ratingCount) return 0;
+    const sum = movieReviews.reduce((s, r) => s + Number(r?.rating || 0), 0);
+    return +(sum / ratingCount).toFixed(1);
+  }, [movieReviews]);
+
   // --- UI ---
   return (
     <>
@@ -245,10 +260,10 @@ const MovieDetails = () => {
             <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
               <StarIcon className="w-5 h-5 text-orange-500 fill-orange-500" />
               <span className="text-lg font-semibold">
-                {Number(movie?.ratingScore / movie?.ratingCount).toFixed(1) || "0"}
+                {ratingCount > 0 ? ratingAvg : "--"}
               </span>
               <span className="text-sm text-gray-500">
-                ({movie?.ratingCount || "0"} lượt đánh giá)
+                ({ratingCount} lượt đánh giá)
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">

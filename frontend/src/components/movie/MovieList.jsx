@@ -34,9 +34,9 @@ const MovieList = ({ filterId }) => {
 
   const handleShowMore = () => {
     if (filterId === "showing") {
-      navigate(`/phim-dang-chieu`);
+      navigate(`/movies/showing`);
     } else if (filterId === "coming") {
-      navigate(`/phim-sap-chieu`);
+      navigate(`/movies/coming`);
     }
   };
 

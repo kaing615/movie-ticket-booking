@@ -10,6 +10,11 @@ import routes from "./routes/index.js";
 
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  console.error("❌ Missing JWT_SECRET (check backend/.env or dotenv path)");
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -33,6 +38,7 @@ mongoose
   .then(() => {
     console.log("MongoDB connected");
     server.listen(PORT, () => {
+      console.log(`MONGO URL : ${process.env.MONGO_URL}`);
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Swagger docs at http://localhost:${PORT}/api-docs`);
     });
