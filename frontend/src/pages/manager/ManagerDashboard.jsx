@@ -88,6 +88,7 @@ const ManagerDashboard = () => {
         enabled: !!theater?._id,
     });
 
+    console.log("theaterMovies", theaterMovies);
     // ======= Helpers
     const getAvailableMovies = React.useCallback(() => {
         const theaterMovieIds = new Set(
