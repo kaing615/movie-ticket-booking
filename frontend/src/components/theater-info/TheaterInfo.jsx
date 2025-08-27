@@ -26,7 +26,11 @@ const TheaterInfo = () => {
   const { data: shows } = useQuery({
     queryKey: ["shows", selectedTheaterId],
     queryFn: () =>
-      showApi.getShowsByTheater(selectedTheaterId, { upcoming: true, graceMin: 2, sort: "asc" }),
+      showApi.getShowsByTheater(selectedTheaterId, {
+        upcoming: true,
+        graceMin: 2,
+        sort: "asc",
+      }),
     enabled: !!selectedTheaterId,
     refetchInterval: 5 * 60 * 1000,
   });
@@ -37,6 +41,7 @@ const TheaterInfo = () => {
       setSelectedSystemId(theaterSystems[0]._id);
     }
   }, [theaterSystems, selectedSystemId]);
+
   useEffect(() => {
     if (theaters && theaters.length > 0 && !selectedTheaterId) {
       setSelectedTheaterId(theaters[0]._id);
@@ -64,12 +69,11 @@ const TheaterInfo = () => {
         {theaterSystems?.map((system) => (
           <button
             key={system._id}
-            className={`rounded-full p-1 w-16 h-16 flex items-center justify-center border-2 transition shadow-lg
-              ${
-                selectedSystemId === system._id
-                  ? "border-blue-700 scale-110 bg-white shadow"
-                  : "border-gray-200 bg-gray-50 hover:scale-105"
-              }`}
+            className={`rounded-full p-1 w-16 h-16 flex items-center justify-center border-2 transition shadow-lg ${
+              selectedSystemId === system._id
+                ? "border-blue-700 scale-110 bg-white shadow"
+                : "border-gray-200 bg-gray-50 hover:scale-105"
+            }`}
             onClick={() => handleSelectSystem(system._id)}
           >
             <img
@@ -87,12 +91,11 @@ const TheaterInfo = () => {
         {theaters?.map((theater) => (
           <button
             key={theater._id}
-            className={`px-4 py-2 rounded-full font-semibold border text-base shadow
-              ${
-                selectedTheaterId === theater._id
-                  ? "bg-blue-50 text-blue-700 border-blue-700"
-                  : "bg-white text-gray-800 border-gray-200 hover:bg-gray-100"
-              }`}
+            className={`px-4 py-2 rounded-full font-semibold border text-base shadow ${
+              selectedTheaterId === theater._id
+                ? "bg-blue-50 text-blue-700 border-blue-700"
+                : "bg-white text-gray-800 border-gray-200 hover:bg-gray-100"
+            }`}
             onClick={() => handleSelectTheater(theater._id)}
           >
             {theater.theaterName}
@@ -101,10 +104,8 @@ const TheaterInfo = () => {
       </div>
 
       {/* Lịch Chiếu */}
-      <div className="bg-white rounded-xl border p-5 shadow-lg min-h-[180px]">
-        <h3 className="text-lg font-bold mb-4 text-blue-700">
-          Lịch chiếu phim
-        </h3>
+      <div className="bg-white rounded-xl border p-5 shadow-lg min-h-[180px] overflow-hidden">
+        <h3 className="text-lg font-bold mb-4 text-blue-700">Lịch chiếu phim</h3>
         <AnimatePresence mode="wait">
           <motion.div
             key={selectedTheaterId || selectedSystemId}
@@ -118,10 +119,8 @@ const TheaterInfo = () => {
               shows.map((show) => (
                 <div
                   key={show._id}
-                  className="flex items-center gap-5 p-3 bg-gray-50 rounded-xl shadow border hover:scale-105 transition cursor-pointer group"
-                  onClick={() =>
-                    navigate(`/movie-details/${show.movieId._id}`)
-                  }
+                  className="w-full flex items-center gap-4 p-3 bg-gray-50 rounded-xl shadow border transform-gpu transition hover:scale-[1.02] cursor-pointer group"
+                  onClick={() => navigate(`/movie-details/${show.movieId._id}`)}
                   title="Xem chi tiết phim"
                 >
                   <div className="relative min-w-[56px]">
@@ -130,14 +129,16 @@ const TheaterInfo = () => {
                       alt={show.movieId?.movieName}
                       className="w-14 h-20 rounded-xl object-cover border border-gray-300 shadow"
                     />
-                    {/* Overlay: phim đang chiếu? */}
                   </div>
-                  <div className="flex-1 flex flex-col">
+
+                  {/* Cho phép co chiều ngang để truncate hoạt động */}
+                  <div className="flex-1 min-w-0 flex flex-col">
                     <h4 className="text-base font-bold mb-1 group-hover:text-blue-700 truncate">
                       {show.movieId?.movieName}
                     </h4>
+
                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded whitespace-nowrap">
                         {new Date(show.startTime).toLocaleString("vi-VN", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -149,7 +150,7 @@ const TheaterInfo = () => {
                       <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
                         {show.movieId?.genres?.slice(0, 2).join(", ")}
                       </span>
-                      <span className="text-sm text-black-700 px-2 py-1 rounded">
+                      <span className="text-sm text-gray-700 px-2 py-1 rounded">
                         {show.movieId?.duration} phút
                       </span>
                     </div>

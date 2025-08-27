@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showApi } from "../../api/modules/show.api";
+import { seatApi } from "../../api/modules/seat.api";
 import { bookingApi } from "../../api/modules/booking.api";
 import { Button } from "../../components/common/button";
 import { ClockIcon, RefreshCw, XCircle, CheckCircle2 } from "lucide-react";
@@ -16,7 +17,9 @@ const PRICE_MAP = {
   standard: 90000,
 };
 const formatVND = (n = 0) =>
-  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
+  new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
+    n
+  );
 
 // lấy row+số (tương thích A1/B2… hoặc row + seatNumber tách riêng)
 const getRow = (s) => {
@@ -105,12 +108,15 @@ const SeatSelection = () => {
   } = useQuery({
     queryKey: ["seats-of-show", showId],
     enabled: !!showId,
-    queryFn: () => showApi.getSeatsOfShow(showId),
+    queryFn: () => seatApi.getSeatsOfShow(showId),
     placeholderData: { seats: [], sold: [], held: [], serverTime: null },
   });
 
   // chuẩn hoá seats từ API
-  const seats = useMemo(() => normalizeSeats(seatData.seats || []), [seatData.seats]);
+  const seats = useMemo(
+    () => normalizeSeats(seatData.seats || []),
+    [seatData.seats]
+  );
   const sold = seatData.sold || [];
   const held = seatData.held || [];
 
@@ -133,10 +139,41 @@ const SeatSelection = () => {
     [seats, selectedSet]
   );
 
-  const totalPrice = useMemo(
-    () => selectedSeats.reduce((sum, s) => sum + (PRICE_MAP[s.seatType] || 0), 0),
-    [selectedSeats]
-  );
+  const totalPrice = useMemo(() => {
+    const PRICE = {
+      VIP: 120000,
+      "Tiêu chuẩn": 90000,
+      Couple: 180000,
+      standard: 90000,
+    };
+    let vip = 0,
+      standard = 0;
+    const couplePairs = new Set(); // key: ROW-minNum của cặp
+
+    for (const s of selectedSeats) {
+      if (s.seatType === "VIP") {
+        vip++;
+        continue;
+      }
+      if (s.seatType === "Tiêu chuẩn" || s.seatType === "standard") {
+        standard++;
+        continue;
+      }
+      if (s.seatType === "Couple") {
+        const row = getRow(s);
+        const n = getNum(s);
+        const pair = getPairedSeat(s);
+        const key = `${row}-${Math.min(n, pair ? getNum(pair) : n)}`;
+        couplePairs.add(key);
+      }
+    }
+
+    return (
+      vip * PRICE.VIP +
+      standard * PRICE["Tiêu chuẩn"] +
+      couplePairs.size * PRICE.Couple
+    );
+  }, [selectedSeats, seats]);
 
   /* --- Mutations --- */
   const holdMutation = useMutation({
@@ -224,7 +261,9 @@ const SeatSelection = () => {
 
       setSelectedIds((cur) => {
         const hasBoth = ids.every((sid) => cur.map(String).includes(sid));
-        return hasBoth ? cur.filter((x) => !ids.includes(String(x))) : [...cur, ...ids];
+        return hasBoth
+          ? cur.filter((x) => !ids.includes(String(x)))
+          : [...cur, ...ids];
       });
       return;
     }
@@ -346,17 +385,33 @@ const SeatSelection = () => {
             {/* Stepper + progress */}
             <div className="flex items-center gap-3 min-w-[220px]">
               <div className="flex items-center gap-2 text-[13px]">
-                <span className="h-6 w-6 grid place-items-center rounded-full bg-indigo-600 text-white font-bold shadow">1</span>
+                <span className="h-6 w-6 grid place-items-center rounded-full bg-indigo-600 text-white font-bold shadow">
+                  1
+                </span>
                 <span className="text-slate-700 font-medium">Ghế</span>
               </div>
               <div className="h-[2px] w-14 bg-gradient-to-r from-indigo-500 to-sky-400 rounded" />
-              <div className={`flex items-center gap-2 text-[13px] ${myHold.seatIds?.length ? "opacity-100" : "opacity-50"}`}>
-                <span className={`h-6 w-6 grid place-items-center rounded-full ${myHold.seatIds?.length ? "bg-indigo-600 text-white" : "bg-slate-200 text-slate-600"} font-bold shadow`}>2</span>
+              <div
+                className={`flex items-center gap-2 text-[13px] ${
+                  myHold.seatIds?.length ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <span
+                  className={`h-6 w-6 grid place-items-center rounded-full ${
+                    myHold.seatIds?.length
+                      ? "bg-indigo-600 text-white"
+                      : "bg-slate-200 text-slate-600"
+                  } font-bold shadow`}
+                >
+                  2
+                </span>
                 <span className="text-slate-700 font-medium">Thanh toán</span>
               </div>
               <div className="h-[2px] w-14 bg-slate-200 rounded" />
               <div className="flex items-center gap-2 text-[13px] opacity-60">
-                <span className="h-6 w-6 grid place-items-center rounded-full bg-slate-200 text-slate-600 font-bold">3</span>
+                <span className="h-6 w-6 grid place-items-center rounded-full bg-slate-200 text-slate-600 font-bold">
+                  3
+                </span>
                 <span className="text-slate-700 font-medium">Xác nhận</span>
               </div>
             </div>
@@ -364,7 +419,7 @@ const SeatSelection = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pb-10 lg:max-w-6xl grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
+      <div className="container mx-auto px-4 pb-24 lg:max-w-6xl grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
         {/* LEFT */}
         <div className="xl:pr-2">
           {/* màn hình cong */}
@@ -377,8 +432,17 @@ const SeatSelection = () => {
                   <stop offset="100%" stopColor="#e5e7eb" />
                 </linearGradient>
               </defs>
-              <path d="M0,2 Q50,14 100,2" stroke="url(#screenStroke)" strokeWidth="1.6" fill="none" />
-              <path d="M0,2 Q50,14 100,2 L100,16 L0,16 Z" fill="#fff" opacity=".7" />
+              <path
+                d="M0,2 Q50,14 100,2"
+                stroke="url(#screenStroke)"
+                strokeWidth="1.6"
+                fill="none"
+              />
+              <path
+                d="M0,2 Q50,14 100,2 L100,16 L0,16 Z"
+                fill="#fff"
+                opacity=".7"
+              />
             </svg>
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 text-[11px] tracking-[0.25em] text-slate-500">
               MÀN HÌNH
@@ -390,12 +454,18 @@ const SeatSelection = () => {
             {[
               { swatch: "bg-white/70 border border-white/40", label: "Trống" },
               { swatch: "bg-indigo-600", label: "Đang chọn" },
-              { swatch: "bg-amber-200/90 border border-amber-300", label: "Người khác giữ" },
+              {
+                swatch: "bg-amber-200/90 border border-amber-300",
+                label: "Người khác giữ",
+              },
               { swatch: "bg-slate-300", label: "Đã bán" },
               { swatch: "bg-white ring-2 ring-amber-300/70", label: "VIP" },
               { swatch: "bg-white ring-2 ring-rose-300/70", label: "Couple" },
             ].map((x) => (
-              <span key={x.label} className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/70 ring-1 ring-white/40 backdrop-blur text-slate-700">
+              <span
+                key={x.label}
+                className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/70 ring-1 ring-white/40 backdrop-blur text-slate-700"
+              >
                 <span className={`w-4 h-4 rounded ${x.swatch}`} />
                 {x.label}
               </span>
@@ -404,78 +474,93 @@ const SeatSelection = () => {
 
           {/* Seat grid */}
           <div
-            className="rounded-3xl border border-white/40 shadow-xl p-5 md:p-6 bg-white/60 backdrop-blur-xl"
+            className="
+    rounded-3xl border border-white/40 shadow-xl
+    bg-white/60 backdrop-blur-xl
+    overflow-x-auto overflow-y-auto
+    p-4 md:p-5
+    max-h-[70vh] xl:max-h-[72vh]
+  "
             style={{
               backgroundImage:
                 "radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px)",
               backgroundSize: "16px 16px",
             }}
           >
-            {isLoading ? (
-              <div className="text-slate-600">Đang tải sơ đồ ghế…</div>
-            ) : isError ? (
-              <div className="text-rose-600">Không tải được ghế. Vui lòng thử lại.</div>
-            ) : rows.length === 0 ? (
-              <div className="text-slate-600">Phòng chưa cấu hình ghế.</div>
-            ) : (
-              <div className="space-y-4">
-                {rows.map(([rowKey, arr]) => (
-                  <div key={rowKey} className="grid grid-cols-[56px_1fr_56px] items-center">
-                    {/* label trái */}
-                    <div className="text-center">
-                      <span className="inline-flex items-center justify-center min-w-10 px-2 py-1 rounded-full bg-white/80 ring-1 ring-white/40 text-[11px] font-semibold text-slate-700 backdrop-blur">
-                        {rowKey || (arr[0] && getRow(arr[0])) || "—"}
-                      </span>
+            {/* Inner width ensures horizontal scroll on small screens */}
+            <div className="min-w-[720px] md:min-w-[860px] max-w-[980px] mx-auto">
+              {isLoading ? (
+                <div className="text-slate-600">Đang tải sơ đồ ghế…</div>
+              ) : isError ? (
+                <div className="text-rose-600">
+                  Không tải được ghế. Vui lòng thử lại.
+                </div>
+              ) : rows.length === 0 ? (
+                <div className="text-slate-600">Phòng chưa cấu hình ghế.</div>
+              ) : (
+                <div className="space-y-4">
+                  {rows.map(([rowKey, arr]) => (
+                    <div
+                      key={rowKey}
+                      className="grid grid-cols-[56px_1fr_56px] items-center"
+                    >
+                      {/* label trái */}
+                      <div className="text-center">
+                        <span className="inline-flex items-center justify-center min-w-10 px-2 py-1 rounded-full bg-white/80 ring-1 ring-white/40 text-[11px] font-semibold text-slate-700 backdrop-blur">
+                          {rowKey || (arr[0] && getRow(arr[0])) || "—"}
+                        </span>
+                      </div>
+
+                      {/* seats giữa */}
+                      <div className="min-w-0 flex flex-wrap justify-center gap-2.5 md:gap-3">
+                        {arr.map((s) => {
+                          if (s.seatType === "Couple")
+                            return renderCoupleBlock(s);
+
+                          const isVip = (rowKey || getRow(s)) === "VIP";
+                          const cls = seatBtnClass(
+                            `${styleForSeatClass(s)} ${
+                              isVip
+                                ? "bg-gradient-to-br from-amber-200/90 via-yellow-200/90 to-amber-100/90 text-slate-800 border-amber-200 hover:from-amber-300/90 hover:to-yellow-200/90"
+                                : ""
+                            }`
+                          );
+
+                          const label = isVip
+                            ? `${getNum(s)}`
+                            : `${rowKey || getRow(s)}${getNum(s)}`;
+
+                          const disabled =
+                            soldSet.has(String(s._id)) ||
+                            heldSet.has(String(s._id)) ||
+                            myHold.seatIds?.map(String).includes(String(s._id));
+
+                          return (
+                            <button
+                              key={s._id}
+                              onClick={() => toggleSeat(s)}
+                              className={cls}
+                              disabled={disabled}
+                              title={`${label} • ${seatTypeLabel(s.seatType)}`}
+                              aria-label={label}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* label phải */}
+                      <div className="text-center">
+                        <span className="inline-flex items-center justify-center min-w-10 px-2 py-1 rounded-full bg-white/80 ring-1 ring-white/40 text-[11px] font-semibold text-slate-700 backdrop-blur">
+                          {rowKey || (arr[0] && getRow(arr[0])) || "—"}
+                        </span>
+                      </div>
                     </div>
-
-                    {/* seats giữa */}
-                    <div className="min-w-0 flex flex-wrap justify-center gap-2.5 md:gap-3">
-                      {arr.map((s) => {
-                        if (s.seatType === "Couple") return renderCoupleBlock(s);
-
-                        // VIP nền metallic nhẹ
-                        const isVip = (rowKey || getRow(s)) === "VIP";
-                        const cls = seatBtnClass(
-                          `${styleForSeatClass(s)} ${
-                            isVip
-                              ? "bg-gradient-to-br from-amber-200/90 via-yellow-200/90 to-amber-100/90 text-slate-800 border-amber-200 hover:from-amber-300/90 hover:to-yellow-200/90"
-                              : ""
-                          }`
-                        );
-
-                        const label =
-                          isVip ? `${getNum(s)}` : `${rowKey || getRow(s)}${getNum(s)}`;
-
-                        const disabled =
-                          soldSet.has(String(s._id)) ||
-                          heldSet.has(String(s._id)) ||
-                          myHold.seatIds?.map(String).includes(String(s._id));
-
-                        return (
-                          <button
-                            key={s._id}
-                            onClick={() => toggleSeat(s)}
-                            className={cls}
-                            disabled={disabled}
-                            title={`${label} • ${seatTypeLabel(s.seatType)}`}
-                            aria-label={label}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* label phải */}
-                    <div className="text-center">
-                      <span className="inline-flex items-center justify-center min-w-10 px-2 py-1 rounded-full bg-white/80 ring-1 ring-white/40 text-[11px] font-semibold text-slate-700 backdrop-blur">
-                        {rowKey || (arr[0] && getRow(arr[0])) || "—"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -528,12 +613,17 @@ const SeatSelection = () => {
                                 key={s._id}
                                 className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-semibold ring-1 ring-rose-200"
                               >
-                                {label} <span className="text-rose-500/70">(Couple)</span>
+                                {label}{" "}
+                                <span className="text-rose-500/70">
+                                  (Couple)
+                                </span>
                               </span>
                             );
                           }
                           const label =
-                            getRow(s) === "VIP" ? `${getNum(s)}` : `${getRow(s)}${getNum(s)}`;
+                            getRow(s) === "VIP"
+                              ? `${getNum(s)}`
+                              : `${getRow(s)}${getNum(s)}`;
                           return (
                             <span
                               key={s._id}
@@ -561,11 +651,16 @@ const SeatSelection = () => {
 
               <div className="px-5 py-4 bg-white/60 border-t border-white/40 flex flex-col gap-2">
                 <Button
-                  disabled={selectedSeats.length === 0 || holdMutation.isPending}
-                  onClick={() => holdMutation.mutate(selectedSeats.map((s) => s._id))}
+                  disabled={
+                    selectedSeats.length === 0 || holdMutation.isPending
+                  }
+                  onClick={() =>
+                    holdMutation.mutate(selectedSeats.map((s) => s._id))
+                  }
                   className="w-full"
                 >
-                  Giữ ghế {selectedSeats.length > 0 ? `(${selectedSeats.length})` : ""}
+                  Giữ ghế{" "}
+                  {selectedSeats.length > 0 ? `(${selectedSeats.length})` : ""}
                 </Button>
 
                 <div className="flex items-center gap-2">
@@ -581,7 +676,9 @@ const SeatSelection = () => {
                   <Button
                     variant="destructive"
                     className="flex-1"
-                    disabled={!myHold.seatIds?.length || releaseMutation.isPending}
+                    disabled={
+                      !myHold.seatIds?.length || releaseMutation.isPending
+                    }
                     onClick={() => releaseMutation.mutate()}
                   >
                     <XCircle className="w-4 h-4 mr-2" />
@@ -591,7 +688,11 @@ const SeatSelection = () => {
 
                 <Button
                   className="w-full"
-                  disabled={!myHold.seatIds?.length || left === 0 || confirmMutation.isPending}
+                  disabled={
+                    !myHold.seatIds?.length ||
+                    left === 0 ||
+                    confirmMutation.isPending
+                  }
                   onClick={handlePay}
                 >
                   {confirmMutation.isPending ? (
@@ -608,7 +709,8 @@ const SeatSelection = () => {
                 </Button>
 
                 <p className="text-[11px] text-slate-600 mt-1">
-                  Sau khi giữ ghế, bạn có <b>3 phút</b> để thanh toán. Hết thời gian, ghế sẽ tự mở lại.
+                  Sau khi giữ ghế, bạn có <b>3 phút</b> để thanh toán. Hết thời
+                  gian, ghế sẽ tự mở lại.
                 </p>
               </div>
             </div>

@@ -1,6 +1,9 @@
 import responseHandler from "../handlers/response.handler.js";
 import Seat from "../models/seat.model.js";
 import Show from "../models/show.model.js";
+import Booking from "../models/booking.model.js";
+import Ticket from "../models/ticket.model.js";
+import SeatHold from "../models/seatHold.model.js";
 
 export const createSeat = async (req, res) => {
     try {
@@ -137,26 +140,52 @@ export const getSeatById = async (req, res) => {
 export const getSeatsOfShow = async (req, res) => {
   try {
     const { showId } = req.params;
-    const show = await Show.findById(showId);
+
+    const show = await Show.findById(showId).select("roomId");
     if (!show) return responseHandler.notFound(res, "Không tìm thấy suất chiếu");
 
+    // 1) Tất cả ghế của phòng (để render sơ đồ)
     const seats = await Seat.find({
       roomId: show.roomId,
-      isDeleted: false
+      isDeleted: false,
     }).select("_id row seatNumber seatType isDisabled");
 
-    const sold = seats.filter(seat => seat.isSold).map(seat => seat._id);
-    const held = seats.filter(seat => seat.isHeld).map(seat => seat._id);
+    // 2) Ghế ĐÃ BÁN của suất này (booking đã thanh toán)
+    const paidBookings = await Booking.find({
+      showId,
+      status: { $in: ["paid", "completed"] },
+      isDeleted: { $ne: true },
+    }).select("_id").lean();
 
-    responseHandler.ok(res, {
+    const paidIds = paidBookings.map((b) => b._id);
+    const soldTickets = paidIds.length
+      ? await Ticket.find({
+          showId,
+          bookingId: { $in: paidIds },
+          status: { $in: ["active", "used"] },
+        }).select("seatId").lean()
+      : [];
+
+    const sold = soldTickets.map((t) => String(t.seatId));
+
+    // 3) Ghế ĐANG GIỮ (hold) còn hạn
+    const now = new Date();
+    const holds = await SeatHold.find({
+      showId,
+      expiresAt: { $gt: now },
+    }).select("seatIds").lean();
+
+    const held = holds.flatMap((h) => (h.seatIds || []).map((id) => String(id)));
+
+    return responseHandler.ok(res, {
       seats,
       sold,
       held,
-      serverTime: new Date()
+      serverTime: new Date(),
     });
   } catch (err) {
-    console.error(err);
-    responseHandler.error(res);
+    console.error("getSeatsOfShow error:", err);
+    return responseHandler.error(res);
   }
 };
 
